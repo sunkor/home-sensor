@@ -1,0 +1,11 @@
+sudo: required
+
+services:
+  - docker
+
+after_success:
+  - docker build -t sunkor/sensor-listener ./sensor-listener
+  - docker build -t sunkor/grafana ./grafana
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push sunkor/sensor-listener
+  - docker push sunkor/grafana

@@ -1,9 +1,11 @@
-version: '3'
+version: "3"
 services:
   sensor_listener:
-    image: sunkor/sensor-listener
+    build:
+      dockerfile: sensor-listener.dockerfile
+      context: ./sensor-listener
     ports:
-      - '8080:8080'
+      - "8080:8080"
     depends_on:
       - influxdb
   influxdb:
@@ -11,10 +13,12 @@ services:
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/influxdb:/var/lib/influxdb
     ports:
-      - '8086:8086'
+      - "8086:8086"
   grafana:
-    image: sunkor/grafana
+    build:
+      dockerfile: grafana.dockerfile
+      context: ./grafana
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/grafana:/var/lib/grafana
     ports:
-      - '3000:3000'
+      - "3000:3000"
