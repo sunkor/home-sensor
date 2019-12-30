@@ -14,16 +14,16 @@ after_success:
   - docker push sunkor/sensor-listener
   - docker push sunkor/grafana
 
-  deploy:
-    provider: elasticbeanstalk
-    region: ap-southeast-2
-    app: home-sensor
-    env: HomeSensor-env
-    bucket_name: elasticbeanstalk-ap-southeast-2-068004728410
-    bucket_path: home-sensor
-    on:
-      branch: master
-    access_key_id:
-      secure: $AWS_ACCESS_KEY
-    secret_access_key:
-      secure: "$AWS_SECRET_KEY"
+deploy:
+  provider: elasticbeanstalk
+  region: ap-southeast-2
+  app: home-sensor
+  env: HomeSensor-env
+  bucket_name: elasticbeanstalk-ap-southeast-2-068004728410
+  bucket_path:
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
