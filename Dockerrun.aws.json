@@ -1,0 +1,40 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "sensor-listener",
+      "image": "sunkor/sensor-listener",
+      "hostname": "sensor-listener",
+      "essential": true,
+      "memory": 128,
+      "links": ["influxdb"],
+      "portMappings": [
+        {
+          "hostPort": 8080,
+          "containerPort": 8080
+        }
+      ]
+    },
+    {
+      "name": "grafana",
+      "image": "sunkor/grafana",
+      "hostname": "grafana",
+      "essential": false,
+      "memory": 128,
+      "links": ["influxdb"],
+      "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 3000
+        }
+      ]
+    },
+    {
+      "name": "influxdb",
+      "image": "influxdb",
+      "hostname": "influxdb",
+      "essential": false,
+      "memory": 128
+    }
+  ]
+}
