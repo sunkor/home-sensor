@@ -34,7 +34,13 @@
       "image": "influxdb",
       "hostname": "influxdb",
       "essential": false,
-      "memory": 128
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 8086,
+          "containerPort": 8086
+        }
+      ]
     }
   ]
 }
