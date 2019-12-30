@@ -5,9 +5,8 @@
       "name": "sensor-listener",
       "image": "sunkor/sensor-listener",
       "hostname": "sensor-listener",
-      "essential": true,
+      "essential": false,
       "memory": 128,
-      "links": ["influxdb"],
       "portMappings": [
         {
           "hostPort": 8080,
@@ -21,7 +20,6 @@
       "hostname": "grafana",
       "essential": false,
       "memory": 128,
-      "links": ["influxdb"],
       "portMappings": [
         {
           "hostPort": 3000,
@@ -41,6 +39,20 @@
           "containerPort": 8086
         }
       ]
+    },
+    {
+      "name": "nginx",
+      "image": "sunkor/home-sensor-nginx",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["sensor-listener", "grafana"],
+      "memory": 128
     }
   ]
 }
