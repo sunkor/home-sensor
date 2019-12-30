@@ -6,6 +6,7 @@
       "image": "sunkor/sensor-listener",
       "hostname": "sensor-listener",
       "essential": false,
+      "links": ["influxdb"],
       "memory": 128
     },
     {
@@ -14,6 +15,7 @@
       "hostname": "grafana",
       "essential": false,
       "memory": 128,
+      "links": ["influxdb"],
       "portMappings": [
         {
           "hostPort": 3000,
