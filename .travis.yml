@@ -20,7 +20,7 @@ deploy:
   app: home-sensor
   env: HomeSensor-env
   bucket_name: elasticbeanstalk-ap-southeast-2-068004728410
-  bucket_path:
+  bucket_path: home-sensor
   on:
     branch: master
   access_key_id:
