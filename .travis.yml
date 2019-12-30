@@ -7,6 +7,9 @@ before_install:
   - docker build -t sunkor/sensor-listener ./sensor-listener
   - docker build -t sunkor/grafana ./grafana
 
+script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
 after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   - docker push sunkor/sensor-listener
