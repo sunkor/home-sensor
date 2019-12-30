@@ -6,13 +6,7 @@
       "image": "sunkor/sensor-listener",
       "hostname": "sensor-listener",
       "essential": false,
-      "memory": 128,
-      "portMappings": [
-        {
-          "hostPort": 8080,
-          "containerPort": 8080
-        }
-      ]
+      "memory": 128
     },
     {
       "name": "grafana",
@@ -32,13 +26,7 @@
       "image": "influxdb",
       "hostname": "influxdb",
       "essential": false,
-      "memory": 128,
-      "portMappings": [
-        {
-          "hostPort": 8086,
-          "containerPort": 8086
-        }
-      ]
+      "memory": 128
     },
     {
       "name": "nginx",
