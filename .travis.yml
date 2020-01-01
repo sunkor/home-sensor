@@ -5,6 +5,7 @@ services:
 
 before_install:
   - docker build -t sunkor/sensor-listener ./sensor-listener
+  - docker build -t sunkor/sensor-listener-proxy ./sensor-listener-proxy
   - docker build -t sunkor/grafana ./grafana
   - docker build -t sunkor/home-sensor-nginx ./nginx
 
@@ -13,6 +14,7 @@ script:
 
 after_success:
   - docker push sunkor/sensor-listener
+  - docker push sunkor/sensor-listener-proxy
   - docker push sunkor/grafana
   - docker push sunkor/home-sensor-nginx
 
