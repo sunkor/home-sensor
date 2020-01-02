@@ -24,7 +24,7 @@
       ],
       "mountPoints": [
         {
-          "containerPath": "/var/lib/influxdb",
+          "containerPath": "/var/lib/grafana",
           "sourceVolume": "rexray-vol"
         }
       ]
