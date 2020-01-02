@@ -61,7 +61,7 @@
     {
       "name": "rexray-vol",
       "dockerVolumeConfiguration": {
-        "autoprovision": true,
+        "autoprovision": false,
         "scope": "shared",
         "driver": "rexray/ebs"
       }
