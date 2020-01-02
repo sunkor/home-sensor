@@ -1,5 +1,19 @@
 {
   "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "grafana-app",
+      "host": {
+        "sourcePath": "/var/lib/grafana"
+      }
+    },
+    {
+      "name": "influxdb-app",
+      "host": {
+        "sourcePath": "/var/lib/influxdb"
+      }
+    }
+  ],
   "containerDefinitions": [
     {
       "name": "sensor-listener",
@@ -15,17 +29,18 @@
       "hostname": "grafana",
       "essential": false,
       "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "grafana-app",
+          "containerPath": "/var/lib/grafana",
+          "readOnly": false
+        }
+      ],
       "links": ["influxdb"],
       "portMappings": [
         {
           "hostPort": 3000,
           "containerPort": 3000
-        }
-      ],
-      "mountPoints": [
-        {
-          "containerPath": "/var/lib/grafana",
-          "sourceVolume": "rexray-vol"
         }
       ]
     },
@@ -37,8 +52,9 @@
       "memory": 128,
       "mountPoints": [
         {
+          "sourceVolume": "influxdb-app",
           "containerPath": "/var/lib/influxdb",
-          "sourceVolume": "rexray-vol"
+          "readOnly": false
         }
       ]
     },
@@ -55,24 +71,6 @@
       ],
       "links": ["sensor-listener", "grafana"],
       "memory": 128
-    }
-  ],
-  "placementConstraints": [
-    {
-      "type": "memberOf",
-      "expression": "attribute:ecs.availability-zone==ap-southeast-2a"
-    }
-  ],
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["EC2"],
-  "volumes": [
-    {
-      "name": "rexray-vol",
-      "dockerVolumeConfiguration": {
-        "autoprovision": false,
-        "scope": "shared",
-        "driver": "rexray/ebs"
-      }
     }
   ]
 }
