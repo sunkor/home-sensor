@@ -24,7 +24,7 @@
       ],
       "mountPoints": [
         {
-          "containerPath": "/var/lib/grafana",
+          "containerPath": "/var/lib/influxdb",
           "sourceVolume": "rexray-vol"
         }
       ]
@@ -60,6 +60,8 @@
   "volumes": [
     {
       "name": "rexray-vol",
+      "autoprovision": true,
+      "scope": "shared",
       "dockerVolumeConfiguration": {
         "scope": "shared",
         "driver": "rexray/ebs"
