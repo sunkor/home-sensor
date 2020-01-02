@@ -21,6 +21,12 @@
           "hostPort": 3000,
           "containerPort": 3000
         }
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/grafana",
+          "sourceVolume": "rexray-vol"
+        }
       ]
     },
     {
@@ -28,7 +34,13 @@
       "image": "influxdb",
       "hostname": "influxdb",
       "essential": false,
-      "memory": 128
+      "memory": 128,
+      "mountPoints": [
+        {
+          "containerPath": "/var/lib/influxdb",
+          "sourceVolume": "rexray-vol"
+        }
+      ]
     },
     {
       "name": "nginx",
@@ -43,6 +55,15 @@
       ],
       "links": ["sensor-listener", "grafana"],
       "memory": 128
+    }
+  ],
+  "volumes": [
+    {
+      "name": "rexray-vol",
+      "dockerVolumeConfiguration": {
+        "scope": "shared",
+        "driver": "rexray/ebs"
+      }
     }
   ]
 }
