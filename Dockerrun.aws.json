@@ -4,13 +4,13 @@
     {
       "name": "grafana-app",
       "host": {
-        "sourcePath": "/var/lib/grafana"
+        "sourcePath": "/var/lib/sensor-data/grafana"
       }
     },
     {
       "name": "influxdb-app",
       "host": {
-        "sourcePath": "/var/lib/influxdb"
+        "sourcePath": "/var/lib/sensor-data/influxdb"
       }
     }
   ],
