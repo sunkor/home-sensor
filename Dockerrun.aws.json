@@ -12,18 +12,6 @@
       "host": {
         "sourcePath": "/var/lib/sensor-data/influxdb"
       }
-    },
-    {
-      "name": "rexray-vol",
-      "dockerVolumeConfiguration": {
-        "autoprovision": false,
-        "scope": "shared",
-        "driver": "rexray/ebs",
-        "driverOpts": {
-          "volumetype": "gp2",
-          "size": "5"
-        }
-      }
     }
   ],
   "containerDefinitions": [
