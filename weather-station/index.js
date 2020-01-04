@@ -89,12 +89,12 @@ polling.on("result", function(json) {
       temp_min: json.main.temp_min,
       temp_max: json.main.temp_max,
       humidity: json.main.humidity,
-      wind_speed: convert(json.wind.speed)
+      wind_speed: convert(isNaN(json.wind.speed) ? 0 : json.wind.speed)
         .from("m/s")
         .to("km/h"),
-      wind_direction: json.wind.deg,
-      wind_direction_desc: d2d(json.wind.deg),
-      gust_speed: convert(json.wind.gust)
+      wind_direction: isNaN(json.wind.deg) ? 0 : json.wind.deg,
+      wind_direction_desc: isNaN(json.wind.gust) ? "n/a" : d2d(json.wind.deg),
+      gust_speed: convert(isNaN(json.wind.gust) ? 0 : json.wind.gust)
         .from("m/s")
         .to("km/h"),
       sunrise: json.sys.sunrise,
