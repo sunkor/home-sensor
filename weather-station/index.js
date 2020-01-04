@@ -52,8 +52,8 @@ const influx = new Influx.InfluxDB({
         wind_direction: Influx.FieldType.FLOAT,
         wind_direction_desc: Influx.FieldType.STRING,
         gust_speed: Influx.FieldType.FLOAT,
-        sunrise: Influx.FieldType.FLOAT,
-        sunset: Influx.FieldType.FLOAT,
+        sunrise: Influx.FieldType.INTEGER,
+        sunset: Influx.FieldType.INTEGER,
         weather_main: Influx.FieldType.STRING,
         weather_description: Influx.FieldType.STRING,
         sunrise_time: Influx.FieldType.STRING,
@@ -156,10 +156,12 @@ polling.on("result", function(json) {
             wind_direction: summary_data.wind_direction,
             wind_direction_desc: summary_data.wind_direction_desc,
             gust_speed: summary_data.gust_speed,
-            sunrise_time: summary_data.sunrise_time,
-            sunset_time: summary_data.sunset_time,
+            sunrise: summary_data.sunrise,
+            sunset: summary_data.sunset,
             weather_main: summary_data.weather_main,
-            weather_description: summary_data.weather_description
+            weather_description: summary_data.weather_description,
+            sunrise_time: summary_data.sunrise_time,
+            sunset_time: summary_data.sunset_time
           },
           tags: { location: summary_data.name }
         }
