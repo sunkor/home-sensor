@@ -3,6 +3,8 @@ const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
 var d2d = require("degrees-to-direction");
 var convert = require("convert-units");
+const date = require("date-and-time");
+const moment = require("moment-timezone");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -50,10 +52,12 @@ const influx = new Influx.InfluxDB({
         wind_direction: Influx.FieldType.FLOAT,
         wind_direction_desc: Influx.FieldType.STRING,
         gust_speed: Influx.FieldType.FLOAT,
-        sunrise: Influx.FieldType.INTEGER,
-        sunset: Influx.FieldType.INTEGER,
+        sunrise: Influx.FieldType.FLOAT,
+        sunset: Influx.FieldType.FLOAT,
         weather_main: Influx.FieldType.STRING,
-        weather_description: Influx.FieldType.STRING
+        weather_description: Influx.FieldType.STRING,
+        sunrise_time: Influx.FieldType.STRING,
+        sunset_time: Influx.FieldType.STRING
       },
       tags: ["location"]
     }
@@ -76,11 +80,21 @@ polling.on("error", function(error) {
 polling.on("result", function(json) {
   if (json.cod === 200) {
     var timestamp = json.dt;
-    var utcDate = new Date(timestamp * 1000);
-    var localDate = new Date(utcDate);
+    var aestTime = moment(new Date(timestamp * 1000))
+      .tz("Australia/Sydney")
+      .format("DD-MM-YYYY HH:mm:ss");
 
-    console.log(`Utc - ${utcDate}`);
-    console.log(`Local time - ${localDate}`);
+    console.log(`Local time - ${aestTime}`);
+
+    var sunriseDateInAest = moment(new Date(json.sys.sunrise * 1000))
+      .tz("Australia/Sydney")
+      .format("DD-MM-YYYY HH:mm:ss");
+    console.log(`Sunrise date - ${sunriseDateInAest}`);
+
+    var sunsetDateInAest = moment(new Date(json.sys.sunset * 1000))
+      .tz("Australia/Sydney")
+      .format("DD-MM-YYYY HH:mm:ss");
+    console.log(`Sunset date - ${sunsetDateInAest}`);
 
     var summary_data = {
       name: json.name,
@@ -100,7 +114,9 @@ polling.on("result", function(json) {
       sunrise: json.sys.sunrise,
       sunset: json.sys.sunset,
       weather_main: json.weather[0].main,
-      weather_description: json.weather[0].description
+      weather_description: json.weather[0].description,
+      sunrise_time: sunriseDateInAest,
+      sunset_time: sunsetDateInAest
     };
 
     // var summary_data_for_logs = {
@@ -140,8 +156,8 @@ polling.on("result", function(json) {
             wind_direction: summary_data.wind_direction,
             wind_direction_desc: summary_data.wind_direction_desc,
             gust_speed: summary_data.gust_speed,
-            sunrise: summary_data.sunrise,
-            sunset: summary_data.sunset,
+            sunrise_time: summary_data.sunrise_time,
+            sunset_time: summary_data.sunset_time,
             weather_main: summary_data.weather_main,
             weather_description: summary_data.weather_description
           },
