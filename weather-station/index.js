@@ -93,7 +93,7 @@ polling.on("result", function(json) {
         .from("m/s")
         .to("km/h"),
       wind_direction: isNaN(json.wind.deg) ? 0 : json.wind.deg,
-      wind_direction_desc: isNaN(json.wind.gust) ? "n/a" : d2d(json.wind.deg),
+      wind_direction_desc: isNaN(json.wind.deg) ? "n/a" : d2d(json.wind.deg),
       gust_speed: convert(isNaN(json.wind.gust) ? 0 : json.wind.gust)
         .from("m/s")
         .to("km/h"),
