@@ -6,6 +6,10 @@ services:
       context: ./sensor-listener
     depends_on:
       - influxdb
+  weather-station:
+    build:
+      dockerfile: weather-station.dockerfile
+      context: ./weather-station
   influxdb:
     image: influxdb
     volumes:

@@ -12,6 +12,12 @@
       "host": {
         "sourcePath": "/var/lib/sensor-data/influxdb"
       }
+    },
+    {
+      "name": "mongodb-app",
+      "host": {
+        "sourcePath": "/var/lib/sensor-data/mongodb"
+      }
     }
   ],
   "containerDefinitions": [
@@ -21,6 +27,14 @@
       "hostname": "sensor-listener",
       "essential": false,
       "links": ["influxdb"],
+      "memory": 64
+    },
+    {
+      "name": "weather-station",
+      "image": "sunkor/weather-station",
+      "hostname": "weather-station",
+      "essential": false,
+      "links": ["mongodb"],
       "memory": 64
     },
     {
