@@ -300,7 +300,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Last temperature time",
+      "title": "Study room last temperature time",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -414,7 +414,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Min Temp time",
+      "title": "Study room min Temp time",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -523,7 +523,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Max Temp time",
+      "title": "Study room max Temp time",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -858,7 +858,7 @@
         "thresholdMarkers": true
       },
       "gridPos": {
-        "h": 3,
+        "h": 6,
         "w": 4,
         "x": 0,
         "y": 5
@@ -953,131 +953,22 @@
       "valueName": "current"
     },
     {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
-      "datasource": null,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 8
-      },
-      "id": 34,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": ["$__interval"],
-              "type": "time"
-            }
-          ],
-          "measurement": "daily_read",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"weather_description\") FROM \"daily_read\" WHERE (\"location\" = 'Jannali') AND $timeFilter\n",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["weather_main"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "location",
-              "operator": "=",
-              "value": "Jannali"
-            }
-          ]
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Current Weather desc in Jannali",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
       "datasource": null,
       "gridPos": {
         "h": 13,
-        "w": 4,
+        "w": 8,
         "x": 0,
         "y": 11
       },
       "id": 18,
       "options": {
-        "displayMode": "gradient",
+        "displayMode": "lcd",
         "fieldOptions": {
           "calcs": ["lastNotNull"],
           "defaults": {
             "decimals": 3,
             "mappings": [],
-            "max": 50,
+            "max": 45,
             "min": 0,
             "thresholds": [
               {
@@ -1094,7 +985,7 @@
           "override": {},
           "values": false
         },
-        "orientation": "vertical"
+        "orientation": "horizontal"
       },
       "pluginVersion": "6.5.2",
       "targets": [
@@ -1208,7 +1099,7 @@
       "gridPos": {
         "h": 13,
         "w": 2,
-        "x": 4,
+        "x": 8,
         "y": 11
       },
       "id": 24,
@@ -1296,116 +1187,7 @@
       "gridPos": {
         "h": 2,
         "w": 2,
-        "x": 6,
-        "y": 11
-      },
-      "id": 32,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "options": {},
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false,
-        "ymax": null,
-        "ymin": null
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": ["$__interval"],
-              "type": "time"
-            }
-          ],
-          "measurement": "daily_read",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT last(\"weather_main\") FROM \"daily_read\" WHERE (\"location\" = 'Jannali') AND $timeFilter\n",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["wind_direction"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "location",
-              "operator": "=",
-              "value": "Jannali"
-            }
-          ]
-        }
-      ],
-      "thresholds": "",
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Wind direction in Jannali",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
-      "datasource": null,
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 8,
+        "x": 10,
         "y": 11
       },
       "id": 36,
@@ -1498,11 +1280,120 @@
       "valueName": "current"
     },
     {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "datasource": null,
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 12,
+        "y": 11
+      },
+      "id": 32,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "daily_read",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"weather_main\") FROM \"daily_read\" WHERE (\"location\" = 'Jannali') AND $timeFilter\n",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["wind_direction"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Wind direction in Jannali",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
       "datasource": null,
       "gridPos": {
         "h": 13,
         "w": 5,
-        "x": 10,
+        "x": 14,
         "y": 11
       },
       "id": 26,
@@ -1577,7 +1468,7 @@
       "gridPos": {
         "h": 13,
         "w": 5,
-        "x": 15,
+        "x": 19,
         "y": 11
       },
       "id": 28,
@@ -1764,7 +1655,7 @@
       "gridPos": {
         "h": 11,
         "w": 4,
-        "x": 6,
+        "x": 10,
         "y": 13
       },
       "id": 42,
@@ -3465,7 +3356,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 21,
   "style": "dark",
   "tags": [],
@@ -3473,7 +3364,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -3493,5 +3384,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 50
+  "version": 57
 }
