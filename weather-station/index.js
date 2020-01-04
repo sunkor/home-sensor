@@ -2,6 +2,7 @@ const Influx = require("influx");
 const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
 var d2d = require("degrees-to-direction");
+var convert = require("convert-units");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -88,10 +89,14 @@ polling.on("result", function(json) {
       temp_min: json.main.temp_min,
       temp_max: json.main.temp_max,
       humidity: json.main.humidity,
-      wind_speed: json.wind.speed,
+      wind_speed: convert(json.wind.speed)
+        .from("m/s")
+        .to("km/h"),
       wind_direction: json.wind.deg,
       wind_direction_desc: d2d(json.wind.deg),
-      gust_speed: json.wind.gust,
+      gust_speed: convert(json.wind.gust)
+        .from("m/s")
+        .to("km/h"),
       sunrise: json.sys.sunrise,
       sunset: json.sys.sunset,
       weather_main: json.weather[0].main,
