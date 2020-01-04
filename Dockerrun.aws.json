@@ -12,12 +12,6 @@
       "host": {
         "sourcePath": "/var/lib/sensor-data/influxdb"
       }
-    },
-    {
-      "name": "mongodb-app",
-      "host": {
-        "sourcePath": "/var/lib/sensor-data/mongodb"
-      }
     }
   ],
   "containerDefinitions": [
