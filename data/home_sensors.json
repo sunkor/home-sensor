@@ -31,6 +31,7 @@
         "fieldOptions": {
           "calcs": ["lastNotNull"],
           "defaults": {
+            "decimals": 3,
             "mappings": [],
             "max": 100,
             "min": 0,
@@ -844,5 +845,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 10
+  "version": 12
 }
