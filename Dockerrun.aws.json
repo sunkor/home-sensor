@@ -21,7 +21,7 @@
       "hostname": "sensor-listener",
       "essential": false,
       "links": ["influxdb"],
-      "memory": 128
+      "memory": 64
     },
     {
       "name": "grafana",
@@ -49,7 +49,7 @@
       "image": "influxdb",
       "hostname": "influxdb",
       "essential": false,
-      "memory": 128,
+      "memoryReservation": 512,
       "mountPoints": [
         {
           "sourceVolume": "influxdb-app",
@@ -70,7 +70,7 @@
         }
       ],
       "links": ["sensor-listener", "grafana"],
-      "memory": 128
+      "memory": 64
     }
   ]
 }
