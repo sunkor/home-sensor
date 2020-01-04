@@ -35,7 +35,7 @@ const influx = new Influx.InfluxDB({
       tags: ["location"]
     },
     {
-      measurement: "humidity_data_in_celcius",
+      measurement: "humidity_data",
       fields: {
         humidity: Influx.FieldType.FLOAT
       },
