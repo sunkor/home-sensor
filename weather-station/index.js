@@ -86,7 +86,7 @@ polling.on("result", function(json) {
           fields: {
             temperature: json.main.feels_like
           },
-          tags: { location: `${json.name}_${json.main.feels_like}` }
+          tags: { location: `${json.name}_feels_like` }
         },
         {
           measurement: "humidity_data_in_celcius",
