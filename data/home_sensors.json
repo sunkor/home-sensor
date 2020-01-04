@@ -26,6 +26,82 @@
         "x": 0,
         "y": 0
       },
+      "id": 16,
+      "options": {
+        "fieldOptions": {
+          "calcs": ["lastNotNull"],
+          "defaults": {
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 27
+              }
+            ],
+            "title": "Current Temp",
+            "unit": "celsius"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Jannali",
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
       "id": 4,
       "options": {
         "fieldOptions": {
@@ -45,7 +121,7 @@
                 "value": 27
               }
             ],
-            "title": "Current",
+            "title": "Current Temp",
             "unit": "celsius"
           },
           "override": {},
@@ -96,7 +172,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Study Room",
       "type": "gauge"
     },
     {
@@ -104,7 +180,7 @@
       "gridPos": {
         "h": 7,
         "w": 4,
-        "x": 4,
+        "x": 8,
         "y": 0
       },
       "id": 10,
@@ -126,7 +202,7 @@
                 "value": 27
               }
             ],
-            "title": "Min",
+            "title": "Min Temp",
             "unit": "celsius"
           },
           "override": {},
@@ -169,7 +245,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Study Room",
       "type": "gauge"
     },
     {
@@ -177,7 +253,7 @@
       "gridPos": {
         "h": 7,
         "w": 4,
-        "x": 8,
+        "x": 12,
         "y": 0
       },
       "id": 8,
@@ -199,7 +275,7 @@
                 "value": 27
               }
             ],
-            "title": "Max",
+            "title": "Max Temp",
             "unit": "celsius"
           },
           "override": {},
@@ -246,7 +322,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
+      "title": "Study Room",
       "type": "gauge"
     },
     {
@@ -267,7 +343,7 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 0,
+        "x": 4,
         "y": 7
       },
       "id": 14,
@@ -376,7 +452,7 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 4,
+        "x": 8,
         "y": 7
       },
       "id": 6,
@@ -461,7 +537,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Min time",
+      "title": "Min Temp time",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -490,7 +566,7 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 8,
+        "x": 12,
         "y": 7
       },
       "id": 12,
@@ -570,7 +646,7 @@
       "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Max time",
+      "title": "Max Temp time",
       "type": "singlestat",
       "valueFontSize": "80%",
       "valueMaps": [
@@ -591,8 +667,8 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 15,
-        "w": 24,
+        "h": 9,
+        "w": 16,
         "x": 0,
         "y": 9
       },
@@ -623,6 +699,7 @@
       "steppedLine": false,
       "targets": [
         {
+          "alias": "Study",
           "groupBy": [
             {
               "params": ["$__interval"],
@@ -657,13 +734,50 @@
               "value": "study_room"
             }
           ]
+        },
+        {
+          "alias": "Jannali",
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            },
+            {
+              "params": ["null"],
+              "type": "fill"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Room temperature in study room",
+      "title": "Temperature",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -710,7 +824,7 @@
     "list": []
   },
   "time": {
-    "from": "now-16h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -730,5 +844,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 14
+  "version": 10
 }
