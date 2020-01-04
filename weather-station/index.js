@@ -1,6 +1,7 @@
 const Influx = require("influx");
 const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
+var d2d = require("degrees-to-direction");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -40,6 +41,18 @@ const influx = new Influx.InfluxDB({
         humidity: Influx.FieldType.FLOAT
       },
       tags: ["location"]
+    },
+    {
+      measurement: "daily_read",
+      fields: {
+        wind_speed: Influx.FieldType.FLOAT,
+        wind_direction: Influx.FieldType.FLOAT,
+        sunrise: Influx.FieldType.INTEGER,
+        sunset: Influx.FieldType.INTEGER,
+        weather_main: Influx.FieldType.STRING,
+        weather_description: Influx.FieldType.STRING
+      },
+      tags: ["location"]
     }
   ]
 });
@@ -62,44 +75,70 @@ polling.on("result", function(json) {
     var timestamp = json.dt;
     var utcDate = new Date(timestamp * 1000);
     var localDate = new Date(utcDate);
+
     console.log(`Utc - ${utcDate}`);
     console.log(`Local time - ${localDate}`);
-    console.log(
-      `${json.name} weather, 
-      current temp ${json.main.temp}, 
-      feels like ${json.main.feels_like}, 
-      temp_min ${json.main.temp_min}, 
-      temp_max ${json.main.temp_max}, 
-      hummidity ${json.main.humidity}%`
-    );
+
+    var summary_data = {
+      name: json.name,
+      currentTemp: json.main.temp,
+      feels_like: json.main.feels_like,
+      temp_min: json.main.temp_min,
+      temp_max: json.main.temp_max,
+      humidity: json.main.humidity,
+      wind_speed: json.wind.speed,
+      wind_direction: json.wind.deg,
+      sunrise: json.sys.sunrise,
+      sunset: json.sys.sunset,
+      weather_main: json.weather[0].main,
+      weather_description: json.weather[0].description
+    };
+
+    var summary_data_for_logs = {
+      ...summary_data,
+      wind_direction_friendly: d2d(summary_data.wind_direction)
+    };
+
+    console.log(summary_data_for_logs);
+
     influx
       .writePoints([
         {
           measurement: "temperature_data_in_celcius",
           fields: {
-            temperature: json.main.temp
+            temperature: summary_data.currentTemp
           },
-          tags: { location: json.name }
+          tags: { location: summary_data.name }
         },
         {
           measurement: "temperature_data_in_celcius",
           fields: {
-            temperature: json.main.feels_like
+            temperature: summary_data.feels_like
           },
-          tags: { location: `${json.name}_feels_like` }
+          tags: { location: `${summary_data.name}_feels_like` }
         },
         {
           measurement: "humidity_data",
           fields: {
-            humidity: json.main.humidity
+            humidity: summary_data.humidity
           },
-          tags: { location: json.name }
+          tags: { location: summary_data.name }
+        },
+        {
+          measurement: "daily_read",
+          fields: {
+            wind_speed: summary_data.wind_speed,
+            wind_direction: summary_data.wind_direction,
+            sunrise: summary_data.sunrise,
+            sunset: summary_data.sunset,
+            weather_main: summary_data.weather_main,
+            weather_description: summary_data.weather_description
+          },
+          tags: { location: summary_data.name }
         }
       ])
       .then(() => {
-        console.log(
-          `location ${json.name}, current temp ${json.main.temp}, humidity ${json.main.humidity}`
-        );
+        console.log(summary_data_for_logs);
       });
   } else {
     console.log("did not fetch data");
