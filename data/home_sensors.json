@@ -21,9 +21,118 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 7,
-        "w": 4,
+        "h": 13,
+        "w": 2,
         "x": 0,
+        "y": 0
+      },
+      "id": 18,
+      "options": {
+        "displayMode": "gradient",
+        "fieldOptions": {
+          "calcs": ["lastNotNull"],
+          "defaults": {
+            "decimals": 3,
+            "mappings": [],
+            "max": 50,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 27
+              }
+            ],
+            "unit": "celsius"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "vertical"
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "alias": "Jannali",
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        },
+        {
+          "alias": "StudyRoom",
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "study_room"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Temperature",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 11,
+        "w": 4,
+        "x": 2,
         "y": 0
       },
       "id": 16,
@@ -98,9 +207,9 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 7,
+        "h": 11,
         "w": 4,
-        "x": 4,
+        "x": 6,
         "y": 0
       },
       "id": 4,
@@ -179,82 +288,9 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 7,
+        "h": 11,
         "w": 4,
-        "x": 8,
-        "y": 0
-      },
-      "id": 10,
-      "options": {
-        "fieldOptions": {
-          "calcs": ["min"],
-          "defaults": {
-            "decimals": 3,
-            "mappings": [],
-            "max": 100,
-            "min": 0,
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 27
-              }
-            ],
-            "title": "Min Temp",
-            "unit": "celsius"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "6.5.2",
-      "targets": [
-        {
-          "groupBy": [
-            {
-              "params": ["$__interval"],
-              "type": "time"
-            }
-          ],
-          "measurement": "temperature_data_in_celcius",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT min(\"temperature\") FROM \"temperature_data_in_celcius\" WHERE $timeFilter and \"temperature\" > 20 GROUP BY time($__interval)",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": ["temperature"],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "min"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Study Room",
-      "type": "gauge"
-    },
-    {
-      "datasource": null,
-      "gridPos": {
-        "h": 7,
-        "w": 4,
-        "x": 12,
+        "x": 10,
         "y": 0
       },
       "id": 8,
@@ -327,6 +363,188 @@
       "type": "gauge"
     },
     {
+      "datasource": null,
+      "gridPos": {
+        "h": 11,
+        "w": 4,
+        "x": 14,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "fieldOptions": {
+          "calcs": ["min"],
+          "defaults": {
+            "decimals": 3,
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 27
+              }
+            ],
+            "title": "Min Temp",
+            "unit": "celsius"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.2",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT min(\"temperature\") FROM \"temperature_data_in_celcius\" WHERE $timeFilter and \"temperature\" > 20 GROUP BY time($__interval)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "min"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Study Room",
+      "type": "gauge"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+      "datasource": null,
+      "format": "dateTimeAsUS",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 2,
+        "y": 11
+      },
+      "id": 20,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "temperature_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"temperature\") FROM \"temperature_data_in_celcius\" WHERE (\"location\" = 'Jannali') AND $timeFilter",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["temperature"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Jannali last temperature read",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "last_time"
+    },
+    {
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": false,
@@ -344,8 +562,8 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 4,
-        "y": 7
+        "x": 6,
+        "y": 11
       },
       "id": 14,
       "interval": null,
@@ -453,8 +671,8 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 8,
-        "y": 7
+        "x": 10,
+        "y": 11
       },
       "id": 6,
       "interval": null,
@@ -567,8 +785,8 @@
       "gridPos": {
         "h": 2,
         "w": 4,
-        "x": 12,
-        "y": 7
+        "x": 14,
+        "y": 11
       },
       "id": 12,
       "interval": null,
@@ -669,9 +887,9 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
-        "w": 16,
+        "w": 24,
         "x": 0,
-        "y": 9
+        "y": 13
       },
       "hiddenSeries": false,
       "id": 2,
@@ -694,7 +912,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [{}],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -705,10 +923,6 @@
             {
               "params": ["$__interval"],
               "type": "time"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
             }
           ],
           "measurement": "temperature_data_in_celcius",
@@ -725,6 +939,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -742,10 +960,6 @@
             {
               "params": ["$__interval"],
               "type": "time"
-            },
-            {
-              "params": ["null"],
-              "type": "fill"
             }
           ],
           "measurement": "temperature_data_in_celcius",
@@ -761,7 +975,11 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -815,6 +1033,125 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "hiddenSeries": false,
+      "id": 22,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Jannali",
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "humidity_data_in_celcius",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["humidity"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Humidity",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
@@ -825,7 +1162,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -845,5 +1182,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 12
+  "version": 23
 }
