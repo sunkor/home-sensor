@@ -47,6 +47,8 @@ const influx = new Influx.InfluxDB({
       fields: {
         wind_speed: Influx.FieldType.FLOAT,
         wind_direction: Influx.FieldType.FLOAT,
+        wind_direction_desc: Influx.FieldType.STRING,
+        gust_speed: Influx.FieldType.FLOAT,
         sunrise: Influx.FieldType.INTEGER,
         sunset: Influx.FieldType.INTEGER,
         weather_main: Influx.FieldType.STRING,
@@ -88,18 +90,20 @@ polling.on("result", function(json) {
       humidity: json.main.humidity,
       wind_speed: json.wind.speed,
       wind_direction: json.wind.deg,
+      wind_direction_desc: d2d(json.wind.deg),
+      gust_speed: json.wind.gust,
       sunrise: json.sys.sunrise,
       sunset: json.sys.sunset,
       weather_main: json.weather[0].main,
       weather_description: json.weather[0].description
     };
 
-    var summary_data_for_logs = {
-      ...summary_data,
-      wind_direction_friendly: d2d(summary_data.wind_direction)
-    };
+    // var summary_data_for_logs = {
+    //   ...summary_data,
+    //   wind_direction_friendly: d2d(summary_data.wind_direction)
+    // };
 
-    console.log(summary_data_for_logs);
+    console.log(summary_data);
 
     influx
       .writePoints([
@@ -129,6 +133,8 @@ polling.on("result", function(json) {
           fields: {
             wind_speed: summary_data.wind_speed,
             wind_direction: summary_data.wind_direction,
+            wind_direction_desc: summary_data.wind_direction_desc,
+            gust_speed: summary_data.gust_speed,
             sunrise: summary_data.sunrise,
             sunset: summary_data.sunset,
             weather_main: summary_data.weather_main,
@@ -138,7 +144,7 @@ polling.on("result", function(json) {
         }
       ])
       .then(() => {
-        console.log(summary_data_for_logs);
+        console.log(summary_data);
       });
   } else {
     console.log("did not fetch data");
