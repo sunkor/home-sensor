@@ -21,7 +21,7 @@ services:
       dockerfile: grafana.dockerfile
       context: ./grafana
     environment:
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/grafana:/var/lib/grafana
     ports:

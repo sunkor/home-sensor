@@ -90,7 +90,7 @@
         "showTimezone": true,
         "zoneFormat": "nameOffset"
       },
-      "title": "Time in Sydney",
+      "title": "",
       "type": "grafana-clock-panel"
     },
     {
@@ -1295,7 +1295,7 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 5,
+        "w": 2,
         "x": 6,
         "y": 11
       },
@@ -1404,8 +1404,8 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 5,
-        "x": 11,
+        "w": 2,
+        "x": 8,
         "y": 11
       },
       "id": 36,
@@ -1500,10 +1500,10 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 11,
+        "h": 13,
         "w": 5,
-        "x": 6,
-        "y": 13
+        "x": 10,
+        "y": 11
       },
       "id": 26,
       "options": {
@@ -1575,10 +1575,10 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 11,
+        "h": 13,
         "w": 5,
-        "x": 11,
-        "y": 13
+        "x": 15,
+        "y": 11
       },
       "id": 28,
       "options": {
@@ -1646,6 +1646,1365 @@
       "timeShift": null,
       "title": "Gusts",
       "type": "gauge"
+    },
+    {
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": null,
+      "decimals": 0,
+      "fontSizes": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40,
+        42,
+        44,
+        46,
+        48,
+        50,
+        52,
+        54,
+        56,
+        58,
+        60,
+        62,
+        64,
+        66,
+        68,
+        70
+      ],
+      "fontTypes": [
+        "Arial",
+        "Avant Garde",
+        "Bookman",
+        "Consolas",
+        "Courier",
+        "Courier New",
+        "Garamond",
+        "Helvetica",
+        "Open Sans",
+        "Palatino",
+        "Times",
+        "Times New Roman",
+        "Verdana"
+      ],
+      "format": "none",
+      "gauge": {
+        "animateNeedleValueTransition": true,
+        "animateNeedleValueTransitionSpeed": 100,
+        "edgeWidth": 0.05,
+        "gaugeRadius": 0,
+        "gaugeUnits": "",
+        "innerCol": "#fff",
+        "labelFontSize": 16,
+        "maxNeedleAngle": 540,
+        "maxTickAngle": 540,
+        "maxValue": 360,
+        "minValue": 0,
+        "needleCol": "#0099CC",
+        "needleLengthNeg": 0.2,
+        "needleTickGap": 0.05,
+        "needleWidth": 5,
+        "outerEdgeCol": "#0099CC",
+        "padding": 0.05,
+        "pivotCol": "#999",
+        "pivotRadius": 0.1,
+        "show": true,
+        "showLowerThresholdRange": false,
+        "showMiddleThresholdRange": true,
+        "showThresholdColorOnValue": false,
+        "showThresholdOnGauge": false,
+        "showUpperThresholdRange": true,
+        "tickColMaj": "#0099CC",
+        "tickColMin": "#000",
+        "tickEdgeGap": 0.05,
+        "tickFont": "Open Sans",
+        "tickLabelCol": "#000",
+        "tickLengthMaj": 0.15,
+        "tickLengthMin": 0.05,
+        "tickSpaceMajVal": 45,
+        "tickSpaceMinVal": 15,
+        "tickWidthMaj": 5,
+        "tickWidthMin": 1,
+        "ticknessGaugeBasis": 200,
+        "unitsFont": "Open Sans",
+        "unitsLabelCol": "#000",
+        "unitsLabelFontSize": 4,
+        "valueYOffset": 0,
+        "zeroNeedleAngle": 180,
+        "zeroTickAngle": 180
+      },
+      "gaugeDivId": "d3gauge_svg_42",
+      "gridPos": {
+        "h": 11,
+        "w": 4,
+        "x": 6,
+        "y": 13
+      },
+      "id": 42,
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "operatorName": "current",
+      "operatorNameOptions": ["min", "max", "avg", "current", "total", "name"],
+      "options": {},
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "svgContainer": {},
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": ["$__interval"],
+              "type": "time"
+            }
+          ],
+          "measurement": "daily_read",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": ["wind_direction"],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "location",
+              "operator": "=",
+              "value": "Jannali"
+            }
+          ]
+        }
+      ],
+      "thresholds": "",
+      "tickMaps": [
+        {
+          "text": "North",
+          "value": 0
+        },
+        {
+          "text": "East",
+          "value": "90"
+        },
+        {
+          "text": "South",
+          "value": "180"
+        },
+        {
+          "text": "West",
+          "value": "270"
+        },
+        {
+          "text": "NNE",
+          "value": "30"
+        },
+        {
+          "text": "ENE",
+          "value": "60"
+        },
+        {
+          "text": "NE",
+          "value": "45"
+        },
+        {
+          "text": "SE",
+          "value": "135"
+        },
+        {
+          "text": "SW",
+          "value": "225"
+        },
+        {
+          "text": "NW",
+          "value": "315"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Wind direction in Jannali",
+      "type": "briangann-gauge-panel",
+      "unitFormats": [
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(0,0)",
+              "text": "none",
+              "value": "none"
+            },
+            {
+              "click": "menuItemSelected(0,1)",
+              "text": "short",
+              "value": "short"
+            },
+            {
+              "click": "menuItemSelected(0,2)",
+              "text": "percent (0-100)",
+              "value": "percent"
+            },
+            {
+              "click": "menuItemSelected(0,3)",
+              "text": "percent (0.0-1.0)",
+              "value": "percentunit"
+            },
+            {
+              "click": "menuItemSelected(0,4)",
+              "text": "Humidity (%H)",
+              "value": "humidity"
+            },
+            {
+              "click": "menuItemSelected(0,5)",
+              "text": "decibel",
+              "value": "dB"
+            },
+            {
+              "click": "menuItemSelected(0,6)",
+              "text": "hexadecimal (0x)",
+              "value": "hex0x"
+            },
+            {
+              "click": "menuItemSelected(0,7)",
+              "text": "hexadecimal",
+              "value": "hex"
+            },
+            {
+              "click": "menuItemSelected(0,8)",
+              "text": "scientific notation",
+              "value": "sci"
+            },
+            {
+              "click": "menuItemSelected(0,9)",
+              "text": "locale format",
+              "value": "locale"
+            },
+            {
+              "click": "menuItemSelected(0,10)",
+              "text": "Pixels",
+              "value": "pixel"
+            }
+          ],
+          "text": "Misc"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(1,0)",
+              "text": "Meters/sec²",
+              "value": "accMS2"
+            },
+            {
+              "click": "menuItemSelected(1,1)",
+              "text": "Feet/sec²",
+              "value": "accFS2"
+            },
+            {
+              "click": "menuItemSelected(1,2)",
+              "text": "G unit",
+              "value": "accG"
+            }
+          ],
+          "text": "Acceleration"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(2,0)",
+              "text": "Degrees (°)",
+              "value": "degree"
+            },
+            {
+              "click": "menuItemSelected(2,1)",
+              "text": "Radians",
+              "value": "radian"
+            },
+            {
+              "click": "menuItemSelected(2,2)",
+              "text": "Gradian",
+              "value": "grad"
+            },
+            {
+              "click": "menuItemSelected(2,3)",
+              "text": "Arc Minutes",
+              "value": "arcmin"
+            },
+            {
+              "click": "menuItemSelected(2,4)",
+              "text": "Arc Seconds",
+              "value": "arcsec"
+            }
+          ],
+          "text": "Angle"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(3,0)",
+              "text": "Square Meters (m²)",
+              "value": "areaM2"
+            },
+            {
+              "click": "menuItemSelected(3,1)",
+              "text": "Square Feet (ft²)",
+              "value": "areaF2"
+            },
+            {
+              "click": "menuItemSelected(3,2)",
+              "text": "Square Miles (mi²)",
+              "value": "areaMI2"
+            }
+          ],
+          "text": "Area"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(4,0)",
+              "text": "FLOP/s",
+              "value": "flops"
+            },
+            {
+              "click": "menuItemSelected(4,1)",
+              "text": "MFLOP/s",
+              "value": "mflops"
+            },
+            {
+              "click": "menuItemSelected(4,2)",
+              "text": "GFLOP/s",
+              "value": "gflops"
+            },
+            {
+              "click": "menuItemSelected(4,3)",
+              "text": "TFLOP/s",
+              "value": "tflops"
+            },
+            {
+              "click": "menuItemSelected(4,4)",
+              "text": "PFLOP/s",
+              "value": "pflops"
+            },
+            {
+              "click": "menuItemSelected(4,5)",
+              "text": "EFLOP/s",
+              "value": "eflops"
+            },
+            {
+              "click": "menuItemSelected(4,6)",
+              "text": "ZFLOP/s",
+              "value": "zflops"
+            },
+            {
+              "click": "menuItemSelected(4,7)",
+              "text": "YFLOP/s",
+              "value": "yflops"
+            }
+          ],
+          "text": "Computation"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(5,0)",
+              "text": "parts-per-million (ppm)",
+              "value": "ppm"
+            },
+            {
+              "click": "menuItemSelected(5,1)",
+              "text": "parts-per-billion (ppb)",
+              "value": "conppb"
+            },
+            {
+              "click": "menuItemSelected(5,2)",
+              "text": "nanogram per cubic meter (ng/m³)",
+              "value": "conngm3"
+            },
+            {
+              "click": "menuItemSelected(5,3)",
+              "text": "nanogram per normal cubic meter (ng/Nm³)",
+              "value": "conngNm3"
+            },
+            {
+              "click": "menuItemSelected(5,4)",
+              "text": "microgram per cubic meter (μg/m³)",
+              "value": "conμgm3"
+            },
+            {
+              "click": "menuItemSelected(5,5)",
+              "text": "microgram per normal cubic meter (μg/Nm³)",
+              "value": "conμgNm3"
+            },
+            {
+              "click": "menuItemSelected(5,6)",
+              "text": "milligram per cubic meter (mg/m³)",
+              "value": "conmgm3"
+            },
+            {
+              "click": "menuItemSelected(5,7)",
+              "text": "milligram per normal cubic meter (mg/Nm³)",
+              "value": "conmgNm3"
+            },
+            {
+              "click": "menuItemSelected(5,8)",
+              "text": "gram per cubic meter (g/m³)",
+              "value": "congm3"
+            },
+            {
+              "click": "menuItemSelected(5,9)",
+              "text": "gram per normal cubic meter (g/Nm³)",
+              "value": "congNm3"
+            },
+            {
+              "click": "menuItemSelected(5,10)",
+              "text": "milligrams per decilitre (mg/dL)",
+              "value": "conmgdL"
+            },
+            {
+              "click": "menuItemSelected(5,11)",
+              "text": "millimoles per litre (mmol/L)",
+              "value": "conmmolL"
+            }
+          ],
+          "text": "Concentration"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(6,0)",
+              "text": "Dollars ($)",
+              "value": "currencyUSD"
+            },
+            {
+              "click": "menuItemSelected(6,1)",
+              "text": "Pounds (£)",
+              "value": "currencyGBP"
+            },
+            {
+              "click": "menuItemSelected(6,2)",
+              "text": "Euro (€)",
+              "value": "currencyEUR"
+            },
+            {
+              "click": "menuItemSelected(6,3)",
+              "text": "Yen (¥)",
+              "value": "currencyJPY"
+            },
+            {
+              "click": "menuItemSelected(6,4)",
+              "text": "Rubles (₽)",
+              "value": "currencyRUB"
+            },
+            {
+              "click": "menuItemSelected(6,5)",
+              "text": "Hryvnias (₴)",
+              "value": "currencyUAH"
+            },
+            {
+              "click": "menuItemSelected(6,6)",
+              "text": "Real (R$)",
+              "value": "currencyBRL"
+            },
+            {
+              "click": "menuItemSelected(6,7)",
+              "text": "Danish Krone (kr)",
+              "value": "currencyDKK"
+            },
+            {
+              "click": "menuItemSelected(6,8)",
+              "text": "Icelandic Króna (kr)",
+              "value": "currencyISK"
+            },
+            {
+              "click": "menuItemSelected(6,9)",
+              "text": "Norwegian Krone (kr)",
+              "value": "currencyNOK"
+            },
+            {
+              "click": "menuItemSelected(6,10)",
+              "text": "Swedish Krona (kr)",
+              "value": "currencySEK"
+            },
+            {
+              "click": "menuItemSelected(6,11)",
+              "text": "Czech koruna (czk)",
+              "value": "currencyCZK"
+            },
+            {
+              "click": "menuItemSelected(6,12)",
+              "text": "Swiss franc (CHF)",
+              "value": "currencyCHF"
+            },
+            {
+              "click": "menuItemSelected(6,13)",
+              "text": "Polish Złoty (PLN)",
+              "value": "currencyPLN"
+            },
+            {
+              "click": "menuItemSelected(6,14)",
+              "text": "Bitcoin (฿)",
+              "value": "currencyBTC"
+            },
+            {
+              "click": "menuItemSelected(6,15)",
+              "text": "South African Rand (R)",
+              "value": "currencyZAR"
+            },
+            {
+              "click": "menuItemSelected(6,16)",
+              "text": "Indian Rupee (₹)",
+              "value": "currencyINR"
+            }
+          ],
+          "text": "Currency"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(7,0)",
+              "text": "bits",
+              "value": "bits"
+            },
+            {
+              "click": "menuItemSelected(7,1)",
+              "text": "bytes",
+              "value": "bytes"
+            },
+            {
+              "click": "menuItemSelected(7,2)",
+              "text": "kibibytes",
+              "value": "kbytes"
+            },
+            {
+              "click": "menuItemSelected(7,3)",
+              "text": "mebibytes",
+              "value": "mbytes"
+            },
+            {
+              "click": "menuItemSelected(7,4)",
+              "text": "gibibytes",
+              "value": "gbytes"
+            },
+            {
+              "click": "menuItemSelected(7,5)",
+              "text": "tebibytes",
+              "value": "tbytes"
+            },
+            {
+              "click": "menuItemSelected(7,6)",
+              "text": "pebibytes",
+              "value": "pbytes"
+            }
+          ],
+          "text": "Data (IEC)"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(8,0)",
+              "text": "bits",
+              "value": "decbits"
+            },
+            {
+              "click": "menuItemSelected(8,1)",
+              "text": "bytes",
+              "value": "decbytes"
+            },
+            {
+              "click": "menuItemSelected(8,2)",
+              "text": "kilobytes",
+              "value": "deckbytes"
+            },
+            {
+              "click": "menuItemSelected(8,3)",
+              "text": "megabytes",
+              "value": "decmbytes"
+            },
+            {
+              "click": "menuItemSelected(8,4)",
+              "text": "gigabytes",
+              "value": "decgbytes"
+            },
+            {
+              "click": "menuItemSelected(8,5)",
+              "text": "terabytes",
+              "value": "dectbytes"
+            },
+            {
+              "click": "menuItemSelected(8,6)",
+              "text": "petabytes",
+              "value": "decpbytes"
+            }
+          ],
+          "text": "Data (Metric)"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(9,0)",
+              "text": "packets/sec",
+              "value": "pps"
+            },
+            {
+              "click": "menuItemSelected(9,1)",
+              "text": "bits/sec",
+              "value": "bps"
+            },
+            {
+              "click": "menuItemSelected(9,2)",
+              "text": "bytes/sec",
+              "value": "Bps"
+            },
+            {
+              "click": "menuItemSelected(9,3)",
+              "text": "kilobytes/sec",
+              "value": "KBs"
+            },
+            {
+              "click": "menuItemSelected(9,4)",
+              "text": "kilobits/sec",
+              "value": "Kbits"
+            },
+            {
+              "click": "menuItemSelected(9,5)",
+              "text": "megabytes/sec",
+              "value": "MBs"
+            },
+            {
+              "click": "menuItemSelected(9,6)",
+              "text": "megabits/sec",
+              "value": "Mbits"
+            },
+            {
+              "click": "menuItemSelected(9,7)",
+              "text": "gigabytes/sec",
+              "value": "GBs"
+            },
+            {
+              "click": "menuItemSelected(9,8)",
+              "text": "gigabits/sec",
+              "value": "Gbits"
+            },
+            {
+              "click": "menuItemSelected(9,9)",
+              "text": "terabytes/sec",
+              "value": "TBs"
+            },
+            {
+              "click": "menuItemSelected(9,10)",
+              "text": "terabits/sec",
+              "value": "Tbits"
+            },
+            {
+              "click": "menuItemSelected(9,11)",
+              "text": "petabytes/sec",
+              "value": "PBs"
+            },
+            {
+              "click": "menuItemSelected(9,12)",
+              "text": "petabits/sec",
+              "value": "Pbits"
+            }
+          ],
+          "text": "Data Rate"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(10,0)",
+              "text": "YYYY-MM-DD HH:mm:ss",
+              "value": "dateTimeAsIso"
+            },
+            {
+              "click": "menuItemSelected(10,1)",
+              "text": "DD/MM/YYYY h:mm:ss a",
+              "value": "dateTimeAsUS"
+            },
+            {
+              "click": "menuItemSelected(10,2)",
+              "text": "From Now",
+              "value": "dateTimeFromNow"
+            }
+          ],
+          "text": "Date & Time"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(11,0)",
+              "text": "Watt (W)",
+              "value": "watt"
+            },
+            {
+              "click": "menuItemSelected(11,1)",
+              "text": "Kilowatt (kW)",
+              "value": "kwatt"
+            },
+            {
+              "click": "menuItemSelected(11,2)",
+              "text": "Megawatt (MW)",
+              "value": "megwatt"
+            },
+            {
+              "click": "menuItemSelected(11,3)",
+              "text": "Milliwatt (mW)",
+              "value": "mwatt"
+            },
+            {
+              "click": "menuItemSelected(11,4)",
+              "text": "Watt per square meter (W/m²)",
+              "value": "Wm2"
+            },
+            {
+              "click": "menuItemSelected(11,5)",
+              "text": "Volt-ampere (VA)",
+              "value": "voltamp"
+            },
+            {
+              "click": "menuItemSelected(11,6)",
+              "text": "Kilovolt-ampere (kVA)",
+              "value": "kvoltamp"
+            },
+            {
+              "click": "menuItemSelected(11,7)",
+              "text": "Volt-ampere reactive (var)",
+              "value": "voltampreact"
+            },
+            {
+              "click": "menuItemSelected(11,8)",
+              "text": "Kilovolt-ampere reactive (kvar)",
+              "value": "kvoltampreact"
+            },
+            {
+              "click": "menuItemSelected(11,9)",
+              "text": "Watt-hour (Wh)",
+              "value": "watth"
+            },
+            {
+              "click": "menuItemSelected(11,10)",
+              "text": "Watt-hour per Kilogram (Wh/kg)",
+              "value": "watthperkg"
+            },
+            {
+              "click": "menuItemSelected(11,11)",
+              "text": "Kilowatt-hour (kWh)",
+              "value": "kwatth"
+            },
+            {
+              "click": "menuItemSelected(11,12)",
+              "text": "Kilowatt-min (kWm)",
+              "value": "kwattm"
+            },
+            {
+              "click": "menuItemSelected(11,13)",
+              "text": "Ampere-hour (Ah)",
+              "value": "amph"
+            },
+            {
+              "click": "menuItemSelected(11,14)",
+              "text": "Kiloampere-hour (kAh)",
+              "value": "kamph"
+            },
+            {
+              "click": "menuItemSelected(11,15)",
+              "text": "Milliampere-hour (mAh)",
+              "value": "mamph"
+            },
+            {
+              "click": "menuItemSelected(11,16)",
+              "text": "Joule (J)",
+              "value": "joule"
+            },
+            {
+              "click": "menuItemSelected(11,17)",
+              "text": "Electron volt (eV)",
+              "value": "ev"
+            },
+            {
+              "click": "menuItemSelected(11,18)",
+              "text": "Ampere (A)",
+              "value": "amp"
+            },
+            {
+              "click": "menuItemSelected(11,19)",
+              "text": "Kiloampere (kA)",
+              "value": "kamp"
+            },
+            {
+              "click": "menuItemSelected(11,20)",
+              "text": "Milliampere (mA)",
+              "value": "mamp"
+            },
+            {
+              "click": "menuItemSelected(11,21)",
+              "text": "Volt (V)",
+              "value": "volt"
+            },
+            {
+              "click": "menuItemSelected(11,22)",
+              "text": "Kilovolt (kV)",
+              "value": "kvolt"
+            },
+            {
+              "click": "menuItemSelected(11,23)",
+              "text": "Millivolt (mV)",
+              "value": "mvolt"
+            },
+            {
+              "click": "menuItemSelected(11,24)",
+              "text": "Decibel-milliwatt (dBm)",
+              "value": "dBm"
+            },
+            {
+              "click": "menuItemSelected(11,25)",
+              "text": "Ohm (Ω)",
+              "value": "ohm"
+            },
+            {
+              "click": "menuItemSelected(11,26)",
+              "text": "Lumens (Lm)",
+              "value": "lumens"
+            }
+          ],
+          "text": "Energy"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(12,0)",
+              "text": "Gallons/min (gpm)",
+              "value": "flowgpm"
+            },
+            {
+              "click": "menuItemSelected(12,1)",
+              "text": "Cubic meters/sec (cms)",
+              "value": "flowcms"
+            },
+            {
+              "click": "menuItemSelected(12,2)",
+              "text": "Cubic feet/sec (cfs)",
+              "value": "flowcfs"
+            },
+            {
+              "click": "menuItemSelected(12,3)",
+              "text": "Cubic feet/min (cfm)",
+              "value": "flowcfm"
+            },
+            {
+              "click": "menuItemSelected(12,4)",
+              "text": "Litre/hour",
+              "value": "litreh"
+            },
+            {
+              "click": "menuItemSelected(12,5)",
+              "text": "Litre/min (L/min)",
+              "value": "flowlpm"
+            },
+            {
+              "click": "menuItemSelected(12,6)",
+              "text": "milliLitre/min (mL/min)",
+              "value": "flowmlpm"
+            },
+            {
+              "click": "menuItemSelected(12,7)",
+              "text": "Lux (lx)",
+              "value": "lux"
+            }
+          ],
+          "text": "Flow"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(13,0)",
+              "text": "Newton-meters (Nm)",
+              "value": "forceNm"
+            },
+            {
+              "click": "menuItemSelected(13,1)",
+              "text": "Kilonewton-meters (kNm)",
+              "value": "forcekNm"
+            },
+            {
+              "click": "menuItemSelected(13,2)",
+              "text": "Newtons (N)",
+              "value": "forceN"
+            },
+            {
+              "click": "menuItemSelected(13,3)",
+              "text": "Kilonewtons (kN)",
+              "value": "forcekN"
+            }
+          ],
+          "text": "Force"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(14,0)",
+              "text": "hashes/sec",
+              "value": "Hs"
+            },
+            {
+              "click": "menuItemSelected(14,1)",
+              "text": "kilohashes/sec",
+              "value": "KHs"
+            },
+            {
+              "click": "menuItemSelected(14,2)",
+              "text": "megahashes/sec",
+              "value": "MHs"
+            },
+            {
+              "click": "menuItemSelected(14,3)",
+              "text": "gigahashes/sec",
+              "value": "GHs"
+            },
+            {
+              "click": "menuItemSelected(14,4)",
+              "text": "terahashes/sec",
+              "value": "THs"
+            },
+            {
+              "click": "menuItemSelected(14,5)",
+              "text": "petahashes/sec",
+              "value": "PHs"
+            },
+            {
+              "click": "menuItemSelected(14,6)",
+              "text": "exahashes/sec",
+              "value": "EHs"
+            }
+          ],
+          "text": "Hash Rate"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(15,0)",
+              "text": "milligram (mg)",
+              "value": "massmg"
+            },
+            {
+              "click": "menuItemSelected(15,1)",
+              "text": "gram (g)",
+              "value": "massg"
+            },
+            {
+              "click": "menuItemSelected(15,2)",
+              "text": "kilogram (kg)",
+              "value": "masskg"
+            },
+            {
+              "click": "menuItemSelected(15,3)",
+              "text": "metric ton (t)",
+              "value": "masst"
+            }
+          ],
+          "text": "Mass"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(16,0)",
+              "text": "millimeter (mm)",
+              "value": "lengthmm"
+            },
+            {
+              "click": "menuItemSelected(16,1)",
+              "text": "feet (ft)",
+              "value": "lengthft"
+            },
+            {
+              "click": "menuItemSelected(16,2)",
+              "text": "meter (m)",
+              "value": "lengthm"
+            },
+            {
+              "click": "menuItemSelected(16,3)",
+              "text": "kilometer (km)",
+              "value": "lengthkm"
+            },
+            {
+              "click": "menuItemSelected(16,4)",
+              "text": "mile (mi)",
+              "value": "lengthmi"
+            }
+          ],
+          "text": "length"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(17,0)",
+              "text": "Millibars",
+              "value": "pressurembar"
+            },
+            {
+              "click": "menuItemSelected(17,1)",
+              "text": "Bars",
+              "value": "pressurebar"
+            },
+            {
+              "click": "menuItemSelected(17,2)",
+              "text": "Kilobars",
+              "value": "pressurekbar"
+            },
+            {
+              "click": "menuItemSelected(17,3)",
+              "text": "Hectopascals",
+              "value": "pressurehpa"
+            },
+            {
+              "click": "menuItemSelected(17,4)",
+              "text": "Kilopascals",
+              "value": "pressurekpa"
+            },
+            {
+              "click": "menuItemSelected(17,5)",
+              "text": "Inches of mercury",
+              "value": "pressurehg"
+            },
+            {
+              "click": "menuItemSelected(17,6)",
+              "text": "PSI",
+              "value": "pressurepsi"
+            }
+          ],
+          "text": "Pressure"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(18,0)",
+              "text": "Becquerel (Bq)",
+              "value": "radbq"
+            },
+            {
+              "click": "menuItemSelected(18,1)",
+              "text": "curie (Ci)",
+              "value": "radci"
+            },
+            {
+              "click": "menuItemSelected(18,2)",
+              "text": "Gray (Gy)",
+              "value": "radgy"
+            },
+            {
+              "click": "menuItemSelected(18,3)",
+              "text": "rad",
+              "value": "radrad"
+            },
+            {
+              "click": "menuItemSelected(18,4)",
+              "text": "Sievert (Sv)",
+              "value": "radsv"
+            },
+            {
+              "click": "menuItemSelected(18,5)",
+              "text": "milliSievert (mSv)",
+              "value": "radmsv"
+            },
+            {
+              "click": "menuItemSelected(18,6)",
+              "text": "microSievert (µSv)",
+              "value": "radusv"
+            },
+            {
+              "click": "menuItemSelected(18,7)",
+              "text": "rem",
+              "value": "radrem"
+            },
+            {
+              "click": "menuItemSelected(18,8)",
+              "text": "Exposure (C/kg)",
+              "value": "radexpckg"
+            },
+            {
+              "click": "menuItemSelected(18,9)",
+              "text": "roentgen (R)",
+              "value": "radr"
+            },
+            {
+              "click": "menuItemSelected(18,10)",
+              "text": "Sievert/hour (Sv/h)",
+              "value": "radsvh"
+            },
+            {
+              "click": "menuItemSelected(18,11)",
+              "text": "milliSievert/hour (mSv/h)",
+              "value": "radmsvh"
+            },
+            {
+              "click": "menuItemSelected(18,12)",
+              "text": "microSievert/hour (µSv/h)",
+              "value": "radusvh"
+            }
+          ],
+          "text": "Radiation"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(19,0)",
+              "text": "Celsius (°C)",
+              "value": "celsius"
+            },
+            {
+              "click": "menuItemSelected(19,1)",
+              "text": "Fahrenheit (°F)",
+              "value": "fahrenheit"
+            },
+            {
+              "click": "menuItemSelected(19,2)",
+              "text": "Kelvin (K)",
+              "value": "kelvin"
+            }
+          ],
+          "text": "Temperature"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(20,0)",
+              "text": "Hertz (1/s)",
+              "value": "hertz"
+            },
+            {
+              "click": "menuItemSelected(20,1)",
+              "text": "nanoseconds (ns)",
+              "value": "ns"
+            },
+            {
+              "click": "menuItemSelected(20,2)",
+              "text": "microseconds (µs)",
+              "value": "µs"
+            },
+            {
+              "click": "menuItemSelected(20,3)",
+              "text": "milliseconds (ms)",
+              "value": "ms"
+            },
+            {
+              "click": "menuItemSelected(20,4)",
+              "text": "seconds (s)",
+              "value": "s"
+            },
+            {
+              "click": "menuItemSelected(20,5)",
+              "text": "minutes (m)",
+              "value": "m"
+            },
+            {
+              "click": "menuItemSelected(20,6)",
+              "text": "hours (h)",
+              "value": "h"
+            },
+            {
+              "click": "menuItemSelected(20,7)",
+              "text": "days (d)",
+              "value": "d"
+            },
+            {
+              "click": "menuItemSelected(20,8)",
+              "text": "duration (ms)",
+              "value": "dtdurationms"
+            },
+            {
+              "click": "menuItemSelected(20,9)",
+              "text": "duration (s)",
+              "value": "dtdurations"
+            },
+            {
+              "click": "menuItemSelected(20,10)",
+              "text": "duration (hh:mm:ss)",
+              "value": "dthms"
+            },
+            {
+              "click": "menuItemSelected(20,11)",
+              "text": "Timeticks (s/100)",
+              "value": "timeticks"
+            },
+            {
+              "click": "menuItemSelected(20,12)",
+              "text": "clock (ms)",
+              "value": "clockms"
+            },
+            {
+              "click": "menuItemSelected(20,13)",
+              "text": "clock (s)",
+              "value": "clocks"
+            }
+          ],
+          "text": "Time"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(21,0)",
+              "text": "counts/sec (cps)",
+              "value": "cps"
+            },
+            {
+              "click": "menuItemSelected(21,1)",
+              "text": "ops/sec (ops)",
+              "value": "ops"
+            },
+            {
+              "click": "menuItemSelected(21,2)",
+              "text": "requests/sec (rps)",
+              "value": "reqps"
+            },
+            {
+              "click": "menuItemSelected(21,3)",
+              "text": "reads/sec (rps)",
+              "value": "rps"
+            },
+            {
+              "click": "menuItemSelected(21,4)",
+              "text": "writes/sec (wps)",
+              "value": "wps"
+            },
+            {
+              "click": "menuItemSelected(21,5)",
+              "text": "I/O ops/sec (iops)",
+              "value": "iops"
+            },
+            {
+              "click": "menuItemSelected(21,6)",
+              "text": "counts/min (cpm)",
+              "value": "cpm"
+            },
+            {
+              "click": "menuItemSelected(21,7)",
+              "text": "ops/min (opm)",
+              "value": "opm"
+            },
+            {
+              "click": "menuItemSelected(21,8)",
+              "text": "reads/min (rpm)",
+              "value": "rpm"
+            },
+            {
+              "click": "menuItemSelected(21,9)",
+              "text": "writes/min (wpm)",
+              "value": "wpm"
+            }
+          ],
+          "text": "Throughput"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(22,0)",
+              "text": "meters/second (m/s)",
+              "value": "velocityms"
+            },
+            {
+              "click": "menuItemSelected(22,1)",
+              "text": "kilometers/hour (km/h)",
+              "value": "velocitykmh"
+            },
+            {
+              "click": "menuItemSelected(22,2)",
+              "text": "miles/hour (mph)",
+              "value": "velocitymph"
+            },
+            {
+              "click": "menuItemSelected(22,3)",
+              "text": "knot (kn)",
+              "value": "velocityknot"
+            }
+          ],
+          "text": "Velocity"
+        },
+        {
+          "submenu": [
+            {
+              "click": "menuItemSelected(23,0)",
+              "text": "millilitre (mL)",
+              "value": "mlitre"
+            },
+            {
+              "click": "menuItemSelected(23,1)",
+              "text": "litre (L)",
+              "value": "litre"
+            },
+            {
+              "click": "menuItemSelected(23,2)",
+              "text": "cubic meter",
+              "value": "m3"
+            },
+            {
+              "click": "menuItemSelected(23,3)",
+              "text": "Normal cubic meter",
+              "value": "Nm3"
+            },
+            {
+              "click": "menuItemSelected(23,4)",
+              "text": "cubic decimeter",
+              "value": "dm3"
+            },
+            {
+              "click": "menuItemSelected(23,5)",
+              "text": "gallons",
+              "value": "gallons"
+            }
+          ],
+          "text": "Volume"
+        }
+      ],
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ]
     },
     {
       "aliasColors": {},
@@ -2114,7 +3473,7 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -2134,5 +3493,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 44
+  "version": 50
 }
