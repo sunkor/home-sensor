@@ -1,12 +1,14 @@
 version: "3"
 services:
   sensor-listener:
+    restart: always
     build:
       dockerfile: sensor-listener.dockerfile
       context: ./sensor-listener
     depends_on:
       - influxdb
   weather-station:
+    restart: always
     build:
       dockerfile: weather-station.dockerfile
       context: ./weather-station

@@ -25,7 +25,7 @@
       "name": "sensor-listener",
       "image": "sunkor/sensor-listener",
       "hostname": "sensor-listener",
-      "essential": false,
+      "essential": true,
       "links": ["influxdb"],
       "memory": 64
     },
@@ -33,7 +33,7 @@
       "name": "weather-station",
       "image": "sunkor/weather-station",
       "hostname": "weather-station",
-      "essential": false,
+      "essential": true,
       "links": ["mongodb"],
       "memory": 64
     },
@@ -41,7 +41,7 @@
       "name": "grafana",
       "image": "sunkor/grafana",
       "hostname": "grafana",
-      "essential": false,
+      "essential": true,
       "memory": 128,
       "mountPoints": [
         {
