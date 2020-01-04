@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "async-polling": "^0.2.1",
+    "convert-units": "^2.3.4",
     "degrees-to-direction": "^1.1.1",
     "dotenv": "^8.2.0",
     "influx": "^5.5.1",
