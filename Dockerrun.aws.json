@@ -28,7 +28,6 @@
       "image": "sunkor/weather-station",
       "hostname": "weather-station",
       "essential": true,
-      "links": ["mongodb"],
       "memory": 64
     },
     {
