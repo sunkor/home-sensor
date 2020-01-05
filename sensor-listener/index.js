@@ -80,7 +80,7 @@ app.post("/temperature_data", (req, res) => {
         currentDt,
         diffInMinutes
       });
-      if (diffInMinutes.minutes > MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
+      if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
         redisPublisher.publish("insert", messageToSend);
         console.log(
           "temperature threshold exceeded message published to redis."

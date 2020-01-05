@@ -74,7 +74,7 @@ subscriber.on("message", (channel, message) => {
       diffInMinutes
     });
 
-    if (diffInMinutes.minutes > MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
+    if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
       console.log("time threshold exceeded, sending the e-mail.");
 
       const msg = {
