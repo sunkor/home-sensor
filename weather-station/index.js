@@ -72,7 +72,7 @@ var polling = AsyncPolling(function(end) {
     .catch(message => {
       end(message, "error occured");
     });
-}, 5000);
+}, 30000);
 
 polling.on("error", function(error) {
   console.log(error);
@@ -84,7 +84,9 @@ polling.on("result", function(json) {
       .tz("Australia/Sydney")
       .format("DD-MM-YYYY HH:mm:ss");
 
-    console.log(`Local time - ${aestTime}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`Local time - ${aestTime}`);
+    }
 
     var sunriseDateInAest = moment(new Date(json.sys.sunrise * 1000))
       .tz("Australia/Sydney")
@@ -119,12 +121,9 @@ polling.on("result", function(json) {
       sunset_time: sunsetDateInAest
     };
 
-    // var summary_data_for_logs = {
-    //   ...summary_data,
-    //   wind_direction_friendly: d2d(summary_data.wind_direction)
-    // };
-
-    console.log(summary_data);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(summary_data);
+    }
 
     influx
       .writePoints([
@@ -170,7 +169,11 @@ polling.on("result", function(json) {
         console.log(summary_data);
       });
   } else {
-    console.log("did not fetch data");
+    if (process.env.NODE_ENV !== "production") {
+      console.log("did not fetch data");
+    } else {
+      console.log("influxdb write successful.");
+    }
   }
 });
 

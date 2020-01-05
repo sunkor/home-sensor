@@ -12,16 +12,25 @@ services:
     build:
       dockerfile: weather-station.dockerfile
       context: ./weather-station
+  sensor-alerts:
+    restart: always
+    build:
+      dockerfile: sensor-alerts.dockerfile
+      context: ./sensor-alerts
   influxdb:
     image: influxdb
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/influxdb:/var/lib/influxdb
+  redis:
+    image: redis
+    volumes:
+      - C:/Users/Sunil/Documents/GitHub/home-sensor/data/redis:/var/lib/redis
   grafana:
     build:
       dockerfile: grafana.dockerfile
       context: ./grafana
     environment:
-      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/grafana:/var/lib/grafana
     ports:
