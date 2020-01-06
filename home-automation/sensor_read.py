@@ -13,11 +13,9 @@ device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
 # defining the api-endpoint
-API_ENDPOINT = "https://j61jqvi1u8.execute-api.ap-southeast-2.amazonaws.com/prod"
-#API_ENDPOINT = "http://192.168.0.5:3050/sensor-listener/temperature_data"
-#API_ENDPOINT = "http://homesensor-env.pkpn9fpx2s.ap-southeast-2.elasticbeanstalk.com/sensor-listener/temperature_data"
+API_ENDPOINT = ""
 headers = {'Content-type': 'application/json',
-           'x-api-key': ''}
+           'x-api-key': 'g2Ewlnl4Hw8j5VqucqJJi8OFqE9nDFND5gZfOz51'}
 
 
 def read_temp_raw():
