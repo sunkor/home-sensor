@@ -18,7 +18,7 @@ module.exports.sendEmailAlert = emailToSend => {
   var params = {
     Source: emailToSend.from,
     Destination: {
-      ToAddresses: [emailToSend.to]
+      ToAddresses: emailToSend.to.split(",")
     },
     ReplyToAddresses: [emailToSend.from],
     Message: {
