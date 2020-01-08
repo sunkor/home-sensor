@@ -10,6 +10,7 @@ before_install:
   - docker build -t sunkor/weather-station ./weather-station
   - docker build -t sunkor/grafana ./grafana
   - docker build -t sunkor/home-sensor-nginx ./nginx
+  - docker build -t sunkor/health-checks ./health-checks
 
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
@@ -21,6 +22,7 @@ after_success:
   - docker push sunkor/weather-station
   - docker push sunkor/grafana
   - docker push sunkor/home-sensor-nginx
+  - docker push sunkor/health-checks
 # deploy:
 #   provider: elasticbeanstalk
 #   region: ap-southeast-2
