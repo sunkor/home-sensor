@@ -1340,6 +1340,7 @@
       ],
       "datasource": null,
       "decimals": 0,
+      "description": "wind direction is from shorter to longer stem",
       "fontSizes": [
         4,
         5,
@@ -1399,7 +1400,7 @@
         "Times New Roman",
         "Verdana"
       ],
-      "format": "none",
+      "format": "degree",
       "gauge": {
         "animateNeedleValueTransition": true,
         "animateNeedleValueTransitionSpeed": 100,
@@ -1412,8 +1413,8 @@
         "maxTickAngle": 540,
         "maxValue": 360,
         "minValue": 0,
-        "needleCol": "#0099CC",
-        "needleLengthNeg": 0.2,
+        "needleCol": "#F2495C",
+        "needleLengthNeg": 1,
         "needleTickGap": 0.05,
         "needleWidth": 5,
         "outerEdgeCol": "#0099CC",
@@ -1427,7 +1428,7 @@
         "showThresholdOnGauge": false,
         "showUpperThresholdRange": true,
         "tickColMaj": "#0099CC",
-        "tickColMin": "#000",
+        "tickColMin": "#73BF69",
         "tickEdgeGap": 0.05,
         "tickFont": "Open Sans",
         "tickLabelCol": "#000",
@@ -1486,12 +1487,14 @@
           "measurement": "daily_read",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT last(\"wind_direction\") FROM \"daily_read\" WHERE (\"location\" = 'Jannali') AND $timeFilter GROUP BY time($__interval)",
+          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
             [
               {
-                "params": ["wind_direction"],
+                "params": ["360 - wind_direction"],
                 "type": "field"
               },
               {
@@ -1554,7 +1557,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Wind direction in Jannali",
+      "title": "Wind direction from shorter to longer stem (Jannali)",
       "type": "briangann-gauge-panel",
       "unitFormats": [
         {
@@ -2729,10 +2732,13 @@
       "seriesOverrides": [
         {
           "alias": "Jannali wind speed",
+          "hiddenSeries": true,
           "yaxis": 2
         },
         {
           "alias": "Jannali gust speed",
+          "color": "#8F3BB8",
+          "hiddenSeries": true,
           "yaxis": 2
         }
       ],
@@ -2762,6 +2768,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -2795,6 +2805,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -2828,6 +2842,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -2861,6 +2879,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -2894,6 +2916,10 @@
               {
                 "params": [],
                 "type": "median"
+              },
+              {
+                "params": ["5"],
+                "type": "moving_average"
               }
             ]
           ],
@@ -3241,5 +3267,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 84
+  "version": 99
 }
