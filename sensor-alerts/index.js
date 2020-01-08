@@ -1,5 +1,4 @@
 const sendMsg = require("aws-sns-sms");
-const awsSesMail = require("aws-ses-mail");
 const redis = require("redis");
 const timediff = require("timediff");
 const minDate = new Date("01 Nov 1970");
@@ -103,38 +102,18 @@ subscriber.on("message", (channel, message) => {
         });
 
       //Send e-mail via AWS SES.
-      sendEmail();
+      const emailToSend = {
+        from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
+        to: process.env.EMAIL_LIST,
+        subject: `Alert! Temperature in ${location} has exceeded threshold`,
+        content: `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`
+      };
+
+      require("./email-sender").sendEmailAlert(emailToSend);
     } else {
       console.log("time threshold has not exceeded. Ignore!");
     }
   });
 });
-
-sendEmail = () => {
-  //send e-mail.
-  var sesMail = new awsSesMail();
-  sesMail.setConfig(awsConfig);
-
-  const TEMPERATURE_THRESHOLD_IN_CELCIUS = 30;
-  const location = "study_room2";
-  const current_temperature = 33.33;
-
-  const emailToSend = {
-    from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
-    to: process.env.EMAIL_LIST,
-    subject: `Alert! Temperature in ${location} has exceeded threshold`,
-    content: `<html><head></head><body><div><p>Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}</p></div></body></html>`
-  };
-
-  console.log(emailToSend);
-
-  sesMail.sendEmail(emailToSend, function(data) {
-    console.log(
-      "successfully sent e-mail. details - " + JSON.stringify(emailToSend)
-    );
-  });
-  //send e-mail.
-  return;
-};
 
 subscriber.subscribe("insert");

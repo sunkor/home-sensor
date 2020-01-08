@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-ses-mail": "^2.1.1",
+    "aws-sdk": "^2.599.0",
     "aws-sns-sms": "^1.0.2",
     "dotenv": "^8.2.0",
     "moment-timezone": "^0.5.27",
