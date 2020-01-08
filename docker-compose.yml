@@ -33,6 +33,12 @@ services:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel
     volumes:
       - C:/Users/Sunil/Documents/GitHub/home-sensor/data/grafana:/var/lib/grafana
+  telegraf:
+    build:
+      dockerfile: health-checks.Dockerfile
+      context: ./health-checks
+    environment:
+      - HOST_PROC=/proc
   nginx:
     restart: always
     build:
@@ -40,3 +46,4 @@ services:
       context: ./nginx
     ports:
       - "3050:80"
+      - "8090:8090"
