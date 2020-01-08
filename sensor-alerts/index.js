@@ -77,8 +77,10 @@ subscriber.on("message", (channel, message) => {
     if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
       console.log("time threshold exceeded, sending the e-mail.");
 
+      const message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
+
       const msg = {
-        message: `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`,
+        message: message,
         sender: process.env.SMS_SENDER,
         phoneNumber: process.env.SMS_PHONE_NUMBER // phoneNumber along with country code
       };
@@ -86,30 +88,41 @@ subscriber.on("message", (channel, message) => {
       console.log("message to send - " + msg.message);
 
       //Send SMS via AWS SNS.
-      sendMsg(awsConfig, msg)
-        .then(data => {
-          console.log("Message sent at: " + currentDt);
-          redisClient.set(
-            locationid,
-            JSON.stringify({
-              last_sms_time: currentDt
-            }),
-            redis.print
-          );
-        })
-        .catch(err => {
-          console.log("Error occured - " + err);
-        });
+      if (process.env.ENABLE_SMS_ALERTS === "true") {
+        sendMsg(awsConfig, msg)
+          .then(data => {
+            console.log("Message sent at: " + currentDt);
+            redisClient.set(
+              locationid,
+              JSON.stringify({
+                last_sms_time: currentDt
+              }),
+              redis.print
+            );
+          })
+          .catch(err => {
+            console.log("Error occured - " + err);
+          });
+      } else {
+        console.log(
+          `SMS alerts is disabled. Cannot send alert message ${message}`
+        );
+      }
 
       //Send e-mail via AWS SES.
-      const emailToSend = {
-        from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
-        to: process.env.EMAIL_LIST,
-        subject: `Alert! Temperature in ${location} has exceeded threshold`,
-        content: `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`
-      };
-
-      require("./email-sender").sendEmailAlert(emailToSend);
+      if (process.env.ENABLE_EMAIL_ALERTS === "true") {
+        const emailToSend = {
+          from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
+          to: process.env.EMAIL_LIST,
+          subject: `Alert! Temperature in ${location} has exceeded threshold`,
+          content: message
+        };
+        require("./email-sender").sendEmailAlert(emailToSend);
+      } else {
+        console.log(
+          `Email alerts is disabled. Cannot send alert message ${message}`
+        );
+      }
     } else {
       console.log("time threshold has not exceeded. Ignore!");
     }
