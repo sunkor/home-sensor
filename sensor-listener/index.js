@@ -96,6 +96,27 @@ app.post("/temperature_data", (req, res) => {
   res.send("Message received - " + JSON.stringify(req.body));
 });
 
+app.post("/webhook", (req, res) => {
+  console.log('Received a POST request on /webhook');
+
+  if(!req.body) return res.sendStatus(400);
+
+  res.setHeader('Content-Type', 'application/json');
+  console.log("Here is the request from Dialogflow, " + req.body);
+
+  var location = req.body.queryResult.parameters['location'];
+  console.log('location is , ' + location);
+
+  const w = "weather is nothing."
+  const response = "";
+  const responseObj = {
+    "fulfillmentText": response,
+    "fulfillmentMessages": [{"text": {"text": [w]}}]
+  };
+  console.log('Response to Dialogflow, ' + JSON.stringify(responseObj));
+  return res.send(JSON.stringify(responseObj));
+})
+
 setTimeout(function() {
   influx
     .getDatabaseNames()
