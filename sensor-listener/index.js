@@ -102,7 +102,7 @@ app.post("/webhook", (req, res) => {
   if(!req.body) return res.sendStatus(400);
 
   res.setHeader('Content-Type', 'application/json');
-  console.log("Here is the request from Dialogflow, " + req.body);
+  console.log("Here is the request from Dialogflow, " + JSON.stringify(req.body));
 
   var location = req.body.queryResult.parameters['location'];
   console.log('location is , ' + location);
