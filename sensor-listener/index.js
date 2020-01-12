@@ -1,9 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const Influx = require("influx");
 const redis = require("redis");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
+const influx = require("./common").influx;
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -16,20 +16,6 @@ const TEMPERATURE_THRESHOLD_IN_CELCIUS =
 
 const app = express();
 app.use(bodyParser.json());
-
-const influx = new Influx.InfluxDB({
-  host: "influxdb",
-  database: "home_sensors_db",
-  schema: [
-    {
-      measurement: "temperature_data_in_celcius",
-      fields: {
-        temperature: Influx.FieldType.FLOAT
-      },
-      tags: ["location"]
-    }
-  ]
-});
 
 //Redis setup.
 const redisClient = redis.createClient({

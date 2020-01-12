@@ -3,7 +3,6 @@ const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
 var d2d = require("degrees-to-direction");
 var convert = require("convert-units");
-const date = require("date-and-time");
 const moment = require("moment-timezone");
 
 if (process.env.NODE_ENV !== "production") {
