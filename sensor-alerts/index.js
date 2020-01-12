@@ -92,13 +92,6 @@ subscriber.on("message", (channel, message) => {
         sendMsg(awsConfig, msg)
           .then(data => {
             console.log("Message sent at: " + currentDt);
-            redisClient.set(
-              locationid,
-              JSON.stringify({
-                last_sms_time: currentDt
-              }),
-              redis.print
-            );
           })
           .catch(err => {
             console.log("Error occured - " + err);
@@ -123,6 +116,14 @@ subscriber.on("message", (channel, message) => {
           `Email alerts is disabled. Cannot send alert message ${message}`
         );
       }
+
+      redisClient.set(
+        locationid,
+        JSON.stringify({
+          last_sms_time: currentDt
+        }),
+        redis.print
+      );
     } else {
       console.log("time threshold has not exceeded. Ignore!");
     }

@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const redis = require("redis");
+const asyncRedis = require("async-redis");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
 const influx = require("./common").influx;
@@ -24,13 +25,27 @@ const redisClient = redis.createClient({
   retry_strategy: () => 1000
 });
 
+const asyncRedisClient = asyncRedis.decorate(redisClient);
 const redisPublisher = redisClient.duplicate();
 
 app.get("/", (req, res) => {
   res.send("hello world, now lets get serious shall well?");
 });
 
-app.post("/temperature_data", (req, res) => {
+const locationid = "123";
+    const locationid_threshold = locationid + "_threshold";
+
+app.post('/temperature_threshold', async (req, res) => {
+  console.log(JSON.stringify(req.body));
+  if(req.body.temperature_threshold) {
+    await asyncRedisClient.set(locationid_threshold, parseInt(req.body.temperature_threshold), redis.print);
+    res.send(`Temperature threshold3 set successfully to ${req.body.temperature_threshold}`);
+  } else {
+    res.send('bad request').status(400);
+  }
+});
+
+app.post("/temperature_data", async (req, res) => {
   influx
     .writePoints([
       {
@@ -45,8 +60,20 @@ app.post("/temperature_data", (req, res) => {
       console.log(req.body);
     });
 
-  if (parseInt(req.body.temperature) >= TEMPERATURE_THRESHOLD_IN_CELCIUS) {
-    var locationid = "123";
+    let temperatureThreshold = TEMPERATURE_THRESHOLD_IN_CELCIUS;
+    console.log('fetch temperature threshold from redis...');
+
+    const redisTempThresholdValue = await asyncRedisClient.get(locationid_threshold);
+    console.log('threshold value, ' + redisTempThresholdValue);
+
+    if(redisTempThresholdValue) {
+      temperatureThreshold = parseInt(redisTempThresholdValue);
+    }
+
+console.log('Temperature threshold is: ' + temperatureThreshold);
+
+  if (parseInt(req.body.temperature) >= temperatureThreshold) {
+    
     const messageToSend = JSON.stringify({
       locationid: locationid,
       location: req.body.location,
@@ -56,8 +83,8 @@ app.post("/temperature_data", (req, res) => {
       "temperature exceeded threshold! Publishing to redis, message - " +
         messageToSend
     );
-    redisClient.get(locationid, function(err, value) {
-      const dt = !value ? minDate : new Date(JSON.parse(value).last_sms_time);
+    const value = await asyncRedisClient.get(locationid);
+    const dt = !value ? minDate : new Date(JSON.parse(value).last_sms_time);
       const currentDt = Date.now();
       const diffInMinutes = timediff(dt, currentDt, "m");
       console.log({
@@ -76,36 +103,12 @@ app.post("/temperature_data", (req, res) => {
           `Last SMS was sent ${diffInMinutes.minutes} minutes ago. This is less than min time to wait (${MINUTES_TO_WAIT_BEFORE_SENDING_SMS} minute(s)). Ignore sending SMS.`
         );
       }
-    });
   }
 
   res.send("Message received - " + JSON.stringify(req.body));
 });
 
 app.post("/fulfillment", require("./google-actions").fulfillment);
-
-app.post("/webhook", (req, res) => {
-  console.log("Received a POST request on /webhook");
-
-  if (!req.body) return res.sendStatus(400);
-
-  res.setHeader("Content-Type", "application/json");
-  console.log(
-    "Here is the request from Dialogflow, " + JSON.stringify(req.body)
-  );
-
-  const location = req.body.queryResult.parameters["location"];
-  console.log("location is , " + location);
-
-  const w = "weather is nothing 2.";
-  const response = "";
-  const responseObj = {
-    fulfillmentText: response,
-    fulfillmentMessages: [{ text: { text: [w] } }]
-  };
-  console.log("Response to Dialogflow, " + JSON.stringify(responseObj));
-  return res.send(JSON.stringify(responseObj));
-});
 
 setTimeout(function() {
   influx
