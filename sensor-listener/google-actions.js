@@ -33,7 +33,7 @@ app.intent("get-home-room-location-temperature", async (conv, params) => {
         return `The last temperature in ${result[0].location.replace(
           "_",
           " "
-        )} was ${result[0].temperature} degress celcius at ${timeString}`;
+        )} was ${result[0].temperature} degrees celcius at ${timeString}`;
       })
       .catch(error => {
         console.log(JSON.stringify(error));
