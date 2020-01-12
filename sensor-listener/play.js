@@ -1,23 +1,42 @@
-const moment = require("moment-timezone");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-const obj = [
-  { time: "2020-01-12T04:17:08.776Z", temperature: 25, location: "study_room" }
-];
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
-console.log(JSON.stringify(obj[0]));
-console.log({
-  "time is": moment(obj[0].time)
-    .tz("Australia/Sydney")
-    .format("DD MMM YYYY, h mm ha"),
-  "temperature is": `${obj[0].temperature} degress celcius`,
-  "location is": obj[0].location.replace("_", " ")
+const app = express();
+app.use(bodyParser.json());
+
+app.get("/", (req, res) => {
+  res.send("hello world, now lets get serious shall well?");
 });
 
-const timeString = moment(obj[0].time)
-  .tz("Australia/Sydney")
-  .format("DD MMM YYYY, h mm ha");
-console.log(
-  `The last temperature in ${obj[0].location.replace("_", " ")} was ${
-    obj[0].temperature
-  } degress celcius at ${timeString}`
-);
+app.post("/fulfillment", require("./google-actions").fulfillment);
+
+app.post("/webhook", (req, res) => {
+  console.log("Received a POST request on /webhook");
+
+  if (!req.body) return res.sendStatus(400);
+
+  res.setHeader("Content-Type", "application/json");
+  console.log(
+    "Here is the request from Dialogflow, " + JSON.stringify(req.body)
+  );
+
+  const location = req.body.queryResult.parameters["location"];
+  console.log("location is , " + location);
+
+  const w = "weather is nothing 2.";
+  const response = "";
+  const responseObj = {
+    fulfillmentText: response,
+    fulfillmentMessages: [{ text: { text: [w] } }]
+  };
+  console.log("Response to Dialogflow, " + JSON.stringify(responseObj));
+  return res.send(JSON.stringify(responseObj));
+});
+
+app.listen(8080, () => {
+  console.log(`Listening on 8080.`);
+});
