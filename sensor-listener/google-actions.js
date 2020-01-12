@@ -12,10 +12,6 @@ app.intent("get-home-room-location-temperature", async (conv, params) => {
     params.RoomLocation === "study room" ||
     params.RoomLocation === "studyroom"
   ) {
-    console.log(
-      "Hi there, I received the intent successfully3." + JSON.stringify(params)
-    );
-
     const message = await influx
       .query(
         `
@@ -28,12 +24,20 @@ app.intent("get-home-room-location-temperature", async (conv, params) => {
 
         const timeString = moment(result[0].time)
           .tz("Australia/Sydney")
-          .format("DD MMM YYYY, h mm ha");
+          .format("DD MMM YYYY, h mm a");
+
+        const temperature = result[0].temperature;
+        const floatTemperature = parseFloat(temperature);
+
+        if (isNaN(floatTemperature)) {
+          return `Temperature could not be read.`;
+        }
 
         return `The last temperature in ${result[0].location.replace(
           "_",
           " "
-        )} was ${result[0].temperature} degrees celcius at ${timeString}`;
+        )} was ${Math.round(floatTemperature * 100) /
+          100} degrees celcius at ${timeString}`;
       })
       .catch(error => {
         console.log(JSON.stringify(error));
