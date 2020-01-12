@@ -96,7 +96,7 @@ app.post("/temperature_data", (req, res) => {
   res.send("Message received - " + JSON.stringify(req.body));
 });
 
-app.post("/fulfillment", require("./dialogflow").fulfillment);
+app.post("/fulfillment", require("./google-actions").fulfillment);
 
 app.post("/webhook", (req, res) => {
   console.log("Received a POST request on /webhook");
@@ -108,7 +108,7 @@ app.post("/webhook", (req, res) => {
     "Here is the request from Dialogflow, " + JSON.stringify(req.body)
   );
 
-  var location = req.body.queryResult.parameters["location"];
+  const location = req.body.queryResult.parameters["location"];
   console.log("location is , " + location);
 
   const w = "weather is nothing 2.";
