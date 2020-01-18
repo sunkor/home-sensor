@@ -2768,10 +2768,6 @@
               {
                 "params": [],
                 "type": "median"
-              },
-              {
-                "params": ["5"],
-                "type": "moving_average"
               }
             ]
           ],
@@ -2805,10 +2801,6 @@
               {
                 "params": [],
                 "type": "median"
-              },
-              {
-                "params": ["5"],
-                "type": "moving_average"
               }
             ]
           ],
@@ -2842,10 +2834,6 @@
               {
                 "params": [],
                 "type": "median"
-              },
-              {
-                "params": ["5"],
-                "type": "moving_average"
               }
             ]
           ],
@@ -2879,10 +2867,6 @@
               {
                 "params": [],
                 "type": "median"
-              },
-              {
-                "params": ["5"],
-                "type": "moving_average"
               }
             ]
           ],
@@ -2916,10 +2900,6 @@
               {
                 "params": [],
                 "type": "median"
-              },
-              {
-                "params": ["5"],
-                "type": "moving_average"
               }
             ]
           ],
@@ -2932,7 +2912,24 @@
           ]
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "warning",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 27,
+          "yaxis": "left"
+        },
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 34,
+          "yaxis": "left"
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -3267,5 +3264,5 @@
   "timezone": "",
   "title": "Jannali home sensors dash",
   "uid": "6LxjN2LZz",
-  "version": 99
+  "version": 104
 }

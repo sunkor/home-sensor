@@ -40,7 +40,9 @@ module.exports.sendEmailAlert = emailToSend => {
     .sendEmail(params)
     .promise()
     .then(res => {
-      console.log("email sent successfully");
+      if (process.env.NODE_ENV !== "production") {
+        console.log("email sent successfully");
+      }
     })
     .catch(err => {
       console.error(err, err.stack);

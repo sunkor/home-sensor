@@ -1,4 +1,5 @@
 const Influx = require("influx");
+const asyncRedis = require("async-redis");
 
 const influx = new Influx.InfluxDB({
   host: "influxdb",
@@ -14,4 +15,15 @@ const influx = new Influx.InfluxDB({
   ]
 });
 
+//Redis setup.
+const asyncRedisClient = asyncRedis.createClient({
+  host: "redis",
+  port: 6379,
+  retry_strategy: () => 1000
+});
+
+const redisPublisher = asyncRedisClient.duplicate();
+
 exports.influx = influx;
+exports.asyncRedisClient = asyncRedisClient;
+exports.redisPublisher = redisPublisher;

@@ -7,24 +7,33 @@ services:
       context: ./sensor-listener
     depends_on:
       - influxdb
+    volumes:
+      - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
+      - ./sensor-listener:/usr/src/app
   weather-station:
     restart: always
     build:
       dockerfile: weather-station.dockerfile
       context: ./weather-station
+    volumes:
+      - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
+      - ./weather-station:/usr/src/app
   sensor-alerts:
     restart: always
     build:
       dockerfile: sensor-alerts.dockerfile
       context: ./sensor-alerts
+    volumes:
+      - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
+      - ./sensor-alerts:/usr/src/app
   influxdb:
     image: influxdb
     volumes:
-      - C:/Users/Sunil/Documents/GitHub/home-sensor/data/influxdb:/var/lib/influxdb
+      - ./data/influxdb:/var/lib/influxdb
   redis:
     image: redis
     volumes:
-      - C:/Users/Sunil/Documents/GitHub/home-sensor/data/redis:/var/lib/redis
+      - ./data/redis:/var/lib/redis
   grafana:
     build:
       dockerfile: grafana.dockerfile
@@ -32,13 +41,7 @@ services:
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel
     volumes:
-      - C:/Users/Sunil/Documents/GitHub/home-sensor/data/grafana:/var/lib/grafana
-  telegraf:
-    build:
-      dockerfile: health-checks.Dockerfile
-      context: ./health-checks
-    environment:
-      - HOST_PROC=/proc
+      - ./data/grafana:/var/lib/grafana
   nginx:
     restart: always
     build:
@@ -47,3 +50,9 @@ services:
     ports:
       - "3050:80"
       - "8090:8090"
+  telegraf:
+    build:
+      dockerfile: health-checks.Dockerfile
+      context: ./health-checks
+    environment:
+      - HOST_PROC=/proc

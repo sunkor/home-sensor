@@ -55,3 +55,26 @@ app.fallback(conv => {
 });
 
 exports.fulfillment = app;
+
+// app.post("/webhook", (req, res) => {
+//   console.log("Received a POST request on /webhook");
+
+//   if (!req.body) return res.sendStatus(400);
+
+//   res.setHeader("Content-Type", "application/json");
+//   console.log(
+//     "Here is the request from Dialogflow, " + JSON.stringify(req.body)
+//   );
+
+//   const location = req.body.queryResult.parameters["location"];
+//   console.log("location is , " + location);
+
+//   const w = "weather is nothing 2.";
+//   const response = "";
+//   const responseObj = {
+//     fulfillmentText: response,
+//     fulfillmentMessages: [{ text: { text: [w] } }]
+//   };
+//   console.log("Response to Dialogflow, " + JSON.stringify(responseObj));
+//   return res.send(JSON.stringify(responseObj));
+// });

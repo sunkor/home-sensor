@@ -1,0 +1,22 @@
+version: "3"
+services:
+  influxdb:
+    image: influxdb
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+  redis:
+    image: redis
+    volumes:
+      - ./data/redis:/var/lib/redis
+  sensor-listener:
+    restart: always
+    build:
+      dockerfile: sensor-listener.dockerfile
+      context: .
+    depends_on:
+      - influxdb
+    volumes:
+      - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
+      - .:/usr/src/app
+    ports:
+      - "8080:8080"

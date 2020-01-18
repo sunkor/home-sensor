@@ -6,17 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "run": "node index.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async-redis": "^1.1.7",
     "aws-sdk": "^2.599.0",
     "aws-sns-sms": "^1.0.2",
     "dotenv": "^8.2.0",
     "moment-timezone": "^0.5.27",
     "nodemon": "^2.0.2",
-    "redis": "^2.8.0",
     "timediff": "^1.1.1"
   }
 }

@@ -1,132 +1,77 @@
-const sendMsg = require("aws-sns-sms");
-const redis = require("redis");
 const timediff = require("timediff");
+const awsNotification = require("./aws-notification");
 const minDate = new Date("01 Nov 1970");
+const connections = require("./connections");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const MINUTES_TO_WAIT_BEFORE_SENDING_SMS =
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_SMS;
+const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION =
+  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION;
 const TEMPERATURE_THRESHOLD_IN_CELCIUS =
   process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS;
 
-const redisClient = redis.createClient({
-  host: "redis",
-  port: 6379,
-  retry_strategy: () => 1000
-});
+connections.redisSubscriber.on("message", async (channel, message) => {
+  if (process.env.NODE_ENV !== "production") {
+    console.log("message received, " + message);
+  }
 
-const subscriber = redisClient.duplicate();
-
-const awsConfig = {
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  region: process.env.AWS_REGION
-};
-
-subscriber.on("message", (channel, message) => {
-  console.log("message received, " + message);
-
-  const temperatureData = JSON.parse(message);
-  const { locationid, location, current_temperature } = { ...temperatureData };
+  const { userid, location, current_temperature } = JSON.parse(message);
 
   //Check required fields.
-  if (!locationid || !location || !current_temperature) {
-    console.log(
-      "Missing required fields {location id, or location, or current_temperature} from message"
+  if (!userid || !location || !current_temperature) {
+    console.warn(
+      "Missing required fields {userid, or location, or current_temperature} from message."
     );
     return;
   }
 
   //Check threshold.
   if (parseInt(current_temperature) < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
-    console.log(
-      `Current temperature read, ${current_temperature} does not exceed the threshold ${TEMPERATURE_THRESHOLD_IN_CELCIUS}`
-    );
+    if (process.env.NODE_ENV !== "production") {
+      console.log(
+        `Current temperature read, ${current_temperature} does not exceed the threshold ${TEMPERATURE_THRESHOLD_IN_CELCIUS}`
+      );
+    }
     return;
   }
 
   //Get last sms sent time.
-  redisClient.get(locationid, function(err, value) {
-    if (err) {
-      console.log(
-        `An error occured while attempting to fetch value from location, ${locationid}, ${err}`
-      );
-      return;
-    }
+  const notificationObj = await connections.asyncRedisClient.get(userid);
 
-    console.log("fetching value, - " + value);
+  const dt = !notificationObj
+    ? minDate
+    : new Date(JSON.parse(notificationObj).last_notification_time);
+  const currentDt = Date.now();
+  const diffInMinutes = timediff(dt, currentDt, "m");
 
-    if (value) {
-      console.log("value fetched, " + value);
-      console.log("time : ", new Date(JSON.parse(value).last_sms_time));
-    }
+  const notificationDetails = {
+    userid,
+    currentDt,
+    location,
+    message
+  };
 
-    const dt = !value ? minDate : new Date(JSON.parse(value).last_sms_time);
-    const currentDt = Date.now();
-    const diffInMinutes = timediff(dt, currentDt, "m");
+  //Log.
+  if (process.env.NODE_ENV !== "production") {
+    const notificationDetailsString = JSON.stringify(notificationDetails);
+
     console.log({
       difflabel: "diff time min minutes",
       dt,
       currentDt,
-      diffInMinutes
+      diffInMinutes,
+      notificationDetailsString
     });
+  }
 
-    if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_SMS) {
-      console.log("time threshold exceeded, sending the e-mail.");
-
-      const message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
-
-      const msg = {
-        message: message,
-        sender: process.env.SMS_SENDER,
-        phoneNumber: process.env.SMS_PHONE_NUMBER // phoneNumber along with country code
-      };
-
-      console.log("message to send - " + msg.message);
-
-      //Send SMS via AWS SNS.
-      if (process.env.ENABLE_SMS_ALERTS === "true") {
-        sendMsg(awsConfig, msg)
-          .then(data => {
-            console.log("Message sent at: " + currentDt);
-            redisClient.set(
-              locationid,
-              JSON.stringify({
-                last_sms_time: currentDt
-              }),
-              redis.print
-            );
-          })
-          .catch(err => {
-            console.log("Error occured - " + err);
-          });
-      } else {
-        console.log(
-          `SMS alerts is disabled. Cannot send alert message ${message}`
-        );
-      }
-
-      //Send e-mail via AWS SES.
-      if (process.env.ENABLE_EMAIL_ALERTS === "true") {
-        const emailToSend = {
-          from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
-          to: process.env.EMAIL_LIST,
-          subject: `Alert! Temperature in ${location} has exceeded threshold`,
-          content: message
-        };
-        require("./email-sender").sendEmailAlert(emailToSend);
-      } else {
-        console.log(
-          `Email alerts is disabled. Cannot send alert message ${message}`
-        );
-      }
-    } else {
-      console.log("time threshold has not exceeded. Ignore!");
-    }
-  });
+  if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) {
+    const message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
+    awsNotification.sendNotification(notificationDetails);
+  } else {
+    console.log("time threshold has not exceeded. Ignore!");
+  }
 });
 
-subscriber.subscribe("insert");
+connections.redisSubscriber.subscribe("insert");
