@@ -67,7 +67,7 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   }
 
   if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) {
-    const message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
+    notificationDetails.message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
     awsNotification.sendNotification(notificationDetails);
   } else {
     console.log("time threshold has not exceeded. Ignore!");
