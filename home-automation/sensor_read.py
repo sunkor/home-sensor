@@ -34,9 +34,9 @@ def read_temp():
     if equals_pos != -1:
         temp_string = lines[1][equals_pos+2:]
         temp_c = float(temp_string) / 1000.0
-        temp_f = temp_c * 9.0 / 5.0 + 32.0
+        # temp_f = temp_c * 9.0 / 5.0 + 32.0
         today = datetime.now()
-        timeInString = today.strftime("%d/%m/%Y %H:%M:%S")
+        # timeInString = today.strftime("%d/%m/%Y %H:%M:%S")
         data = {'location': 'study_room',
                 'temperature': temp_c}
         # sending post request and saving response as response object
