@@ -4,6 +4,7 @@ const timediff = require("timediff");
 const influx = require("./common").influx;
 const asyncRedisClient = require("./common").asyncRedisClient;
 const redisPublisher = require("./common").redisPublisher;
+const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
 const userid = "123";
 
 if (process.env.NODE_ENV !== "production") {
@@ -125,19 +126,17 @@ app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
 //GOOGLE ACTION.
 app.post("/fulfillment", require("./google-actions").fulfillment);
 
-//Start after 10 seconds. We want InfluxDb to be ready.
-setTimeout(function() {
-  influx
-    .getDatabaseNames()
-    .then(names => {
-      if (!names.includes("home_sensors_db")) {
-        return influx.createDatabase("home_sensors_db");
-      }
-    })
-    .then(() => {
-      app.listen(8080, () => {
-        console.log(`Listening on 8080.`);
-      });
-    })
-    .catch(error => console.log({ error }));
-}, 10000);
+waitForInfluxDb(influx)
+  .then(names => {
+    if (!names.includes("home_sensors_db")) {
+      return influx.createDatabase("home_sensors_db");
+    }
+  })
+  .then(() => {
+    app.listen(8080, () => {
+      console.log(`Listening on 8080.`);
+    });
+  })
+  .catch(error => {
+    console.error("Failed to initialize InfluxDB", error);
+  });
