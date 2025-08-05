@@ -3,7 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Load the AWS SDK for Node.js
-var AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
 
 const sesConfig = {
   apiVersion: "2010-12-01",
@@ -15,7 +15,7 @@ const sesConfig = {
 // Handle promise's fulfilled/rejected states
 module.exports.sendEmailAlert = emailToSend => {
   // Create sendEmail params
-  var params = {
+  const params = {
     Source: emailToSend.from,
     Destination: {
       ToAddresses: emailToSend.to.split(",")

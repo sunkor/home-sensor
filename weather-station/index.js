@@ -1,8 +1,8 @@
 const Influx = require("influx");
 const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
-var d2d = require("degrees-to-direction");
-var convert = require("convert-units");
+const d2d = require("degrees-to-direction");
+const convert = require("convert-units");
 const moment = require("moment-timezone");
 
 if (process.env.NODE_ENV !== "production") {
@@ -63,13 +63,19 @@ const influx = new Influx.InfluxDB({
   ]
 });
 
-var polling = AsyncPolling(function(end) {
+const polling = AsyncPolling(function(end) {
   console.log("fetching.." + url);
   fetch(url)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(json => end(null, json))
-    .catch(message => {
-      end(message, "error occured");
+    .catch(error => {
+      console.error("Error fetching weather data", error);
+      end(error, "error occured");
     });
 }, 30000);
 
@@ -78,8 +84,8 @@ polling.on("error", function(error) {
 });
 polling.on("result", function(json) {
   if (json.cod === 200) {
-    var timestamp = json.dt;
-    var aestTime = moment(new Date(timestamp * 1000))
+    const timestamp = json.dt;
+    const aestTime = moment(new Date(timestamp * 1000))
       .tz("Australia/Sydney")
       .format("DD-MM-YYYY HH:mm:ss");
 
@@ -87,17 +93,17 @@ polling.on("result", function(json) {
       console.log(`Local time - ${aestTime}`);
     }
 
-    var sunriseDateInAest = moment(new Date(json.sys.sunrise * 1000))
+    const sunriseDateInAest = moment(new Date(json.sys.sunrise * 1000))
       .tz("Australia/Sydney")
       .format("DD-MM-YYYY HH:mm:ss");
     console.log(`Sunrise date - ${sunriseDateInAest}`);
 
-    var sunsetDateInAest = moment(new Date(json.sys.sunset * 1000))
+    const sunsetDateInAest = moment(new Date(json.sys.sunset * 1000))
       .tz("Australia/Sydney")
       .format("DD-MM-YYYY HH:mm:ss");
     console.log(`Sunset date - ${sunsetDateInAest}`);
 
-    var summary_data = {
+    const summary_data = {
       name: json.name,
       currentTemp: json.main.temp,
       feels_like: json.main.feels_like,
@@ -166,13 +172,12 @@ polling.on("result", function(json) {
       ])
       .then(() => {
         console.log(summary_data);
+      })
+      .catch(error => {
+        console.error("Error writing points to InfluxDB", error);
       });
   } else {
-    if (process.env.NODE_ENV !== "production") {
-      console.log("did not fetch data");
-    } else {
-      console.log("influxdb write successful.");
-    }
+    console.error("Failed to fetch data", json);
   }
 });
 
