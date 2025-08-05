@@ -36,6 +36,20 @@ app.get("/", (req, res) => {
   res.send("hello world, now lets get serious shall well?");
 });
 
+function validatePayload(req, res, next) {
+  const { temperature, location } = req.body;
+  if (
+    typeof temperature !== "number" ||
+    !Number.isFinite(temperature) ||
+    typeof location !== "string" ||
+    location.trim() === ""
+  ) {
+    res.status(400).send("Invalid payload");
+    return;
+  }
+  next();
+}
+
 function writeToInflux(req, res, next) {
   influx
     .writePoints([
@@ -107,7 +121,7 @@ async function sendNotification(req, res) {
 }
 
 //POST
-app.post("/temperature_data", writeToInflux, sendNotification);
+app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
 
 //GOOGLE ACTION.
 app.post("/fulfillment", require("./google-actions").fulfillment);
