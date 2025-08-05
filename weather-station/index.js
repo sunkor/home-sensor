@@ -63,18 +63,38 @@ const influx = new Influx.InfluxDB({
   ]
 });
 
+async function fetchWithRetry(url, retries = 3, backoff = 1000) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    if (retries > 0) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error(
+          `Fetch attempt failed. Retrying in ${backoff}ms`,
+          error
+        );
+      }
+      await new Promise(res => setTimeout(res, backoff));
+      return fetchWithRetry(url, retries - 1, backoff * 2);
+    }
+    throw error;
+  }
+}
+
 const polling = AsyncPolling(function(end) {
   console.log("fetching.." + url);
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
+  fetchWithRetry(url)
     .then(json => end(null, json))
     .catch(error => {
-      console.error("Error fetching weather data", error);
+      if (process.env.NODE_ENV === "production") {
+        console.error("Error fetching weather data");
+      } else {
+        console.error("Error fetching weather data", error);
+      }
       end(error, "error occured");
     });
 }, 30000);
