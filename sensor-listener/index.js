@@ -99,10 +99,18 @@ async function sendNotification(req, res) {
     );
   }
 
-  const notification = await asyncRedisClient.get(userId);
-  const dt = !notification
-    ? minDate
-    : new Date(JSON.parse(notification).last_notification_time);
+  let dt;
+  try {
+    const notification = await asyncRedisClient.get(userId);
+    const parsedNotification = notification ? JSON.parse(notification) : null;
+    dt = parsedNotification
+      ? new Date(parsedNotification.last_notification_time)
+      : minDate;
+  } catch (err) {
+    console.error("Failed to retrieve notification data", err);
+    res.status(500).send("Failed to retrieve notification data.");
+    return;
+  }
   const diffInMinutes = timediff(dt, Date.now(), "m");
 
   if (
