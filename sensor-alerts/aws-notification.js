@@ -9,7 +9,7 @@ const awsConfig = {
 };
 
 //Send SMS via AWS SNS.
-async function sendSMS(message) {
+async function sendSMS(message, currentDt) {
   if (process.env.ENABLE_SMS_ALERTS === "true") {
     const smsMessage = {
       message: message,
@@ -23,7 +23,8 @@ async function sendSMS(message) {
 
     sendMsg(awsConfig, smsMessage)
       .then(data => {
-        console.log("Message sent at: " + currentDt);
+        const timestamp = currentDt || Date.now();
+        console.log("Message sent at: " + timestamp);
       })
       .catch(err => {
         console.log("Error occured - " + err);
@@ -52,7 +53,7 @@ async function sendEmail(location, message) {
 }
 
 async function sendNotification(notificationDetails) {
-  sendSMS(notificationDetails.message);
+  sendSMS(notificationDetails.message, notificationDetails.currentDt);
   sendEmail(notificationDetails.location, notificationDetails.message);
   await connections.asyncRedisClient.set(
     notificationDetails.userid,
