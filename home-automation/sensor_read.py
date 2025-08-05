@@ -2,8 +2,6 @@ import os
 import glob
 import time
 import requests
-from datetime import datetime
-import sys
 import logging
 
 # Read configuration from environment
@@ -14,8 +12,17 @@ if not API_ENDPOINT:
 if not API_KEY:
     raise EnvironmentError("API_KEY environment variable is not set")
 
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+
+def _load_module(module: str) -> None:
+    """Load a kernel module and verify the command succeeds."""
+    ret = os.system(f"modprobe {module}")
+    if ret != 0:
+        logging.error("modprobe %s failed with exit code %s", module, ret)
+        raise OSError(f"modprobe {module} failed with exit code {ret}")
+
+
+_load_module("w1-gpio")
+_load_module("w1-therm")
 
 base_dir = '/sys/bus/w1/devices/'
 device_folders = glob.glob(base_dir + '28*')
@@ -44,12 +51,8 @@ def read_temp():
         raise ValueError("Temperature marker 't=' not found in sensor output")
     temp_string = lines[1][equals_pos+2:]
     temp_c = float(temp_string) / 1000.0
-    # temp_f = temp_c * 9.0 / 5.0 + 32.0
-    today = datetime.now()
-    # timeInString = today.strftime("%d/%m/%Y %H:%M:%S")
     data = {'location': 'study_room',
             'temperature': temp_c}
-    # sending post request and saving response as response object
     result = requests.post(url=API_ENDPOINT, json=data, headers=headers, timeout=10)
     print(result.reason)
     print(result.status_code)
