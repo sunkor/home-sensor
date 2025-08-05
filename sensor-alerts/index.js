@@ -40,7 +40,7 @@ connections.redisSubscriber.on("message", async (channel, message) => {
     return;
   }
 
-  const currentTemp = parseInt(current_temperature, 10);
+  const currentTemp = Number(current_temperature);
   if (!Number.isFinite(currentTemp)) {
     console.warn(
       `Invalid current_temperature received: ${current_temperature}`

@@ -71,7 +71,7 @@ function writeToInflux(req, res, next) {
 }
 
 async function sendNotification(req, res) {
-  const temp = parseInt(req.body.temperature, 10);
+  const temp = Number(req.body.temperature);
   if (!Number.isFinite(temp)) {
     res.status(400).send("Invalid temperature data.");
     return;
