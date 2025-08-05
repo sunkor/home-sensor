@@ -15,17 +15,17 @@ const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
   process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
   10
 );
-const TEMPERATURE_THRESHOLD_IN_CELCIUS = parseInt(
-  process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS,
+const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseInt(
+  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS,
   10
 );
 
 if (
   !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||
-  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELCIUS)
+  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELSIUS)
 ) {
   throw new Error(
-    "Invalid numeric environment configuration for MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION or TEMPERATURE_THRESHOLD_IN_CELCIUS"
+    "Invalid numeric environment configuration for MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION or TEMPERATURE_THRESHOLD_IN_CELSIUS"
   );
 }
 
@@ -54,7 +54,7 @@ function writeToInflux(req, res, next) {
   influx
     .writePoints([
       {
-        measurement: "temperature_data_in_celcius",
+        measurement: "temperature_data_in_celsius",
         fields: {
           temperature: req.body.temperature
         },
@@ -77,7 +77,7 @@ async function sendNotification(req, res) {
     return;
   }
 
-  if (temp < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
+  if (temp < TEMPERATURE_THRESHOLD_IN_CELSIUS) {
     res.send("posted temperature data.");
     return;
   }

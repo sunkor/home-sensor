@@ -6,7 +6,7 @@ const influx = new Influx.InfluxDB({
   database: "home_sensors_db",
   schema: [
     {
-      measurement: "temperature_data_in_celcius",
+      measurement: "temperature_data_in_celsius",
       fields: {
         temperature: Influx.FieldType.FLOAT
       },

@@ -31,7 +31,7 @@ const influx = new Influx.InfluxDB({
   database: "home_sensors_db",
   schema: [
     {
-      measurement: "temperature_data_in_celcius",
+      measurement: "temperature_data_in_celsius",
       fields: {
         temperature: Influx.FieldType.FLOAT
       },
@@ -133,14 +133,14 @@ polling.on("result", function(json) {
     influx
       .writePoints([
         {
-          measurement: "temperature_data_in_celcius",
+          measurement: "temperature_data_in_celsius",
           fields: {
             temperature: summary_data.currentTemp
           },
           tags: { location: summary_data.name }
         },
         {
-          measurement: "temperature_data_in_celcius",
+          measurement: "temperature_data_in_celsius",
           fields: {
             temperature: summary_data.feels_like
           },
