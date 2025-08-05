@@ -66,7 +66,7 @@ function writeToInflux(req, res, next) {
     })
     .catch(err => {
       console.error(err);
-      res.send("Error occured while writing to InfluxDb!").status(500);
+      res.status(500).send("Error occurred while writing to InfluxDb!");
     });
 }
 
