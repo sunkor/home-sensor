@@ -21,16 +21,18 @@ async function sendSMS(message, currentDt) {
       console.log("message to send - " + smsMessage.message);
     }
 
-    sendMsg(awsConfig, smsMessage)
-      .then(data => {
-        const timestamp = currentDt || Date.now();
-        console.log("Message sent at: " + timestamp);
-      })
-      .catch(err => {
-        console.log("Error occured - " + err);
-      });
+    try {
+      await sendMsg(awsConfig, smsMessage);
+      const timestamp = currentDt || Date.now();
+      console.log("Message sent at: " + timestamp);
+      return true;
+    } catch (err) {
+      console.error("Error occured - " + err);
+      return false;
+    }
   } else {
     console.log(`SMS alerts is disabled. Cannot send alert message ${message}`);
+    return false;
   }
 }
 
@@ -43,24 +45,47 @@ async function sendEmail(location, message) {
       subject: `Alert! Temperature in ${location} has exceeded threshold`,
       content: message
     };
-    console.log(emailToSend);
-    emailSender.sendEmailAlert(emailToSend);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(emailToSend);
+    }
+    try {
+      await emailSender.sendEmailAlert(emailToSend);
+      return true;
+    } catch (err) {
+      console.error("Error occured while sending email - " + err);
+      return false;
+    }
   } else {
     console.log(
       `Email alerts is disabled. Cannot send alert message ${message}`
     );
+    return false;
   }
 }
 
 async function sendNotification(notificationDetails) {
-  sendSMS(notificationDetails.message, notificationDetails.currentDt);
-  sendEmail(notificationDetails.location, notificationDetails.message);
+  const smsSent = await sendSMS(
+    notificationDetails.message,
+    notificationDetails.currentDt
+  );
+  if (!smsSent) {
+    console.error("Failed to send SMS alert");
+  }
+
+  const emailSent = await sendEmail(
+    notificationDetails.location,
+    notificationDetails.message
+  );
+  if (!emailSent) {
+    console.error("Failed to send email alert");
+  }
   await connections.asyncRedisClient.set(
     notificationDetails.userid,
     JSON.stringify({
       last_notification_time: notificationDetails.currentDt
     })
   );
+  return { smsSent, emailSent };
 }
 
 module.exports.sendNotification = sendNotification;
