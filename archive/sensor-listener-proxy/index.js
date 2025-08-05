@@ -25,9 +25,7 @@ app.post("/", (req, res) => {
   if (process.env.NODE_ENV !== "production") {
     console.log({
       invokeUrl: process.env.AWS_API_ENDPOINT,
-      region: process.env.AWS_REGION,
-      accessKey: process.env.AWS_ACCESS_KEY,
-      secretKey: process.env.AWS_SECRET_KEY
+      region: process.env.AWS_REGION
     });
   }
 
