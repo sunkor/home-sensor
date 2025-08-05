@@ -1,9 +1,10 @@
 const assert = require('assert');
+const http = require('http');
 
 process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
 process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25';
 
-const { validatePayload } = require('./index');
+const { validatePayload, app } = require('./index');
 
 function createMock() {
   const res = {
@@ -44,11 +45,42 @@ function testValidPayload() {
   assert.strictEqual(wasNextCalled(), true);
 }
 
-function run() {
+async function testHealthEndpoint() {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(0, () => {
+      const { port } = server.address();
+      http.get(`http://127.0.0.1:${port}/health`, res => {
+        let data = '';
+        res.on('data', chunk => {
+          data += chunk;
+        });
+        res.on('end', () => {
+          server.close();
+          try {
+            assert.strictEqual(res.statusCode, 200);
+            assert.strictEqual(data, '{"status":"ok"}');
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }).on('error', err => {
+        server.close();
+        reject(err);
+      });
+    });
+  });
+}
+
+async function run() {
   testInvalidPayload();
   testValidPayload();
+  await testHealthEndpoint();
   console.log('All tests passed');
   process.exit(0);
 }
 
-run();
+run().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

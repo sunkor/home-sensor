@@ -34,6 +34,11 @@ app.get("/", (req, res) => {
   res.send("hello world, now lets get serious shall well?");
 });
 
+// Simple health check endpoint for container orchestrators
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 function validatePayload(req, res, next) {
   const { temperature, location } = req.body;
   if (
