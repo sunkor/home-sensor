@@ -11,10 +11,23 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION =
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION;
-const TEMPERATURE_THRESHOLD_IN_CELCIUS =
-  process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS;
+const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
+  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
+  10
+);
+const TEMPERATURE_THRESHOLD_IN_CELCIUS = parseInt(
+  process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS,
+  10
+);
+
+if (
+  !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||
+  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELCIUS)
+) {
+  throw new Error(
+    "Invalid numeric environment configuration for MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION or TEMPERATURE_THRESHOLD_IN_CELCIUS"
+  );
+}
 
 const app = express();
 app.use(bodyParser.json());
@@ -44,7 +57,13 @@ function writeToInflux(req, res, next) {
 }
 
 async function sendNotification(req, res) {
-  if (parseInt(req.body.temperature) < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
+  const temp = parseInt(req.body.temperature, 10);
+  if (!Number.isFinite(temp)) {
+    res.status(400).send("Invalid temperature data.");
+    return;
+  }
+
+  if (temp < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
     res.send("posted temperature data.");
     return;
   }
@@ -52,7 +71,7 @@ async function sendNotification(req, res) {
   const messageToSend = JSON.stringify({
     userid: userid,
     location: req.body.location,
-    current_temperature: req.body.temperature
+    current_temperature: temp
   });
 
   if (process.env.NODE_ENV !== "production") {
@@ -68,7 +87,10 @@ async function sendNotification(req, res) {
     : new Date(JSON.parse(notification).last_notification_time);
   const diffInMinutes = timediff(dt, Date.now(), "m");
 
-  if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) {
+  if (
+    Number.isFinite(diffInMinutes.minutes) &&
+    diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION
+  ) {
     //Publish to notify sensor-alerts.
     redisPublisher.publish("insert", messageToSend);
 
