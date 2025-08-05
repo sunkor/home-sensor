@@ -41,7 +41,7 @@ app.post("/", (req, res) => {
     });
 
   console.log(req.body);
-  res.send(JSON.stringify(req.body));
+  res.json(req.body);
 });
 
 app.listen(8081, () => {
