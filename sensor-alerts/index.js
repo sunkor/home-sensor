@@ -11,9 +11,8 @@ const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
   process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
   10
 );
-const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseInt(
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS,
-  10
+const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseFloat(
+  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS
 );
 
 if (
@@ -25,7 +24,7 @@ if (
   );
 }
 
-connections.redisSubscriber.on("message", async (channel, message) => {
+async function handleMessage(channel, message) {
   if (process.env.NODE_ENV !== "production") {
     console.log("message received, " + message);
   }
@@ -40,7 +39,7 @@ connections.redisSubscriber.on("message", async (channel, message) => {
     return;
   }
 
-  const currentTemp = parseInt(current_temperature, 10);
+  const currentTemp = parseFloat(current_temperature);
   if (!Number.isFinite(currentTemp)) {
     console.warn(
       `Invalid current_temperature received: ${current_temperature}`
@@ -96,6 +95,11 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   } else {
     console.log("time threshold has not exceeded. Ignore!");
   }
-});
+}
 
-connections.redisSubscriber.subscribe("insert");
+if (require.main === module) {
+  connections.redisSubscriber.on("message", handleMessage);
+  connections.redisSubscriber.subscribe("insert");
+}
+
+module.exports = { handleMessage };

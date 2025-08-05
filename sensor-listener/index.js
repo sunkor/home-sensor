@@ -14,9 +14,8 @@ const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
   process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
   10
 );
-const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseInt(
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS,
-  10
+const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseFloat(
+  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS
 );
 
 if (
@@ -70,7 +69,7 @@ function writeToInflux(req, res, next) {
 }
 
 async function sendNotification(req, res) {
-  const temp = parseInt(req.body.temperature, 10);
+  const temp = req.body.temperature;
   if (!Number.isFinite(temp)) {
     res.status(400).send("Invalid temperature data.");
     return;
@@ -126,18 +125,22 @@ app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
 app.post("/fulfillment", require("./google-actions").fulfillment);
 
 //Start after 10 seconds. We want InfluxDb to be ready.
-setTimeout(function() {
-  influx
-    .getDatabaseNames()
-    .then(names => {
-      if (!names.includes("home_sensors_db")) {
-        return influx.createDatabase("home_sensors_db");
-      }
-    })
-    .then(() => {
-      app.listen(8080, () => {
-        console.log(`Listening on 8080.`);
-      });
-    })
-    .catch(error => console.log({ error }));
-}, 10000);
+if (require.main === module) {
+  setTimeout(function() {
+    influx
+      .getDatabaseNames()
+      .then(names => {
+        if (!names.includes("home_sensors_db")) {
+          return influx.createDatabase("home_sensors_db");
+        }
+      })
+      .then(() => {
+        app.listen(8080, () => {
+          console.log(`Listening on 8080.`);
+        });
+      })
+      .catch(error => console.log({ error }));
+  }, 10000);
+}
+
+module.exports = { sendNotification };
