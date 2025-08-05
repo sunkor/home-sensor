@@ -126,6 +126,8 @@ polling.on("result", function(json) {
       .format("DD-MM-YYYY HH:mm:ss");
     console.log(`Sunset date - ${sunsetDateInAest}`);
 
+    const wind = json.wind || {};
+
     const summary_data = {
       name: json.name,
       currentTemp: json.main.temp,
@@ -133,12 +135,12 @@ polling.on("result", function(json) {
       temp_min: json.main.temp_min,
       temp_max: json.main.temp_max,
       humidity: json.main.humidity,
-      wind_speed: convert(isNaN(json.wind.speed) ? 0 : json.wind.speed)
+      wind_speed: convert(isNaN(wind.speed) ? 0 : wind.speed)
         .from("m/s")
         .to("km/h"),
-      wind_direction: isNaN(json.wind.deg) ? 0 : json.wind.deg,
-      wind_direction_desc: isNaN(json.wind.deg) ? "n/a" : d2d(json.wind.deg),
-      gust_speed: convert(isNaN(json.wind.gust) ? 0 : json.wind.gust)
+      wind_direction: isNaN(wind.deg) ? 0 : wind.deg,
+      wind_direction_desc: isNaN(wind.deg) ? "n/a" : d2d(wind.deg),
+      gust_speed: convert(isNaN(wind.gust) ? 0 : wind.gust)
         .from("m/s")
         .to("km/h"),
       sunrise: json.sys.sunrise,
