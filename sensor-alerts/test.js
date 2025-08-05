@@ -6,6 +6,12 @@ async function testAwsNotification() {
   let sendMsgCalled = false;
   let redisSetCalled = false;
 
+  process.env.AWS_ACCESS_KEY = 'key';
+  process.env.AWS_SECRET_KEY = 'secret';
+  process.env.AWS_REGION = 'us-east-1';
+  process.env.SMS_SENDER = 'sender';
+  process.env.SMS_PHONE_NUMBER = '1234567890';
+
   Module.prototype.require = function(request) {
     if (request === 'aws-sns-sms') {
       return function(config, msg) {

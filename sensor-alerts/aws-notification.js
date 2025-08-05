@@ -8,9 +8,30 @@ const awsConfig = {
   region: process.env.AWS_REGION
 };
 
+const requiredAwsVars = ["AWS_ACCESS_KEY", "AWS_SECRET_KEY", "AWS_REGION"];
+const missingAwsVars = requiredAwsVars.filter(v => !process.env[v]);
+const awsConfigValid = missingAwsVars.length === 0;
+if (!awsConfigValid) {
+  console.error(
+    `Missing AWS config env vars: ${missingAwsVars.join(", ")}`
+  );
+}
+
 //Send SMS via AWS SNS.
 async function sendSMS(message, currentDt) {
   if (process.env.ENABLE_SMS_ALERTS === "true") {
+    if (!awsConfigValid) {
+      console.error("AWS config missing. Cannot send SMS alert");
+      return false;
+    }
+    const requiredSmsVars = ["SMS_SENDER", "SMS_PHONE_NUMBER"];
+    const missingSmsVars = requiredSmsVars.filter(v => !process.env[v]);
+    if (missingSmsVars.length) {
+      console.error(
+        `Missing SMS env vars: ${missingSmsVars.join(", ")}`
+      );
+      return false;
+    }
     const smsMessage = {
       message: message,
       sender: process.env.SMS_SENDER,
@@ -39,6 +60,22 @@ async function sendSMS(message, currentDt) {
 //Send e-mail via AWS SES.
 async function sendEmail(location, message) {
   if (process.env.ENABLE_EMAIL_ALERTS === "true") {
+    if (!awsConfigValid) {
+      console.error("AWS config missing. Cannot send email alert");
+      return false;
+    }
+    const requiredEmailVars = [
+      "EMAIL_FROM",
+      "EMAIL_FROM_ADDRESS",
+      "EMAIL_LIST"
+    ];
+    const missingEmailVars = requiredEmailVars.filter(v => !process.env[v]);
+    if (missingEmailVars.length) {
+      console.error(
+        `Missing email env vars: ${missingEmailVars.join(", ")}`
+      );
+      return false;
+    }
     const emailToSend = {
       from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
       to: process.env.EMAIL_LIST,
