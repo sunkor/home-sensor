@@ -5,7 +5,6 @@ const timediff = require("timediff");
 const influx = require("./common").influx;
 const asyncRedisClient = require("./common").asyncRedisClient;
 const redisPublisher = require("./common").redisPublisher;
-const userid = "123";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -37,7 +36,7 @@ app.get("/", (req, res) => {
 });
 
 function validatePayload(req, res, next) {
-  const { temperature, location } = req.body;
+  const { temperature, location, userid } = req.body;
   if (
     typeof temperature !== "number" ||
     !Number.isFinite(temperature) ||
@@ -47,6 +46,14 @@ function validatePayload(req, res, next) {
     res.status(400).send("Invalid payload");
     return;
   }
+
+  if (!userid && !process.env.DEFAULT_USER_ID) {
+    res
+      .status(400)
+      .send("Missing userid and DEFAULT_USER_ID is not configured");
+    return;
+  }
+
   next();
 }
 
@@ -77,13 +84,19 @@ async function sendNotification(req, res) {
     return;
   }
 
+  const userId = req.body.userid || process.env.DEFAULT_USER_ID;
+  if (!userId) {
+    res.status(400).send("Missing userid");
+    return;
+  }
+
   if (temp < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
     res.send("posted temperature data.");
     return;
   }
 
   const messageToSend = JSON.stringify({
-    userid: userid,
+    userid: userId,
     location: req.body.location,
     current_temperature: temp
   });
@@ -95,7 +108,7 @@ async function sendNotification(req, res) {
     );
   }
 
-  const notification = await asyncRedisClient.get(userid);
+  const notification = await asyncRedisClient.get(userId);
   const dt = !notification
     ? minDate
     : new Date(JSON.parse(notification).last_notification_time);

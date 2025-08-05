@@ -41,6 +41,8 @@ runtime.
 - `MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION` – number of minutes to wait
   before sending another notification for the same user.
 - `TEMPERATURE_THRESHOLD_IN_CELCIUS` – temperature that triggers an alert.
+- `DEFAULT_USER_ID` – optional fallback user ID when the request payload does
+  not specify one.
 
 #### sensor-alerts (additional)
 - `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, `AWS_REGION`
