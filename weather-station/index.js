@@ -63,19 +63,22 @@ const influx = new Influx.InfluxDB({
   ]
 });
 
+function fetchWeatherData(fetchFn, targetUrl) {
+  return fetchFn(targetUrl).then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  });
+}
+
 const polling = AsyncPolling(function(end) {
   if (process.env.NODE_ENV !== "production") {
     console.log("fetching.." + url);
   } else {
     console.log("fetching.." + apiEndpoint);
   }
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
+  fetchWeatherData(fetch, url)
     .then(json => end(null, json))
     .catch(error => {
       console.error("Error fetching weather data", error);
@@ -185,17 +188,21 @@ polling.on("result", function(json) {
   }
 });
 
-setTimeout(function() {
-  influx
-    .getDatabaseNames()
-    .then(names => {
-      if (!names.includes("home_sensors_db")) {
-        return influx.createDatabase("home_sensors_db");
-      }
-    })
-    .then(() => {
-      console.log("influxdb ready. Begin polling...");
-      polling.run(); // Let's start polling.
-    })
-    .catch(error => console.log({ error }));
-}, 10000);
+if (require.main === module) {
+  setTimeout(function() {
+    influx
+      .getDatabaseNames()
+      .then(names => {
+        if (!names.includes("home_sensors_db")) {
+          return influx.createDatabase("home_sensors_db");
+        }
+      })
+      .then(() => {
+        console.log("influxdb ready. Begin polling...");
+        polling.run(); // Let's start polling.
+      })
+      .catch(error => console.log({ error }));
+  }, 10000);
+}
+
+module.exports = { fetchWeatherData };
