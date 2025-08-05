@@ -269,10 +269,10 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"temperature\") FROM \"temperature_data_in_celcius\" WHERE (\"location\" = 'study_room') AND $timeFilter",
+          "query": "SELECT last(\"temperature\") FROM \"temperature_data_in_celsius\" WHERE (\"location\" = 'study_room') AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -378,10 +378,10 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"temperature\") FROM \"temperature_data_in_celcius\" WHERE (\"location\" = 'Jannali') AND $timeFilter",
+          "query": "SELECT last(\"temperature\") FROM \"temperature_data_in_celsius\" WHERE (\"location\" = 'Jannali') AND $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -466,7 +466,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -499,7 +499,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "C",
@@ -532,7 +532,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -2754,7 +2754,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -2787,7 +2787,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "B",
@@ -2820,7 +2820,7 @@
               "type": "time"
             }
           ],
-          "measurement": "temperature_data_in_celcius",
+          "measurement": "temperature_data_in_celsius",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "C",

@@ -14,7 +14,7 @@ app.intent("get-home-room-location-temperature", async (conv, params) => {
     try {
       const result = await influx.query(
         `
-      SELECT * FROM temperature_data_in_celcius
+      SELECT * FROM temperature_data_in_celsius
       where location='study_room' GROUP BY * ORDER BY DESC LIMIT 1
     `
       );
