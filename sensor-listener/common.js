@@ -2,7 +2,8 @@ const Influx = require("influx");
 const asyncRedis = require("async-redis");
 
 const influxHost = process.env.INFLUX_HOST || "influxdb";
-const influxPort = parseInt(process.env.INFLUX_PORT, 10) || 8086;
+const influxPortEnv = parseInt(process.env.INFLUX_PORT, 10);
+const influxPort = Number.isFinite(influxPortEnv) ? influxPortEnv : 8086;
 const influx = new Influx.InfluxDB({
   host: influxHost,
   port: influxPort,
@@ -20,7 +21,8 @@ const influx = new Influx.InfluxDB({
 
 //Redis setup.
 const redisHost = process.env.REDIS_HOST || "redis";
-const redisPort = parseInt(process.env.REDIS_PORT, 10) || 6379;
+const redisPortEnv = parseInt(process.env.REDIS_PORT, 10);
+const redisPort = Number.isFinite(redisPortEnv) ? redisPortEnv : 6379;
 const asyncRedisClient = asyncRedis.createClient({
   host: redisHost,
   port: redisPort,

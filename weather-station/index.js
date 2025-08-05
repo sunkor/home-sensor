@@ -44,7 +44,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const influxHost = process.env.INFLUX_HOST || "influxdb";
-const influxPort = parseInt(process.env.INFLUX_PORT, 10) || 8086;
+const influxPortEnv = parseInt(process.env.INFLUX_PORT, 10);
+const influxPort = Number.isFinite(influxPortEnv) ? influxPortEnv : 8086;
 const influx = new Influx.InfluxDB({
   host: influxHost,
   port: influxPort,
