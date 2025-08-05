@@ -5,7 +5,6 @@ const influx = require("./common").influx;
 const asyncRedisClient = require("./common").asyncRedisClient;
 const redisPublisher = require("./common").redisPublisher;
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
-const userid = "123";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -71,6 +70,11 @@ function writeToInflux(req, res, next) {
 }
 
 async function sendNotification(req, res) {
+  const userId = req.header("userid") || req.body.userid;
+  if (typeof userId !== "string" || userId.trim() === "") {
+    res.status(400).send("Missing or invalid user id.");
+    return;
+  }
   const temp = Number(req.body.temperature);
   if (!Number.isFinite(temp)) {
     res.status(400).send("Invalid temperature data.");
@@ -83,7 +87,7 @@ async function sendNotification(req, res) {
   }
 
   const messageToSend = JSON.stringify({
-    userid: userid,
+    userid: userId,
     location: req.body.location,
     current_temperature: temp
   });
@@ -95,7 +99,7 @@ async function sendNotification(req, res) {
     );
   }
 
-  const notification = await asyncRedisClient.get(userid);
+  const notification = await asyncRedisClient.get(userId);
   const dt = !notification
     ? minDate
     : new Date(JSON.parse(notification).last_notification_time);
