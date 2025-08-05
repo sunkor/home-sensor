@@ -8,45 +8,40 @@ const app = dialogflow();
 
 // Register handlers for Dialogflow intents
 app.intent("get-home-room-location-temperature", async (conv, params) => {
-  if (
-    params.RoomLocation === "study room" ||
-    params.RoomLocation === "studyroom"
-  ) {
-    const message = await influx
-      .query(
+  const supportedLocations = ["study room", "studyroom"];
+  if (supportedLocations.includes(params.RoomLocation)) {
+    let message;
+    try {
+      const result = await influx.query(
         `
       SELECT * FROM temperature_data_in_celcius
       where location='study_room' GROUP BY * ORDER BY DESC LIMIT 1
     `
-      )
-      .then(result => {
-        console.log(JSON.stringify(result)); // [{"time":"2020-01-12T04:17:08.776Z","temperature":25,"location":"study_room"}]
+      );
 
-        const timeString = moment(result[0].time)
-          .tz("Australia/Sydney")
-          .format("DD MMM YYYY, h mm a");
+      console.log(JSON.stringify(result)); // [{"time":"2020-01-12T04:17:08.776Z","temperature":25,"location":"study_room"}]
 
-        const temperature = result[0].temperature;
-        const floatTemperature = parseFloat(temperature);
+      const timeString = moment(result[0].time)
+        .tz("Australia/Sydney")
+        .format("DD MMM YYYY, h mm a");
 
-        if (isNaN(floatTemperature)) {
-          return `Temperature could not be read.`;
-        }
+      const temperature = result[0].temperature;
+      const floatTemperature = parseFloat(temperature);
 
-        return `The last temperature in ${result[0].location.replace(
-          "_",
-          " "
-        )} was ${Math.round(floatTemperature * 100) /
-          100} degrees celcius at ${timeString}`;
-      })
-      .catch(error => {
-        console.log(JSON.stringify(error));
-        return `An error occured while trying to fetch the last temperature.`;
-      });
+      if (isNaN(floatTemperature)) {
+        message = `Temperature could not be read.`;
+      } else {
+        message = `The last temperature in ${result[0].location.replace(/_/g, " ")} was ${Math.round(floatTemperature * 100) / 100} degrees Celsius at ${timeString}`;
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error));
+      message = `An error occurred while trying to fetch the last temperature.`;
+    }
     console.log(message);
     conv.close(message);
   } else {
-    conv.ask(`I didn't understand. Can you tell me something else?`);
+    const location = params.RoomLocation || "that location";
+    conv.close(`Sorry, I don't have data for ${location}.`);
   }
 });
 
