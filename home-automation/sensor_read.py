@@ -39,23 +39,25 @@ def read_temp():
         time.sleep(0.2)
         lines = read_temp_raw()
     equals_pos = lines[1].find('t=')
-    if equals_pos != -1:
-        temp_string = lines[1][equals_pos+2:]
-        temp_c = float(temp_string) / 1000.0
-        # temp_f = temp_c * 9.0 / 5.0 + 32.0
-        today = datetime.now()
-        # timeInString = today.strftime("%d/%m/%Y %H:%M:%S")
-        data = {'location': 'study_room',
-                'temperature': temp_c}
-        # sending post request and saving response as response object
-        result = requests.post(url=API_ENDPOINT, json=data, headers=headers, timeout=10)
-        print(result.reason)
-        print(result.status_code)
-        print(result.text)
-        if 400 <= result.status_code < 500:
-            raise ValueError(f"Client error {result.status_code}: {result.text}")
-        result.raise_for_status()
-        return temp_c
+    if equals_pos == -1:
+        logging.error("Temperature marker 't=' not found in sensor output: %s", lines)
+        raise ValueError("Temperature marker 't=' not found in sensor output")
+    temp_string = lines[1][equals_pos+2:]
+    temp_c = float(temp_string) / 1000.0
+    # temp_f = temp_c * 9.0 / 5.0 + 32.0
+    today = datetime.now()
+    # timeInString = today.strftime("%d/%m/%Y %H:%M:%S")
+    data = {'location': 'study_room',
+            'temperature': temp_c}
+    # sending post request and saving response as response object
+    result = requests.post(url=API_ENDPOINT, json=data, headers=headers, timeout=10)
+    print(result.reason)
+    print(result.status_code)
+    print(result.text)
+    if 400 <= result.status_code < 500:
+        raise ValueError(f"Client error {result.status_code}: {result.text}")
+    result.raise_for_status()
+    return temp_c
 
 
 backoff = 1
