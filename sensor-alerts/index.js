@@ -7,10 +7,23 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION =
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION;
-const TEMPERATURE_THRESHOLD_IN_CELCIUS =
-  process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS;
+const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
+  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
+  10
+);
+const TEMPERATURE_THRESHOLD_IN_CELCIUS = parseInt(
+  process.env.TEMPERATURE_THRESHOLD_IN_CELCIUS,
+  10
+);
+
+if (
+  !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||
+  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELCIUS)
+) {
+  throw new Error(
+    "Invalid numeric environment configuration for MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION or TEMPERATURE_THRESHOLD_IN_CELCIUS"
+  );
+}
 
 connections.redisSubscriber.on("message", async (channel, message) => {
   if (process.env.NODE_ENV !== "production") {
@@ -27,11 +40,19 @@ connections.redisSubscriber.on("message", async (channel, message) => {
     return;
   }
 
+  const currentTemp = parseInt(current_temperature, 10);
+  if (!Number.isFinite(currentTemp)) {
+    console.warn(
+      `Invalid current_temperature received: ${current_temperature}`
+    );
+    return;
+  }
+
   //Check threshold.
-  if (parseInt(current_temperature) < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
+  if (currentTemp < TEMPERATURE_THRESHOLD_IN_CELCIUS) {
     if (process.env.NODE_ENV !== "production") {
       console.log(
-        `Current temperature read, ${current_temperature} does not exceed the threshold ${TEMPERATURE_THRESHOLD_IN_CELCIUS}`
+        `Current temperature read, ${currentTemp} does not exceed the threshold ${TEMPERATURE_THRESHOLD_IN_CELCIUS}`
       );
     }
     return;
@@ -66,8 +87,11 @@ connections.redisSubscriber.on("message", async (channel, message) => {
     });
   }
 
-  if (diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) {
-    notificationDetails.message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${current_temperature}`;
+  if (
+    Number.isFinite(diffInMinutes.minutes) &&
+    diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION
+  ) {
+    notificationDetails.message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELCIUS} has exceeded! Current temperature in ${location} is ${currentTemp}`;
     awsNotification.sendNotification(notificationDetails);
   } else {
     console.log("time threshold has not exceeded. Ignore!");
