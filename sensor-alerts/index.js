@@ -67,7 +67,13 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   }
 
   //Get last sms sent time.
-  const notificationObj = await connections.asyncRedisClient.get(userid);
+  let notificationObj;
+  try {
+    notificationObj = await connections.asyncRedisClient.get(userid);
+  } catch (err) {
+    console.warn("Failed to get last notification time from Redis", err);
+    notificationObj = null;
+  }
 
   const dt = !notificationObj
     ? minDate
@@ -78,8 +84,7 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   const notificationDetails = {
     userid,
     currentDt,
-    location,
-    message
+    location
   };
 
   //Log.
