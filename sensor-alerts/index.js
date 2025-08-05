@@ -41,7 +41,12 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   const { userid, location, current_temperature } = parsedMessage;
 
   //Check required fields.
-  if (!userid || !location || !current_temperature) {
+  if (
+    !userid ||
+    !location ||
+    current_temperature === undefined ||
+    current_temperature === null
+  ) {
     console.warn(
       "Missing required fields {userid, or location, or current_temperature} from message."
     );

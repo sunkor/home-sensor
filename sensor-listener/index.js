@@ -138,17 +138,21 @@ app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
 //GOOGLE ACTION.
 app.post("/fulfillment", require("./google-actions").fulfillment);
 
-waitForInfluxDb(influx)
-  .then(names => {
-    if (!names.includes("home_sensors_db")) {
-      return influx.createDatabase("home_sensors_db");
-    }
-  })
-  .then(() => {
-    app.listen(8080, () => {
-      console.log(`Listening on 8080.`);
+if (require.main === module) {
+  waitForInfluxDb(influx)
+    .then(names => {
+      if (!names.includes("home_sensors_db")) {
+        return influx.createDatabase("home_sensors_db");
+      }
+    })
+    .then(() => {
+      app.listen(8080, () => {
+        console.log(`Listening on 8080.`);
+      });
+    })
+    .catch(error => {
+      console.error("Failed to initialize InfluxDB", error);
     });
-  })
-  .catch(error => {
-    console.error("Failed to initialize InfluxDB", error);
-  });
+}
+
+module.exports = { app, validatePayload, writeToInflux, sendNotification };
