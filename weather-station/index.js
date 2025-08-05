@@ -26,8 +26,11 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
+const influxHost = process.env.INFLUX_HOST || "influxdb";
+const influxPort = parseInt(process.env.INFLUX_PORT, 10) || 8086;
 const influx = new Influx.InfluxDB({
-  host: "influxdb",
+  host: influxHost,
+  port: influxPort,
   database: "home_sensors_db",
   schema: [
     {

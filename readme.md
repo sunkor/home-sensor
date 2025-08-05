@@ -38,6 +38,10 @@ Create an `.env` file inside each service directory or provide the variables at
 runtime.
 
 #### sensor-listener and sensor-alerts
+- `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
+- `INFLUX_PORT` – port for InfluxDB (default: `8086`).
+- `REDIS_HOST` – hostname for Redis (default: `redis`).
+- `REDIS_PORT` – port for Redis (default: `6379`).
 - `MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION` – number of minutes to wait
   before sending another notification for the same user.
 - `TEMPERATURE_THRESHOLD_IN_CELSIUS` – temperature that triggers an alert.
@@ -53,6 +57,8 @@ runtime.
 - `EMAIL_LIST` – comma separated list of recipients.
 
 #### weather-station
+- `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
+- `INFLUX_PORT` – port for InfluxDB (default: `8086`).
 - `WEATHER_API_KEY`
 - `WEATHER_API_ENDPOINT` – e.g. `https://api.openweathermap.org/data/2.5/weather`
 - `WEATHER_API_QUERY_POSTCODE`
