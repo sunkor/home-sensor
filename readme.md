@@ -34,8 +34,8 @@ The system is composed of multiple services orchestrated with
 - API key for a weather provider such as OpenWeatherMap
 
 ### Environment variables
-Create an `.env` file inside each service directory or provide the variables at
-runtime.
+Sample `.env.example` files are available in the service directories. Copy one
+to `.env` and adjust the values as needed, or provide the variables at runtime.
 
 #### sensor-listener and sensor-alerts
 - `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
