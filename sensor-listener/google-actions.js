@@ -20,18 +20,21 @@ app.intent("get-home-room-location-temperature", async (conv, params) => {
       );
 
       console.log(JSON.stringify(result)); // [{"time":"2020-01-12T04:17:08.776Z","temperature":25,"location":"study_room"}]
+      if (result.length > 0) {
+        const timeString = moment(result[0].time)
+          .tz("Australia/Sydney")
+          .format("DD MMM YYYY, h mm a");
 
-      const timeString = moment(result[0].time)
-        .tz("Australia/Sydney")
-        .format("DD MMM YYYY, h mm a");
+        const temperature = result[0].temperature;
+        const floatTemperature = parseFloat(temperature);
 
-      const temperature = result[0].temperature;
-      const floatTemperature = parseFloat(temperature);
-
-      if (isNaN(floatTemperature)) {
-        message = `Temperature could not be read.`;
+        if (isNaN(floatTemperature)) {
+          message = `Temperature could not be read.`;
+        } else {
+          message = `The last temperature in ${result[0].location.replace(/_/g, " ")} was ${Math.round(floatTemperature * 100) / 100} degrees Celsius at ${timeString}`;
+        }
       } else {
-        message = `The last temperature in ${result[0].location.replace(/_/g, " ")} was ${Math.round(floatTemperature * 100) / 100} degrees Celsius at ${timeString}`;
+        message = `No temperature data is available right now.`;
       }
     } catch (error) {
       console.log(JSON.stringify(error));
