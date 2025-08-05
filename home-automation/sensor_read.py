@@ -4,6 +4,7 @@ import time
 import requests
 from datetime import datetime
 import sys
+import logging
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -19,9 +20,8 @@ headers = {'Content-type': 'application/json',
 
 
 def read_temp_raw():
-    f = open(device_file, 'r')
-    lines = f.readlines()
-    f.close()
+    with open(device_file, "r") as f:
+        lines = f.readlines()
     return lines
 
 
@@ -50,7 +50,12 @@ def read_temp():
 while True:
     try:
         print(read_temp())
-    except:
-        e = sys.exc_info()[0]
-        print("An exception occured. %s" % e)
+    except Exception as e:
+        logging.exception("An exception occurred: %s", e)
+        if isinstance(e, requests.exceptions.RequestException):
+            logging.error("Request failed, retrying...")
+            continue
+        else:
+            logging.error("Unexpected error, exiting.")
+            break
     time.sleep(1)
