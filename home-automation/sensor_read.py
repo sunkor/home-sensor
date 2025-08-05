@@ -18,8 +18,10 @@ os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
 base_dir = '/sys/bus/w1/devices/'
-device_folder = glob.glob(base_dir + '28*')[0]
-device_file = device_folder + '/w1_slave'
+device_folders = glob.glob(base_dir + '28*')
+if not device_folders:
+    raise FileNotFoundError(f"No temperature sensor device found in {base_dir}")
+device_file = device_folders[0] + '/w1_slave'
 
 headers = {'Content-type': 'application/json',
            'x-api-key': API_KEY}
