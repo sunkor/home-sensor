@@ -1,8 +1,18 @@
-import os
+"""Read temperature data from a 1-Wire sensor and send it to an API.
+
+The script expects two environment variables:
+
+``API_ENDPOINT`` – URL of the service that accepts temperature readings.
+``API_KEY`` – secret key used for authenticating with the service.
+"""
+
 import glob
-import time
-import requests
 import logging
+import os
+import time
+from typing import List
+
+import requests
 
 # Read configuration from environment
 API_ENDPOINT = os.environ.get("API_ENDPOINT")
@@ -21,39 +31,45 @@ def _load_module(module: str) -> None:
         raise OSError(f"modprobe {module} failed with exit code {ret}")
 
 
-_load_module("w1-gpio")
-_load_module("w1-therm")
+_load_module("w1-gpio")  # GPIO interface for 1-Wire
+_load_module("w1-therm")  # 1-Wire thermometer driver
 
-base_dir = '/sys/bus/w1/devices/'
-device_folders = glob.glob(base_dir + '28*')
+# Locate the sensor device file
+BASE_DIR = "/sys/bus/w1/devices/"
+device_folders = glob.glob(BASE_DIR + "28*")
 if not device_folders:
-    raise FileNotFoundError(f"No temperature sensor device found in {base_dir}")
-device_file = device_folders[0] + '/w1_slave'
+    raise FileNotFoundError(f"No temperature sensor device found in {BASE_DIR}")
+DEVICE_FILE = device_folders[0] + "/w1_slave"
 
-headers = {'Content-type': 'application/json',
-           'x-api-key': API_KEY}
+# Prepare headers for authenticated API requests
+HEADERS = {"Content-type": "application/json", "x-api-key": API_KEY}
 
 
-def read_temp_raw():
-    with open(device_file, "r") as f:
-        lines = f.readlines()
+def read_temp_raw() -> List[str]:
+    """Return the raw lines read from the sensor's device file."""
+    with open(DEVICE_FILE, "r", encoding="utf-8") as file:
+        lines = file.readlines()
     return lines
 
 
-def read_temp():
+def read_temp() -> float:
+    """Parse temperature from the sensor output and POST it to the API."""
     lines = read_temp_raw()
-    while lines[0].strip()[-3:] != 'YES':
+    while lines[0].strip()[-3:] != "YES":
         time.sleep(0.2)
         lines = read_temp_raw()
-    equals_pos = lines[1].find('t=')
+
+    equals_pos = lines[1].find("t=")
     if equals_pos == -1:
         logging.error("Temperature marker 't=' not found in sensor output: %s", lines)
         raise ValueError("Temperature marker 't=' not found in sensor output")
-    temp_string = lines[1][equals_pos+2:]
+
+    temp_string = lines[1][equals_pos + 2 :]
     temp_c = float(temp_string) / 1000.0
-    data = {'location': 'study_room',
-            'temperature': temp_c}
-    result = requests.post(url=API_ENDPOINT, json=data, headers=headers, timeout=10)
+
+    # Submit the reading to the remote API
+    data = {"location": "study_room", "temperature": temp_c}
+    result = requests.post(url=API_ENDPOINT, json=data, headers=HEADERS, timeout=10)
     print(result.reason)
     print(result.status_code)
     print(result.text)
@@ -63,22 +79,28 @@ def read_temp():
     return temp_c
 
 
-backoff = 1
-MAX_BACKOFF = 60
+def main() -> None:
+    """Continuously read and report temperatures with exponential backoff."""
+    backoff = 1
+    max_backoff = 60
 
-while True:
-    try:
-        print(read_temp())
-        backoff = 1
-    except requests.exceptions.RequestException as e:
-        logging.exception("Request failed: %s", e)
-        logging.error("Retrying in %s seconds", backoff)
-        time.sleep(backoff)
-        backoff = min(backoff * 2, MAX_BACKOFF)
-    except ValueError as e:
-        logging.error("Configuration error: %s", e)
-        break
-    except Exception as e:
-        logging.exception("Unexpected error: %s", e)
-        break
-    time.sleep(1)
+    while True:
+        try:
+            print(read_temp())
+            backoff = 1
+        except requests.exceptions.RequestException as exc:
+            logging.exception("Request failed: %s", exc)
+            logging.error("Retrying in %s seconds", backoff)
+            time.sleep(backoff)
+            backoff = min(backoff * 2, max_backoff)
+        except ValueError as exc:
+            logging.error("Configuration error: %s", exc)
+            break
+        except Exception as exc:  # pragma: no cover - unexpected errors
+            logging.exception("Unexpected error: %s", exc)
+            break
+        time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
