@@ -13,7 +13,7 @@ const sesConfig = {
 };
 
 // Handle promise's fulfilled/rejected states
-module.exports.sendEmailAlert = emailToSend => {
+module.exports.sendEmailAlert = async emailToSend => {
   // Create sendEmail params
   const params = {
     Source: emailToSend.from,
@@ -36,15 +36,14 @@ module.exports.sendEmailAlert = emailToSend => {
     }
   };
 
-  new AWS.SES(sesConfig)
-    .sendEmail(params)
-    .promise()
-    .then(res => {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("email sent successfully");
-      }
-    })
-    .catch(err => {
-      console.error(err, err.stack);
-    });
+  try {
+    const res = await new AWS.SES(sesConfig).sendEmail(params).promise();
+    if (process.env.NODE_ENV !== "production") {
+      console.log("email sent successfully");
+    }
+    return res;
+  } catch (err) {
+    console.error(err, err.stack);
+    throw err;
+  }
 };
