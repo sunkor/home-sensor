@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const d2d = require("degrees-to-direction");
 const convert = require("convert-units");
 const moment = require("moment-timezone");
+const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -185,17 +186,16 @@ polling.on("result", function(json) {
   }
 });
 
-setTimeout(function() {
-  influx
-    .getDatabaseNames()
-    .then(names => {
-      if (!names.includes("home_sensors_db")) {
-        return influx.createDatabase("home_sensors_db");
-      }
-    })
-    .then(() => {
-      console.log("influxdb ready. Begin polling...");
-      polling.run(); // Let's start polling.
-    })
-    .catch(error => console.log({ error }));
-}, 10000);
+waitForInfluxDb(influx)
+  .then(names => {
+    if (!names.includes("home_sensors_db")) {
+      return influx.createDatabase("home_sensors_db");
+    }
+  })
+  .then(() => {
+    console.log("influxdb ready. Begin polling...");
+    polling.run(); // Let's start polling.
+  })
+  .catch(error => {
+    console.error("Failed to initialize InfluxDB", error);
+  });
