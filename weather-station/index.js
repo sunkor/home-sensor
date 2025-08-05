@@ -33,12 +33,13 @@ const url = `${apiEndpoint}?zip=${encodeURIComponent(zipCode)},${encodeURICompon
 )}&units=${encodeURIComponent(units)}&appid=${encodeURIComponent(appid)}`;
 
 if (process.env.NODE_ENV !== "production") {
+  const redactedUrl = new URL(url);
+  redactedUrl.searchParams.set("appid", "***");
   console.log({
     apiEndpoint: apiEndpoint,
-    apiKey: appid,
     postCode: zipCode,
     countryCode: countryCode,
-    invokeUrl: url
+    invokeUrl: redactedUrl.toString()
   });
 }
 
@@ -127,6 +128,11 @@ polling.on("result", function(json) {
     console.log(`Sunset date - ${sunsetDateInAest}`);
 
     const wind = json.wind || {};
+
+    if (!json.weather || !Array.isArray(json.weather) || json.weather.length === 0) {
+      console.error("Missing weather data in API response");
+      return;
+    }
 
     const summary_data = {
       name: json.name,
