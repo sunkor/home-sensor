@@ -64,7 +64,11 @@ const influx = new Influx.InfluxDB({
 });
 
 const polling = AsyncPolling(function(end) {
-  console.log("fetching.." + url);
+  if (process.env.NODE_ENV !== "production") {
+    console.log("fetching.." + url);
+  } else {
+    console.log("fetching.." + apiEndpoint);
+  }
   fetch(url)
     .then(response => {
       if (!response.ok) {
