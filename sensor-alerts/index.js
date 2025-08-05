@@ -30,7 +30,15 @@ connections.redisSubscriber.on("message", async (channel, message) => {
     console.log("message received, " + message);
   }
 
-  const { userid, location, current_temperature } = JSON.parse(message);
+  let parsedMessage;
+  try {
+    parsedMessage = JSON.parse(message);
+  } catch (err) {
+    console.warn("Failed to parse message", err);
+    return;
+  }
+
+  const { userid, location, current_temperature } = parsedMessage;
 
   //Check required fields.
   if (!userid || !location || !current_temperature) {
