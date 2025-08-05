@@ -44,7 +44,7 @@ async function testAwsNotification() {
   assert(redisSetCalled, 'redis set should be called');
 }
 
-async function testFractionalTemperatureTriggersAlert() {
+async function testFractionalThresholdRespected() {
   const originalRequire = Module.prototype.require;
   let handler;
   let notificationCalled = false;
@@ -68,19 +68,34 @@ async function testFractionalTemperatureTriggersAlert() {
   };
 
   process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25';
+  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25.5';
   delete require.cache[require.resolve('./index.js')];
   require('./index.js');
   Module.prototype.require = originalRequire;
 
-  const message = JSON.stringify({
+  let message = JSON.stringify({
+    userid: 'user1',
+    location: 'Sydney',
+    current_temperature: 25.4
+  });
+  await handler('insert', message);
+  assert.strictEqual(
+    notificationCalled,
+    false,
+    'Notification should not be sent below fractional threshold'
+  );
+
+  notificationCalled = false;
+  message = JSON.stringify({
     userid: 'user1',
     location: 'Sydney',
     current_temperature: 25.6
   });
   await handler('insert', message);
-
-  assert(notificationCalled, 'Notification should be sent for fractional temperature above threshold');
+  assert(
+    notificationCalled,
+    'Notification should be sent above fractional threshold'
+  );
 }
 
 async function testZeroTemperatureAccepted() {
@@ -134,7 +149,7 @@ async function testZeroTemperatureAccepted() {
 
 async function run() {
   await testAwsNotification();
-  await testFractionalTemperatureTriggersAlert();
+  await testFractionalThresholdRespected();
   await testZeroTemperatureAccepted();
   console.log('All tests passed');
 }
