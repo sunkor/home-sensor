@@ -29,7 +29,7 @@ The system is composed of multiple services orchestrated with
 ## Setup
 ### Prerequisites
 - Docker and Docker Compose
-- Node.js (to run services locally without Docker)
+- Node.js 18 (to run services locally without Docker)
 - AWS account with permissions for SNS and SES
 - API key for a weather provider such as OpenWeatherMap
 
