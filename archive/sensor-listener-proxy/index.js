@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 app.use(bodyParser.json());
 
-var apigClient = apigClientFactory.newClient({
+const apigClient = apigClientFactory.newClient({
   invokeUrl: process.env.AWS_API_ENDPOINT,
   region: process.env.AWS_REGION,
   accessKey: process.env.AWS_ACCESS_KEY,

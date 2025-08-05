@@ -1,9 +1,9 @@
 const Influx = require("influx");
 const os = require("os");
 
-var min = 4;
-var max = 5;
-var random = Math.floor(Math.random() * (+max - +min)) + +min;
+const min = 4;
+const max = 5;
+const random = Math.floor(Math.random() * (+max - +min)) + +min;
 
 const influx = new Influx.InfluxDB({
   host: "localhost",
