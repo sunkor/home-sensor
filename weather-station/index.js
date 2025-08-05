@@ -12,10 +12,25 @@ if (process.env.NODE_ENV !== "production") {
 
 const zipCode = process.env.WEATHER_API_QUERY_POSTCODE;
 const countryCode = process.env.WEATHER_API_QUERY_COUNTRY_CODE;
-const units = "metric";
 const appid = process.env.WEATHER_API_KEY;
 const apiEndpoint = process.env.WEATHER_API_ENDPOINT;
-const url = `${apiEndpoint}?zip=${zipCode},${countryCode}&units=${units}&appid=${appid}`;
+
+if (!zipCode || !countryCode || !appid || !apiEndpoint) {
+  const missingVars = [
+    !zipCode && "WEATHER_API_QUERY_POSTCODE",
+    !countryCode && "WEATHER_API_QUERY_COUNTRY_CODE",
+    !appid && "WEATHER_API_KEY",
+    !apiEndpoint && "WEATHER_API_ENDPOINT"
+  ]
+    .filter(Boolean)
+    .join(", ");
+  throw new Error(`Missing required environment variables: ${missingVars}`);
+}
+
+const units = "metric";
+const url = `${apiEndpoint}?zip=${encodeURIComponent(zipCode)},${encodeURIComponent(
+  countryCode
+)}&units=${encodeURIComponent(units)}&appid=${encodeURIComponent(appid)}`;
 
 if (process.env.NODE_ENV !== "production") {
   console.log({
