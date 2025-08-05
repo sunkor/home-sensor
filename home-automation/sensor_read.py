@@ -6,6 +6,14 @@ from datetime import datetime
 import sys
 import logging
 
+# Read configuration from environment
+API_ENDPOINT = os.environ.get("API_ENDPOINT")
+API_KEY = os.environ.get("API_KEY")
+if not API_ENDPOINT:
+    raise EnvironmentError("API_ENDPOINT environment variable is not set")
+if not API_KEY:
+    raise EnvironmentError("API_KEY environment variable is not set")
+
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
@@ -13,10 +21,8 @@ base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
-# defining the api-endpoint
-API_ENDPOINT = ""
 headers = {'Content-type': 'application/json',
-           'x-api-key': 'g2Ewlnl4Hw8j5VqucqJJi8OFqE9nDFND5gZfOz51'}
+           'x-api-key': API_KEY}
 
 
 def read_temp_raw():
@@ -40,22 +46,32 @@ def read_temp():
         data = {'location': 'study_room',
                 'temperature': temp_c}
         # sending post request and saving response as response object
-        result = requests.post(url=API_ENDPOINT, json=data, headers=headers)
+        result = requests.post(url=API_ENDPOINT, json=data, headers=headers, timeout=10)
         print(result.reason)
         print(result.status_code)
         print(result.text)
+        if 400 <= result.status_code < 500:
+            raise ValueError(f"Client error {result.status_code}: {result.text}")
+        result.raise_for_status()
         return temp_c
 
+
+backoff = 1
+MAX_BACKOFF = 60
 
 while True:
     try:
         print(read_temp())
+        backoff = 1
+    except requests.exceptions.RequestException as e:
+        logging.exception("Request failed: %s", e)
+        logging.error("Retrying in %s seconds", backoff)
+        time.sleep(backoff)
+        backoff = min(backoff * 2, MAX_BACKOFF)
+    except ValueError as e:
+        logging.error("Configuration error: %s", e)
+        break
     except Exception as e:
-        logging.exception("An exception occurred: %s", e)
-        if isinstance(e, requests.exceptions.RequestException):
-            logging.error("Request failed, retrying...")
-            continue
-        else:
-            logging.error("Unexpected error, exiting.")
-            break
+        logging.exception("Unexpected error: %s", e)
+        break
     time.sleep(1)
