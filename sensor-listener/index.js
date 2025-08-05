@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
 const influx = require("./common").influx;
@@ -30,7 +29,7 @@ if (
 }
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("hello world, now lets get serious shall well?");
