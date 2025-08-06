@@ -19,8 +19,8 @@ Periodically polls a public weather API and stores the observations in InfluxDB 
 - **INFLUX_PORT** (default `8086`) – InfluxDB port.
 - **WEATHER_API_ENDPOINT** – base URL of the weather API.
 - **WEATHER_API_KEY** – API key for the weather service.
-- **WEATHER_API_QUERY_POSTCODE** – postcode for the location to query.
-- **WEATHER_API_QUERY_COUNTRY_CODE** – country code for the location.
+- **WEATHER_API_LATITUDE** – latitude for the location to query.
+- **WEATHER_API_LONGITUDE** – longitude for the location.
 
 ## Tests
 Run the unit tests with:

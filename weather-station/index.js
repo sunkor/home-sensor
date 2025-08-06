@@ -6,15 +6,15 @@ const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
 const config = require("../config/config");
 const { parseWeatherData } = require("./parseWeather");
 
-const zipCode = config.WEATHER_API_QUERY_POSTCODE;
-const countryCode = config.WEATHER_API_QUERY_COUNTRY_CODE;
+const latitude = config.WEATHER_API_LATITUDE;
+const longitude = config.WEATHER_API_LONGITUDE;
 const appid = config.WEATHER_API_KEY;
 const apiEndpoint = config.WEATHER_API_ENDPOINT;
 
-if (!zipCode || !countryCode || !appid || !apiEndpoint) {
+if (latitude == null || longitude == null || !appid || !apiEndpoint) {
   const missingVars = [
-    !zipCode && "WEATHER_API_QUERY_POSTCODE",
-    !countryCode && "WEATHER_API_QUERY_COUNTRY_CODE",
+    latitude == null && "WEATHER_API_LATITUDE",
+    longitude == null && "WEATHER_API_LONGITUDE",
     !appid && "WEATHER_API_KEY",
     !apiEndpoint && "WEATHER_API_ENDPOINT"
   ]
@@ -27,16 +27,16 @@ const baseUrl = apiEndpoint.endsWith("/")
   ? apiEndpoint.slice(0, -1)
   : apiEndpoint;
 const url = `${baseUrl}/current.json?key=${encodeURIComponent(appid)}&q=${encodeURIComponent(
-  zipCode
-)},${encodeURIComponent(countryCode)}`;
+  latitude
+)},${encodeURIComponent(longitude)}`;
 
 if (process.env.NODE_ENV !== "production") {
   const redactedUrl = new URL(url);
   redactedUrl.searchParams.set("key", "***");
   console.log({
     apiEndpoint: apiEndpoint,
-    postCode: zipCode,
-    countryCode: countryCode,
+    latitude,
+    longitude,
     invokeUrl: redactedUrl.toString()
   });
 }

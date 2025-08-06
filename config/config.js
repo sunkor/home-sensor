@@ -21,8 +21,8 @@ const env = cleanEnv(process.env, {
   TEMPERATURE_THRESHOLD_IN_CELSIUS: num({ default: 30, optional: true }),             // temperature triggering an alert
 
   // Weather-station API query parameters.
-  WEATHER_API_QUERY_POSTCODE: str({ default: '<post_code>', optional: true }),      // ZIP/postcode
-  WEATHER_API_QUERY_COUNTRY_CODE: str({ default: '<country_code>', optional: true }), // ISO country code
+  WEATHER_API_LATITUDE: num({ default: undefined, optional: true }),      // latitude
+  WEATHER_API_LONGITUDE: num({ default: undefined, optional: true }),     // longitude
   WEATHER_API_KEY: str({ default: '<secret>', optional: true }),                // WeatherAPI key
   WEATHER_API_ENDPOINT: str({ default: 'https://api.weatherapi.com/v1', optional: true }),           // WeatherAPI base URL
 
