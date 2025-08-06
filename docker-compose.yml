@@ -20,6 +20,8 @@ services:
       - ./weather-station:/usr/src/app
     environment:
       - WEATHER_API_KEY
+      - WEATHER_API_LATITUDE
+      - WEATHER_API_LONGITUDE
   sensor-alerts:
     restart: always
     build:
