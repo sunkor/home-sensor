@@ -1,7 +1,8 @@
 const { config: loadEnv } = require('dotenv');
+const { path } = require('path');
 const { cleanEnv, str, num, bool } = require('envalid');
 
-loadEnv();
+loadEnv({ path: path.resolve(__dirname, '../.env') });
 
 const env = cleanEnv(process.env, {
   // InfluxDB host/port used by sensor-listener and weather-station.
