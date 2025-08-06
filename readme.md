@@ -38,7 +38,7 @@ The system is composed of multiple services orchestrated with
 Sample `.env.example` files are available in the service directories. Copy one
 to `.env` and adjust the values as needed, or provide the variables at runtime.
 
-#### sensor-listener and sensor-alerts
+#### sensor-listener
 - `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
 - `INFLUX_PORT` – port for InfluxDB (default: `8086`).
 - `REDIS_HOST` – hostname for Redis (default: `redis`).
@@ -46,11 +46,11 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION` – number of minutes to wait
   before sending another notification for the same user.
 - `TEMPERATURE_THRESHOLD_IN_CELSIUS` – temperature that triggers an alert.
- - `RATE_LIMIT_WINDOW_MS` – time window in milliseconds for rate limiting (default: `60000`).
- - `RATE_LIMIT_MAX_REQUESTS` – max requests allowed per window for a user or IP (default: `60`).
-  > **Note**: previously this variable was named `TEMPERATURE_THRESHOLD_IN_CELCIUS`. Update any existing environment configurations to use the corrected spelling.
+- `RATE_LIMIT_WINDOW_MS` – time window in milliseconds for rate limiting (default: `60000`).
+- `RATE_LIMIT_MAX_REQUESTS` – max requests allowed per window for a user or IP (default: `60`).
+> **Note**: previously this variable was named `TEMPERATURE_THRESHOLD_IN_CELCIUS`. Update any existing environment configurations to use the corrected spelling.
 
-#### sensor-alerts (additional)
+#### sensor-alerts
 - `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, `AWS_REGION`
 - `ENABLE_SMS_ALERTS` – set to `true` to enable SMS via SNS.
 - `SMS_SENDER` – name shown as SMS sender.
