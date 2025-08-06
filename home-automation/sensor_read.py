@@ -9,6 +9,7 @@ The script expects two environment variables:
 import glob
 import logging
 import os
+import subprocess
 import time
 from typing import List
 
@@ -25,10 +26,21 @@ if not API_KEY:
 
 def _load_module(module: str) -> None:
     """Load a kernel module and verify the command succeeds."""
-    ret = os.system(f"modprobe {module}")
-    if ret != 0:
-        logging.error("modprobe %s failed with exit code %s", module, ret)
-        raise OSError(f"modprobe {module} failed with exit code {ret}")
+    try:
+        subprocess.run([
+            "modprobe",
+            module,
+        ], check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as exc:
+        logging.error(
+            "modprobe %s failed with exit code %s: %s",
+            module,
+            exc.returncode,
+            exc.stderr,
+        )
+        raise OSError(
+            f"modprobe {module} failed with exit code {exc.returncode}"
+        ) from exc
 
 
 _load_module("w1-gpio")  # GPIO interface for 1-Wire
