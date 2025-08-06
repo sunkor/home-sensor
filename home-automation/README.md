@@ -13,7 +13,7 @@ Reads temperature data from a 1‑Wire sensor on a Raspberry Pi and submits the 
    ```bash
    pip install requests pytest
    ```
-3. Set the required environment variables (see below).
+3. Set the **API_ENDPOINT** and **API_KEY** environment variables.
 4. Run the script:
    ```bash
    python sensor_read.py

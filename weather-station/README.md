@@ -15,12 +15,12 @@ Periodically polls a public weather API and stores the observations in InfluxDB 
    ```
 
 ## Environment Variables
-- `INFLUX_HOST` (default `influxdb`) – InfluxDB hostname.
-- `INFLUX_PORT` (default `8086`) – InfluxDB port.
-- `WEATHER_API_ENDPOINT` – base URL of the weather API.
-- `WEATHER_API_KEY` – API key for the weather service.
-- `WEATHER_API_QUERY_POSTCODE` – postcode for the location to query.
-- `WEATHER_API_QUERY_COUNTRY_CODE` – country code for the location.
+- **INFLUX_HOST** (default `influxdb`) – InfluxDB hostname.
+- **INFLUX_PORT** (default `8086`) – InfluxDB port.
+- **WEATHER_API_ENDPOINT** – base URL of the weather API.
+- **WEATHER_API_KEY** – API key for the weather service.
+- **WEATHER_API_QUERY_POSTCODE** – postcode for the location to query.
+- **WEATHER_API_QUERY_COUNTRY_CODE** – country code for the location.
 
 ## Tests
 Run the unit tests with:
