@@ -84,30 +84,29 @@ const influx = new Influx.InfluxDB({
   ]
 });
 
-const polling = AsyncPolling(function(end) {
-  if (process.env.NODE_ENV !== "production") {
-    console.log("fetching.." + url);
-  } else {
-    console.log("fetching.." + apiEndpoint);
+const polling = AsyncPolling(async function(end) {
+  try {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("fetching.." + url);
+    } else {
+      console.log("fetching.." + apiEndpoint);
+    }
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const json = await response.json();
+    end(null, json);
+  } catch (error) {
+    console.error("Error fetching weather data", error);
+    end(error, "error occured");
   }
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(json => end(null, json))
-    .catch(error => {
-      console.error("Error fetching weather data", error);
-      end(error, "error occured");
-    });
 }, 30000);
 
 polling.on("error", function(error) {
   console.log(error);
 });
-polling.on("result", function(json) {
+polling.on("result", async function(json) {
   if (json.cod === 200) {
     const timestamp = json.dt;
     const aestTime = moment(new Date(timestamp * 1000))
@@ -162,8 +161,8 @@ polling.on("result", function(json) {
       console.log(summary_data);
     }
 
-    influx
-      .writePoints([
+    try {
+      await influx.writePoints([
         {
           measurement: "temperature_data_in_celsius",
           fields: {
@@ -201,28 +200,25 @@ polling.on("result", function(json) {
           },
           tags: { location: summary_data.name }
         }
-      ])
-      .then(() => {
-        console.log(summary_data);
-      })
-      .catch(error => {
-        console.error("Error writing points to InfluxDB", error);
-      });
+      ]);
+      console.log(summary_data);
+    } catch (error) {
+      console.error("Error writing points to InfluxDB", error);
+    }
   } else {
     console.error("Failed to fetch data", json);
   }
 });
 
-waitForInfluxDb(influx)
-  .then(names => {
+(async () => {
+  try {
+    const names = await waitForInfluxDb(influx);
     if (!names.includes("home_sensors_db")) {
-      return influx.createDatabase("home_sensors_db");
+      await influx.createDatabase("home_sensors_db");
     }
-  })
-  .then(() => {
     console.log("influxdb ready. Begin polling...");
     polling.run(); // Let's start polling.
-  })
-  .catch(error => {
+  } catch (error) {
     console.error("Failed to initialize InfluxDB", error);
-  });
+  }
+})();
