@@ -1,6 +1,18 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/" # or the correct directory
+    directory: "/sensor-alerts"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/sensor-listener"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/weather-station"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pip"
+    directory: "/home-automation"
     schedule:
       interval: "daily"
