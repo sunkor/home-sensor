@@ -1,11 +1,8 @@
 const asyncRedis = require("async-redis");
-
-const redisHost = process.env.REDIS_HOST || "redis";
-const redisPortEnv = parseInt(process.env.REDIS_PORT, 10);
-const redisPort = Number.isFinite(redisPortEnv) ? redisPortEnv : 6379;
+const config = require("../config/config");
 const asyncRedisClient = asyncRedis.createClient({
-  host: redisHost,
-  port: redisPort,
+  host: config.REDIS_HOST,
+  port: config.REDIS_PORT,
   retry_strategy: () => 1000
 });
 

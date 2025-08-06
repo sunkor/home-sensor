@@ -1,17 +1,21 @@
 const assert = require('assert');
 
 function testMissingEnvVarsThrows() {
-  const required = [
-    'WEATHER_API_QUERY_POSTCODE',
-    'WEATHER_API_QUERY_COUNTRY_CODE',
-    'WEATHER_API_KEY',
-    'WEATHER_API_ENDPOINT'
-  ];
-  const backup = {};
-  for (const key of required) {
-    backup[key] = process.env[key];
-    delete process.env[key];
-  }
+  const Module = require('module');
+  const originalRequire = Module.prototype.require;
+  Module.prototype.require = function(request) {
+    if (request === '../config/config') {
+      return {
+        WEATHER_API_QUERY_POSTCODE: undefined,
+        WEATHER_API_QUERY_COUNTRY_CODE: undefined,
+        WEATHER_API_KEY: undefined,
+        WEATHER_API_ENDPOINT: undefined,
+        INFLUX_HOST: 'influxdb',
+        INFLUX_PORT: 8086
+      };
+    }
+    return originalRequire.apply(this, arguments);
+  };
   delete require.cache[require.resolve('./index.js')];
   try {
     require('./index.js');
@@ -22,11 +26,7 @@ function testMissingEnvVarsThrows() {
       'Should complain about missing environment variables'
     );
   }
-  for (const key of required) {
-    if (backup[key] !== undefined) {
-      process.env[key] = backup[key];
-    }
-  }
+  Module.prototype.require = originalRequire;
 }
 
 function run() {

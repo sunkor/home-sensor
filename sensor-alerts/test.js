@@ -6,12 +6,6 @@ async function testAwsNotification() {
   let sendMsgCalled = false;
   let redisSetCalled = false;
 
-  process.env.AWS_ACCESS_KEY = 'key';
-  process.env.AWS_SECRET_KEY = 'secret';
-  process.env.AWS_REGION = 'us-east-1';
-  process.env.SMS_SENDER = 'sender';
-  process.env.SMS_PHONE_NUMBER = '1234567890';
-
   Module.prototype.require = function(request) {
     if (request === 'aws-sns-sms') {
       return function(config, msg) {
@@ -25,13 +19,21 @@ async function testAwsNotification() {
     if (request === './connections') {
       return { asyncRedisClient: { set: async () => { redisSetCalled = true; } } };
     }
+    if (request === '../config/config') {
+      return {
+        AWS_ACCESS_KEY: 'key',
+        AWS_SECRET_KEY: 'secret',
+        AWS_REGION: 'us-east-1',
+        SMS_SENDER: 'sender',
+        SMS_PHONE_NUMBER: '1234567890',
+        ENABLE_SMS_ALERTS: true
+      };
+    }
     return originalRequire.apply(this, arguments);
   };
 
   const awsNotification = require('./aws-notification');
   Module.prototype.require = originalRequire;
-
-  process.env.ENABLE_SMS_ALERTS = 'true';
 
   await awsNotification.sendNotification({
     userid: 'user1',
@@ -64,11 +66,15 @@ async function testFractionalThresholdRespected() {
     if (request === './aws-notification') {
       return { sendNotification: () => { notificationCalled = true; } };
     }
+    if (request === '../config/config') {
+      return {
+        MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
+        TEMPERATURE_THRESHOLD_IN_CELSIUS: 25.5
+      };
+    }
     return originalRequire.apply(this, arguments);
   };
 
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25.5';
   delete require.cache[require.resolve('./index.js')];
   require('./index.js');
   Module.prototype.require = originalRequire;
@@ -118,6 +124,12 @@ async function testZeroTemperatureAccepted() {
     if (request === './aws-notification') {
       return { sendNotification: () => {} };
     }
+    if (request === '../config/config') {
+      return {
+        MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
+        TEMPERATURE_THRESHOLD_IN_CELSIUS: 0
+      };
+    }
     return originalRequire.apply(this, arguments);
   };
 
@@ -126,8 +138,6 @@ async function testZeroTemperatureAccepted() {
     warned = true;
   };
 
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '0';
   delete require.cache[require.resolve('./index.js')];
   require('./index.js');
   Module.prototype.require = originalRequire;

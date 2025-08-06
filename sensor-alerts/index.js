@@ -2,18 +2,12 @@ const timediff = require("timediff");
 const awsNotification = require("./aws-notification");
 const minDate = new Date("01 Nov 1970");
 const connections = require("./connections");
+const config = require("../config/config");
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
-const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
-  10
-);
-const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseFloat(
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS
-);
+const {
+  MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
+  TEMPERATURE_THRESHOLD_IN_CELSIUS
+} = config;
 
 if (
   !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||

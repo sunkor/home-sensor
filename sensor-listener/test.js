@@ -1,10 +1,24 @@
 const assert = require('assert');
 const http = require('http');
+const Module = require('module');
 
-process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
-process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25';
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function(request) {
+  if (request === '../config/config') {
+    return {
+      MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
+      TEMPERATURE_THRESHOLD_IN_CELSIUS: 25,
+      INFLUX_HOST: 'influxdb',
+      INFLUX_PORT: 8086,
+      REDIS_HOST: 'redis',
+      REDIS_PORT: 6379
+    };
+  }
+  return originalRequire.apply(this, arguments);
+};
 
 const { validatePayload, app } = require('./index');
+Module.prototype.require = originalRequire;
 
 function createMock() {
   const res = {

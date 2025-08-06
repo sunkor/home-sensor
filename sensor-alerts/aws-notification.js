@@ -1,15 +1,16 @@
 const sendMsg = require("aws-sns-sms");
 const emailSender = require("./email-sender");
 const connections = require("./connections");
+const config = require("../config/config");
 
 const awsConfig = {
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  region: process.env.AWS_REGION
+  accessKeyId: config.AWS_ACCESS_KEY,
+  secretAccessKey: config.AWS_SECRET_KEY,
+  region: config.AWS_REGION
 };
 
 const requiredAwsVars = ["AWS_ACCESS_KEY", "AWS_SECRET_KEY", "AWS_REGION"];
-const missingAwsVars = requiredAwsVars.filter(v => !process.env[v]);
+const missingAwsVars = requiredAwsVars.filter(v => !config[v]);
 const awsConfigValid = missingAwsVars.length === 0;
 if (!awsConfigValid) {
   console.error(
@@ -19,13 +20,13 @@ if (!awsConfigValid) {
 
 //Send SMS via AWS SNS.
 async function sendSMS(message, currentDt) {
-  if (process.env.ENABLE_SMS_ALERTS === "true") {
+  if (config.ENABLE_SMS_ALERTS) {
     if (!awsConfigValid) {
       console.error("AWS config missing. Cannot send SMS alert");
       return false;
     }
     const requiredSmsVars = ["SMS_SENDER", "SMS_PHONE_NUMBER"];
-    const missingSmsVars = requiredSmsVars.filter(v => !process.env[v]);
+    const missingSmsVars = requiredSmsVars.filter(v => !config[v]);
     if (missingSmsVars.length) {
       console.error(
         `Missing SMS env vars: ${missingSmsVars.join(", ")}`
@@ -34,8 +35,8 @@ async function sendSMS(message, currentDt) {
     }
     const smsMessage = {
       message: message,
-      sender: process.env.SMS_SENDER,
-      phoneNumber: process.env.SMS_PHONE_NUMBER // phoneNumber along with country code
+      sender: config.SMS_SENDER,
+      phoneNumber: config.SMS_PHONE_NUMBER // phoneNumber along with country code
     };
 
     if (process.env.NODE_ENV !== "production") {
@@ -59,7 +60,7 @@ async function sendSMS(message, currentDt) {
 
 //Send e-mail via AWS SES.
 async function sendEmail(location, message) {
-  if (process.env.ENABLE_EMAIL_ALERTS === "true") {
+  if (config.ENABLE_EMAIL_ALERTS) {
     if (!awsConfigValid) {
       console.error("AWS config missing. Cannot send email alert");
       return false;
@@ -69,7 +70,7 @@ async function sendEmail(location, message) {
       "EMAIL_FROM_ADDRESS",
       "EMAIL_LIST"
     ];
-    const missingEmailVars = requiredEmailVars.filter(v => !process.env[v]);
+    const missingEmailVars = requiredEmailVars.filter(v => !config[v]);
     if (missingEmailVars.length) {
       console.error(
         `Missing email env vars: ${missingEmailVars.join(", ")}`
@@ -77,8 +78,8 @@ async function sendEmail(location, message) {
       return false;
     }
     const emailToSend = {
-      from: `${process.env.EMAIL_FROM} <${process.env.EMAIL_FROM_ADDRESS}>`,
-      to: process.env.EMAIL_LIST,
+      from: `${config.EMAIL_FROM} <${config.EMAIL_FROM_ADDRESS}>`,
+      to: config.EMAIL_LIST,
       subject: `Alert! Temperature in ${location} has exceeded threshold`,
       content: message
     };

@@ -5,15 +5,12 @@ const d2d = require("degrees-to-direction");
 const convert = require("convert-units");
 const moment = require("moment-timezone");
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
+const config = require("../config/config");
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
-const zipCode = process.env.WEATHER_API_QUERY_POSTCODE;
-const countryCode = process.env.WEATHER_API_QUERY_COUNTRY_CODE;
-const appid = process.env.WEATHER_API_KEY;
-const apiEndpoint = process.env.WEATHER_API_ENDPOINT;
+const zipCode = config.WEATHER_API_QUERY_POSTCODE;
+const countryCode = config.WEATHER_API_QUERY_COUNTRY_CODE;
+const appid = config.WEATHER_API_KEY;
+const apiEndpoint = config.WEATHER_API_ENDPOINT;
 
 if (!zipCode || !countryCode || !appid || !apiEndpoint) {
   const missingVars = [
@@ -43,12 +40,9 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-const influxHost = process.env.INFLUX_HOST || "influxdb";
-const influxPortEnv = parseInt(process.env.INFLUX_PORT, 10);
-const influxPort = Number.isFinite(influxPortEnv) ? influxPortEnv : 8086;
 const influx = new Influx.InfluxDB({
-  host: influxHost,
-  port: influxPort,
+  host: config.INFLUX_HOST,
+  port: config.INFLUX_PORT,
   database: "home_sensors_db",
   schema: [
     {
