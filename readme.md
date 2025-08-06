@@ -33,7 +33,7 @@ The system is composed of multiple services orchestrated with
 - Node.js 18 (to run services locally without Docker)
 - Twilio account credentials (Account SID, Auth Token, and a sending number)
 - SendGrid API key and sender details
-- API key for a weather provider such as OpenWeatherMap
+- API key for a weather provider such as WeatherAPI
 
 ### Environment variables
 Sample `.env.example` files are available in the service directories. Copy one
@@ -64,7 +64,7 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
 - `INFLUX_PORT` – port for InfluxDB (default: `8086`).
 - `WEATHER_API_KEY`
-- `WEATHER_API_ENDPOINT` – e.g. `https://api.openweathermap.org/data/2.5/weather`
+- `WEATHER_API_ENDPOINT` – e.g. `https://api.weatherapi.com/v1/current.json`
 - `WEATHER_API_QUERY_POSTCODE`
 - `WEATHER_API_QUERY_COUNTRY_CODE`
 
@@ -106,6 +106,6 @@ npm test
 - [Grafana documentation](https://grafana.com/docs/)
 - [Twilio SMS API](https://www.twilio.com/docs/sms) and
   [SendGrid Email API](https://docs.sendgrid.com/)
-- [OpenWeatherMap API](https://openweathermap.org/api)
+- [WeatherAPI documentation](https://www.weatherapi.com/docs/)
 - [Docker documentation](https://docs.docker.com/)
 
