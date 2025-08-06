@@ -28,9 +28,18 @@ function createMock() {
   };
 }
 
-function testInvalidPayload() {
+function testInvalidTemperature() {
   const { res, next, wasNextCalled } = createMock();
   const req = { body: { temperature: 'hot', location: 'Sydney' } };
+  validatePayload(req, res, next);
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(res.body, 'Invalid payload');
+  assert.strictEqual(wasNextCalled(), false);
+}
+
+function testInvalidLocation() {
+  const { res, next, wasNextCalled } = createMock();
+  const req = { body: { temperature: 25.5 } };
   validatePayload(req, res, next);
   assert.strictEqual(res.statusCode, 400);
   assert.strictEqual(res.body, 'Invalid payload');
@@ -73,7 +82,8 @@ async function testHealthEndpoint() {
 }
 
 async function run() {
-  testInvalidPayload();
+  testInvalidTemperature();
+  testInvalidLocation();
   testValidPayload();
   await testHealthEndpoint();
   console.log('All tests passed');

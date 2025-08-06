@@ -1,6 +1,7 @@
 const express = require("express");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
+const { z } = require("zod");
 const influx = require("./common").influx;
 const asyncRedisClient = require("./common").asyncRedisClient;
 const redisPublisher = require("./common").redisPublisher;
@@ -30,6 +31,11 @@ if (
 const app = express();
 app.use(express.json());
 
+const payloadSchema = z.object({
+  temperature: z.number(),
+  location: z.string().min(1)
+});
+
 app.get("/", (req, res) => {
   res.send("hello world, now lets get serious shall well?");
 });
@@ -40,13 +46,8 @@ app.get("/health", (req, res) => {
 });
 
 function validatePayload(req, res, next) {
-  const { temperature, location } = req.body;
-  if (
-    typeof temperature !== "number" ||
-    !Number.isFinite(temperature) ||
-    typeof location !== "string" ||
-    location.trim() === ""
-  ) {
+  const result = payloadSchema.safeParse(req.body);
+  if (!result.success) {
     res.status(400).send("Invalid payload");
     return;
   }
