@@ -116,7 +116,7 @@ async function sendNotification(notificationDetails) {
   if (!emailSent) {
     console.error("Failed to send email alert");
   }
-  await connections.asyncRedisClient.set(
+  await connections.redisClient.set(
     notificationDetails.userid,
     JSON.stringify({
       last_notification_time: notificationDetails.currentDt

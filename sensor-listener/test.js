@@ -4,7 +4,24 @@ const http = require('http');
 process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = '0';
 process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS = '25';
 
+const Module = require('module');
+const originalRequire = Module.prototype.require;
+Module.prototype.require = function(request) {
+  if (request === 'redis') {
+    return {
+      createClient: () => ({
+        connect: async () => {},
+        on: () => {},
+        publish: () => {},
+        get: async () => null
+      })
+    };
+  }
+  return originalRequire.apply(this, arguments);
+};
+
 const { validatePayload, app } = require('./index');
+Module.prototype.require = originalRequire;
 
 function createMock() {
   const res = {

@@ -1,5 +1,5 @@
 const Influx = require("influx");
-const asyncRedis = require("async-redis");
+const { createClient } = require("redis");
 
 const influxHost = process.env.INFLUX_HOST || "influxdb";
 const influxPortEnv = parseInt(process.env.INFLUX_PORT, 10);
@@ -23,14 +23,15 @@ const influx = new Influx.InfluxDB({
 const redisHost = process.env.REDIS_HOST || "redis";
 const redisPortEnv = parseInt(process.env.REDIS_PORT, 10);
 const redisPort = Number.isFinite(redisPortEnv) ? redisPortEnv : 6379;
-const asyncRedisClient = asyncRedis.createClient({
-  host: redisHost,
-  port: redisPort,
-  retry_strategy: () => 1000
+const redisClient = createClient({ url: `redis://${redisHost}:${redisPort}` });
+
+redisClient.on("error", err => {
+  console.error("Redis Client Error", err);
 });
 
-const redisPublisher = asyncRedisClient.duplicate();
+(async () => {
+  await redisClient.connect();
+})();
 
 exports.influx = influx;
-exports.asyncRedisClient = asyncRedisClient;
-exports.redisPublisher = redisPublisher;
+exports.redisClient = redisClient;
