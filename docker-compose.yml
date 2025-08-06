@@ -13,8 +13,8 @@ services:
   weather-station:
     restart: always
     build:
-      dockerfile: weather-station.dockerfile
-      context: ./weather-station
+      dockerfile: weather-station/weather-station.dockerfile
+      context: .
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./weather-station:/usr/src/app
