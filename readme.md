@@ -5,7 +5,7 @@ This project provides an end‑to‑end home sensor monitoring stack.  It accept
 temperature readings from custom hardware, enriches the data with weather
 information, stores metrics in InfluxDB and visualises them in Grafana.  When
 temperatures exceed a configured threshold the system can publish alerts by
-SMS or e‑mail via AWS services.
+SMS via Twilio or e‑mail via SendGrid.
 
 ## Architecture
 The system is composed of multiple services orchestrated with
@@ -18,7 +18,7 @@ The system is composed of multiple services orchestrated with
 - **weather-station** – Polls a public weather API at regular intervals and
   stores the observations in InfluxDB alongside the local sensor data.
 - **sensor-alerts** – Subscribes to Redis messages and sends notifications
-  using AWS SNS (SMS) and SES (e‑mail).
+  using Twilio (SMS) and SendGrid (e‑mail).
 - **influxdb** – Time‑series database used for persisting sensor and weather
   measurements.
 - **redis** – Message broker used for passing alert messages between services.
@@ -31,7 +31,8 @@ The system is composed of multiple services orchestrated with
 ### Prerequisites
 - Docker and Docker Compose
 - Node.js 18 (to run services locally without Docker)
-- AWS account with permissions for SNS and SES
+- Twilio account credentials (Account SID, Auth Token, and a sending number)
+- SendGrid API key and sender details
 - API key for a weather provider such as OpenWeatherMap
 
 ### Environment variables
@@ -51,13 +52,13 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 > **Note**: previously this variable was named `TEMPERATURE_THRESHOLD_IN_CELCIUS`. Update any existing environment configurations to use the corrected spelling.
 
 #### sensor-alerts
-- `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, `AWS_REGION`
-- `ENABLE_SMS_ALERTS` – set to `true` to enable SMS via SNS.
-- `SMS_SENDER` – name shown as SMS sender.
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`
 - `SMS_PHONE_NUMBER` – destination number with country code.
-- `ENABLE_EMAIL_ALERTS` – set to `true` to enable email via SES.
+- `SENDGRID_API_KEY`
 - `EMAIL_FROM`, `EMAIL_FROM_ADDRESS` – sender details.
 - `EMAIL_LIST` – comma separated list of recipients.
+- `ENABLE_SMS_ALERTS` – set to `true` to enable SMS via Twilio.
+- `ENABLE_EMAIL_ALERTS` – set to `true` to enable email via SendGrid.
 
 #### weather-station
 - `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
@@ -103,8 +104,8 @@ npm test
 ## Related resources
 - [InfluxDB documentation](https://docs.influxdata.com/influxdb/)
 - [Grafana documentation](https://grafana.com/docs/)
-- [AWS SNS](https://docs.aws.amazon.com/sns/latest/dg/welcome.html) and
-  [AWS SES](https://docs.aws.amazon.com/ses/latest/dg/Welcome.html)
+- [Twilio SMS API](https://www.twilio.com/docs/sms) and
+  [SendGrid Email API](https://docs.sendgrid.com/)
 - [OpenWeatherMap API](https://openweathermap.org/api)
 - [Docker documentation](https://docs.docker.com/)
 
