@@ -1,11 +1,10 @@
 const Influx = require("influx");
 const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
-const d2d = require("degrees-to-direction");
-const convert = require("convert-units");
 const moment = require("moment-timezone");
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
 const config = require("../config/config");
+const { parseWeatherData } = require("./parseWeather");
 
 const zipCode = config.WEATHER_API_QUERY_POSTCODE;
 const countryCode = config.WEATHER_API_QUERY_COUNTRY_CODE;
@@ -24,14 +23,16 @@ if (!zipCode || !countryCode || !appid || !apiEndpoint) {
   throw new Error(`Missing required environment variables: ${missingVars}`);
 }
 
-const units = "metric";
-const url = `${apiEndpoint}?zip=${encodeURIComponent(zipCode)},${encodeURIComponent(
-  countryCode
-)}&units=${encodeURIComponent(units)}&appid=${encodeURIComponent(appid)}`;
+const baseUrl = apiEndpoint.endsWith("/")
+  ? apiEndpoint.slice(0, -1)
+  : apiEndpoint;
+const url = `${baseUrl}/current.json?key=${encodeURIComponent(appid)}&q=${encodeURIComponent(
+  zipCode
+)},${encodeURIComponent(countryCode)}`;
 
 if (process.env.NODE_ENV !== "production") {
   const redactedUrl = new URL(url);
-  redactedUrl.searchParams.set("appid", "***");
+  redactedUrl.searchParams.set("key", "***");
   console.log({
     apiEndpoint: apiEndpoint,
     postCode: zipCode,
@@ -101,57 +102,14 @@ polling.on("error", function(error) {
   console.log(error);
 });
 polling.on("result", async function(json) {
-  if (json.cod === 200) {
-    const timestamp = json.dt;
-    const aestTime = moment(new Date(timestamp * 1000))
+  try {
+    const summary_data = parseWeatherData(json);
+    const aestTime = moment(new Date(summary_data.timestamp * 1000))
       .tz("Australia/Sydney")
       .format("DD-MM-YYYY HH:mm:ss");
 
     if (process.env.NODE_ENV !== "production") {
       console.log(`Local time - ${aestTime}`);
-    }
-
-    const sunriseDateInAest = moment(new Date(json.sys.sunrise * 1000))
-      .tz("Australia/Sydney")
-      .format("DD-MM-YYYY HH:mm:ss");
-    console.log(`Sunrise date - ${sunriseDateInAest}`);
-
-    const sunsetDateInAest = moment(new Date(json.sys.sunset * 1000))
-      .tz("Australia/Sydney")
-      .format("DD-MM-YYYY HH:mm:ss");
-    console.log(`Sunset date - ${sunsetDateInAest}`);
-
-    const wind = json.wind || {};
-
-    if (!json.weather || !Array.isArray(json.weather) || json.weather.length === 0) {
-      console.error("Missing weather data in API response");
-      return;
-    }
-
-    const summary_data = {
-      name: json.name,
-      currentTemp: json.main.temp,
-      feels_like: json.main.feels_like,
-      temp_min: json.main.temp_min,
-      temp_max: json.main.temp_max,
-      humidity: json.main.humidity,
-      wind_speed: convert(isNaN(wind.speed) ? 0 : wind.speed)
-        .from("m/s")
-        .to("km/h"),
-      wind_direction: isNaN(wind.deg) ? 0 : wind.deg,
-      wind_direction_desc: isNaN(wind.deg) ? "n/a" : d2d(wind.deg),
-      gust_speed: convert(isNaN(wind.gust) ? 0 : wind.gust)
-        .from("m/s")
-        .to("km/h"),
-      sunrise: json.sys.sunrise,
-      sunset: json.sys.sunset,
-      weather_main: json.weather[0].main,
-      weather_description: json.weather[0].description,
-      sunrise_time: sunriseDateInAest,
-      sunset_time: sunsetDateInAest
-    };
-
-    if (process.env.NODE_ENV !== "production") {
       console.log(summary_data);
     }
 
@@ -199,8 +157,8 @@ polling.on("result", async function(json) {
     } catch (error) {
       console.error("Error writing points to InfluxDB", error);
     }
-  } else {
-    console.error("Failed to fetch data", json);
+  } catch (error) {
+    console.error("Failed to parse weather data", error);
   }
 });
 
