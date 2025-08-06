@@ -65,8 +65,8 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `INFLUX_PORT` – port for InfluxDB (default: `8086`).
 - `WEATHER_API_KEY`
 - `WEATHER_API_ENDPOINT` – e.g. `https://api.weatherapi.com/v1/current.json`
-- `WEATHER_API_QUERY_POSTCODE`
-- `WEATHER_API_QUERY_COUNTRY_CODE`
+- `WEATHER_API_LATITUDE`
+- `WEATHER_API_LONGITUDE`
 
 ### Running
 #### Using Docker Compose
@@ -85,6 +85,13 @@ npm start
 ```
 Repeat for `sensor-alerts` and `weather-station` with the appropriate
 environment variables.
+
+### GitHub Actions deployment
+Secrets such as `WEATHER_API_KEY`, `WEATHER_API_LATITUDE`, `WEATHER_API_LONGITUDE`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`,
+`TWILIO_PHONE_NUMBER`, and `SENDGRID_API_KEY` are stored in the repository's
+**Settings → Secrets and variables → Actions**. The deployment workflow reads
+these values and exposes them to `docker compose up` so they are available to
+the running services.
 
 ## Testing
 The `sensor-listener`, `weather-station` and `sensor-alerts` services each

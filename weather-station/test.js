@@ -7,8 +7,8 @@ function testMissingEnvVarsThrows() {
   Module.prototype.require = function(request) {
     if (request === '../config/config') {
       return {
-        WEATHER_API_QUERY_POSTCODE: undefined,
-        WEATHER_API_QUERY_COUNTRY_CODE: undefined,
+        WEATHER_API_LATITUDE: undefined,
+        WEATHER_API_LONGITUDE: undefined,
         WEATHER_API_KEY: undefined,
         WEATHER_API_ENDPOINT: undefined,
         INFLUX_HOST: 'influxdb',
