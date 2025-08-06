@@ -21,9 +21,9 @@ const env = cleanEnv(process.env, {
   TEMPERATURE_THRESHOLD_IN_CELSIUS: num({ default: 30, optional: true }),             // temperature triggering an alert
 
   // Weather-station API query parameters.
-  WEATHER_API_LATITUDE: num({ default: undefined, optional: true }),      // latitude
-  WEATHER_API_LONGITUDE: num({ default: undefined, optional: true }),     // longitude
-  WEATHER_API_KEY: str({ default: '<secret>', optional: true }),                // WeatherAPI key
+  WEATHER_API_LATITUDE: num(),      // latitude
+  WEATHER_API_LONGITUDE: num(),     // longitude
+  WEATHER_API_KEY: str(),                // WeatherAPI key
   WEATHER_API_ENDPOINT: str({ default: 'https://api.weatherapi.com/v1', optional: true }),           // WeatherAPI base URL
 
   // Twilio SMS alert configuration.

@@ -2,32 +2,46 @@ const assert = require('assert');
 const { parseWeatherData } = require('./parseWeather');
 
 function testMissingEnvVarsThrows() {
-  const Module = require('module');
-  const originalRequire = Module.prototype.require;
-  Module.prototype.require = function(request) {
-    if (request === '../config/config') {
-      return {
-        WEATHER_API_LATITUDE: undefined,
-        WEATHER_API_LONGITUDE: undefined,
-        WEATHER_API_KEY: undefined,
-        WEATHER_API_ENDPOINT: undefined,
-        INFLUX_HOST: 'influxdb',
-        INFLUX_PORT: 8086
-      };
-    }
-    return originalRequire.apply(this, arguments);
+  const originalEnv = {
+    WEATHER_API_LATITUDE: process.env.WEATHER_API_LATITUDE,
+    WEATHER_API_LONGITUDE: process.env.WEATHER_API_LONGITUDE,
+    WEATHER_API_KEY: process.env.WEATHER_API_KEY
   };
+  delete process.env.WEATHER_API_LATITUDE;
+  delete process.env.WEATHER_API_LONGITUDE;
+  delete process.env.WEATHER_API_KEY;
+
+  const originalExit = process.exit;
+  let exitCode;
+  process.exit = code => {
+    exitCode = code;
+    throw new Error('exit');
+  };
+
+  const originalError = console.error;
+  let logged = '';
+  console.error = (...args) => {
+    logged += args.join(' ');
+  };
+
   delete require.cache[require.resolve('./index.js')];
+  delete require.cache[require.resolve('../config/config')];
+
   try {
     require('./index.js');
-    assert.fail('Expected an error when env vars are missing');
+    assert.fail('Expected process.exit to be called');
   } catch (err) {
+    assert.strictEqual(err.message, 'exit');
+    assert.strictEqual(exitCode, 1);
     assert(
-      err.message.includes('Missing required environment variables'),
-      'Should complain about missing environment variables'
+      logged.includes('Missing or invalid environment variables'),
+      'Should log missing env vars'
     );
+  } finally {
+    process.exit = originalExit;
+    console.error = originalError;
+    Object.assign(process.env, originalEnv);
   }
-  Module.prototype.require = originalRequire;
 }
 
 function testParseWeatherData() {
