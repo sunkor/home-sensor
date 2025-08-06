@@ -1,4 +1,5 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
 const { z } = require("zod");
@@ -8,20 +9,30 @@ const config = require("../config/config");
 
 const {
   MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
-  TEMPERATURE_THRESHOLD_IN_CELSIUS
+  TEMPERATURE_THRESHOLD_IN_CELSIUS,
+  RATE_LIMIT_WINDOW_MS,
+  RATE_LIMIT_MAX_REQUESTS
 } = config;
 
 if (
   !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||
-  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELSIUS)
+  !Number.isFinite(TEMPERATURE_THRESHOLD_IN_CELSIUS) ||
+  !Number.isFinite(RATE_LIMIT_WINDOW_MS) ||
+  !Number.isFinite(RATE_LIMIT_MAX_REQUESTS)
 ) {
   throw new Error(
-    "Invalid numeric environment configuration for MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION or TEMPERATURE_THRESHOLD_IN_CELSIUS"
+    "Invalid numeric environment configuration for rate limiting or notification thresholds"
   );
 }
 
 const app = express();
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: RATE_LIMIT_WINDOW_MS,
+  max: RATE_LIMIT_MAX_REQUESTS,
+  keyGenerator: (req) => req.header("userid") || req.ip,
+});
 
 const payloadSchema = z.object({
   temperature: z.number(),
@@ -129,7 +140,13 @@ async function sendNotification(req, res, next) {
 }
 
 //POST
-app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
+app.post(
+  "/temperature_data",
+  limiter,
+  validatePayload,
+  writeToInflux,
+  sendNotification
+);
 
 //GOOGLE ACTION.
 app.post("/fulfillment", require("./google-actions").fulfillment);
