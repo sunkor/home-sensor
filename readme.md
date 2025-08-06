@@ -86,8 +86,16 @@ Repeat for `sensor-alerts` and `weather-station` with the appropriate
 environment variables.
 
 ## Testing
-The alert service contains a basic unit test.
+The `sensor-listener`, `weather-station` and `sensor-alerts` services each
+contain a basic unit test.
+
 ```bash
+cd sensor-listener
+npm test
+
+cd weather-station
+npm test
+
 cd sensor-alerts
 npm test
 ```
