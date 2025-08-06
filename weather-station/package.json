@@ -18,7 +18,9 @@
     "dotenv": "^8.2.0",
     "influx": "^5.5.1",
     "moment-timezone": "^0.5.27",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.2"
   }
 }
