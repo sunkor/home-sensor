@@ -14,6 +14,6 @@ RUN npm install
 
 # Bundle app source
 COPY weather-station/ ./
-COPY influxdb-ready.js ./
+COPY influxdb-ready.js /usr/src/influxdb-ready.js
 
 CMD [ "npm", "run", "dev"]
