@@ -1,3 +1,8 @@
+const { config: loadEnv } = require('dotenv');
+const { cleanEnv, str, num, bool } = require('envalid');
+
+loadEnv();
+
 const env = cleanEnv(process.env, {
   // InfluxDB host/port used by sensor-listener and weather-station.
   INFLUX_HOST: str({ default: 'influxdb' }),
@@ -16,10 +21,10 @@ const env = cleanEnv(process.env, {
   TEMPERATURE_THRESHOLD_IN_CELSIUS: num({ default: 30, optional: true }),             // temperature triggering an alert
 
   // Weather-station API query parameters.
-  WEATHER_API_QUERY_POSTCODE: str({ default: undefined, optional: true }),      // ZIP/postcode
-  WEATHER_API_QUERY_COUNTRY_CODE: str({ default: undefined, optional: true }), // ISO country code
-  WEATHER_API_KEY: str({ default: undefined, optional: true }),                // weather-service API key
-  WEATHER_API_ENDPOINT: str({ default: undefined, optional: true }),           // weather-service base URL
+  WEATHER_API_QUERY_POSTCODE: str({ default: '2226', optional: true }),      // ZIP/postcode
+  WEATHER_API_QUERY_COUNTRY_CODE: str({ default: 'AU', optional: true }), // ISO country code
+  WEATHER_API_KEY: str({ default: 'be3e885a5dabb2dff53bf29bb59246ec', optional: true }),                // weather-service API key
+  WEATHER_API_ENDPOINT: str({ default: 'https://api.openweathermap.org/data/2.5', optional: true }),           // weather-service base URL
 
   // Twilio SMS alert configuration.
   TWILIO_ACCOUNT_SID: str({ default: undefined, optional: true }), // Twilio account SID
