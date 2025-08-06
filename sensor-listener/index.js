@@ -53,9 +53,9 @@ function validatePayload(req, res, next) {
   next();
 }
 
-function writeToInflux(req, res, next) {
-  influx
-    .writePoints([
+async function writeToInflux(req, res, next) {
+  try {
+    await influx.writePoints([
       {
         measurement: "temperature_data_in_celsius",
         fields: {
@@ -63,17 +63,14 @@ function writeToInflux(req, res, next) {
         },
         tags: { location: req.body.location }
       }
-    ])
-    .then(() => {
-      next();
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send("Error occurred while writing to InfluxDb!");
-    });
+    ]);
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
 
-async function sendNotification(req, res) {
+async function sendNotification(req, res, next) {
   const userId = req.header("userid") || req.body.userid;
   if (typeof userId !== "string" || userId.trim() === "") {
     res.status(400).send("Missing or invalid user id.");
@@ -111,9 +108,7 @@ async function sendNotification(req, res) {
       ? new Date(parsedNotification.last_notification_time)
       : minDate;
   } catch (err) {
-    console.error("Failed to retrieve notification data", err);
-    res.status(500).send("Failed to retrieve notification data.");
-    return;
+    return next(err);
   }
   const diffInMinutes = timediff(dt, Date.now(), "m");
 
@@ -122,7 +117,11 @@ async function sendNotification(req, res) {
     diffInMinutes.minutes >= MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION
   ) {
     //Publish to notify sensor-alerts.
-    redisPublisher.publish("insert", messageToSend);
+    try {
+      await redisPublisher.publish("insert", messageToSend);
+    } catch (err) {
+      return next(err);
+    }
 
     if (process.env.NODE_ENV !== "production") {
       console.log("temperature threshold exceeded message published to redis.");
@@ -142,21 +141,25 @@ app.post("/temperature_data", validatePayload, writeToInflux, sendNotification);
 //GOOGLE ACTION.
 app.post("/fulfillment", require("./google-actions").fulfillment);
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Error occurred while processing request.");
+});
+
 if (require.main === module) {
-  waitForInfluxDb(influx)
-    .then(names => {
+  (async () => {
+    try {
+      const names = await waitForInfluxDb(influx);
       if (!names.includes("home_sensors_db")) {
-        return influx.createDatabase("home_sensors_db");
+        await influx.createDatabase("home_sensors_db");
       }
-    })
-    .then(() => {
       app.listen(8080, () => {
         console.log(`Listening on 8080.`);
       });
-    })
-    .catch(error => {
+    } catch (error) {
       console.error("Failed to initialize InfluxDB", error);
-    });
+    }
+  })();
 }
 
 module.exports = { app, validatePayload, writeToInflux, sendNotification };
