@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dir: [sensor-listener, sensor-alerts]
+        dir: [sensor-listener, sensor-alerts, weather-station]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 18
@@ -25,3 +25,17 @@ jobs:
       - name: Run tests
         working-directory: ${{ matrix.dir }}
         run: npm test
+
+  home-automation-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install pytest
+        run: pip install pytest
+      - name: Run pytest
+        working-directory: home-automation
+        run: pytest
