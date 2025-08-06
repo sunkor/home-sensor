@@ -26,9 +26,9 @@ if (latitude == null || longitude == null || !appid || !apiEndpoint) {
 const baseUrl = apiEndpoint.endsWith("/")
   ? apiEndpoint.slice(0, -1)
   : apiEndpoint;
-const url = `${baseUrl}/current.json?key=${encodeURIComponent(appid)}&q=${encodeURIComponent(
+const url = `${baseUrl}/current.json?key=${encodeURIComponent(appid)}&q='${encodeURIComponent(
   latitude
-)},${encodeURIComponent(longitude)}`;
+)},${encodeURIComponent(longitude)}'`;
 
 if (process.env.NODE_ENV !== "production") {
   const redactedUrl = new URL(url);
