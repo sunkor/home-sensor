@@ -86,6 +86,13 @@ npm start
 Repeat for `sensor-alerts` and `weather-station` with the appropriate
 environment variables.
 
+### GitHub Actions deployment
+Secrets such as `WEATHER_API_KEY`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`,
+`TWILIO_PHONE_NUMBER`, and `SENDGRID_API_KEY` are stored in the repository's
+**Settings → Secrets and variables → Actions**. The deployment workflow reads
+these values and exposes them to `docker compose up` so they are available to
+the running services.
+
 ## Testing
 The `sensor-listener`, `weather-station` and `sensor-alerts` services each
 contain a basic unit test.

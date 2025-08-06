@@ -18,6 +18,8 @@ services:
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./weather-station:/usr/src/app
+    environment:
+      - WEATHER_API_KEY
   sensor-alerts:
     restart: always
     build:
@@ -26,6 +28,11 @@ services:
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./sensor-alerts:/usr/src/app
+    environment:
+      - TWILIO_ACCOUNT_SID
+      - TWILIO_AUTH_TOKEN
+      - TWILIO_PHONE_NUMBER
+      - SENDGRID_API_KEY
   influxdb:
     image: influxdb:1.8  # or influxdb:2.7 if you're using v2
     volumes:
