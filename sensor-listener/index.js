@@ -6,18 +6,12 @@ const influx = require("./common").influx;
 const asyncRedisClient = require("./common").asyncRedisClient;
 const redisPublisher = require("./common").redisPublisher;
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
+const config = require("../config/config");
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
-const MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION = parseInt(
-  process.env.MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
-  10
-);
-const TEMPERATURE_THRESHOLD_IN_CELSIUS = parseFloat(
-  process.env.TEMPERATURE_THRESHOLD_IN_CELSIUS
-);
+const {
+  MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,
+  TEMPERATURE_THRESHOLD_IN_CELSIUS
+} = config;
 
 if (
   !Number.isFinite(MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION) ||

@@ -1,15 +1,12 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
 // Load the AWS SDK for Node.js
 const AWS = require("aws-sdk");
+const config = require("../config/config");
 
 const sesConfig = {
   apiVersion: "2010-12-01",
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  region: process.env.AWS_REGION
+  accessKeyId: config.AWS_ACCESS_KEY,
+  secretAccessKey: config.AWS_SECRET_KEY,
+  region: config.AWS_REGION
 };
 
 // Handle promise's fulfilled/rejected states
