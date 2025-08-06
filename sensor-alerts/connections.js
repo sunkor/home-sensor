@@ -1,12 +1,19 @@
-const asyncRedis = require("async-redis");
+const { createClient } = require("redis");
 const config = require("../config/config");
-const asyncRedisClient = asyncRedis.createClient({
-  host: config.REDIS_HOST,
-  port: config.REDIS_PORT,
-  retry_strategy: () => 1000
+
+const redisClient = createClient({
+  url: `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`
 });
+const redisSubscriber = redisClient.duplicate();
 
-const subscriber = asyncRedisClient.duplicate();
+(async () => {
+  try {
+    await redisClient.connect();
+    await redisSubscriber.connect();
+  } catch (err) {
+    console.error("Redis connection error", err);
+  }
+})();
 
-module.exports.redisSubscriber = subscriber;
-module.exports.asyncRedisClient = asyncRedisClient;
+module.exports.redisClient = redisClient;
+module.exports.redisSubscriber = redisSubscriber;

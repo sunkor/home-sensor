@@ -17,7 +17,7 @@ async function testAwsNotification() {
       return { sendEmailAlert: () => Promise.resolve() };
     }
     if (request === './connections') {
-      return { asyncRedisClient: { set: async () => { redisSetCalled = true; } } };
+      return { redisClient: { set: async () => { redisSetCalled = true; } } };
     }
     if (request === '../config/config') {
       return {
@@ -55,12 +55,11 @@ async function testFractionalThresholdRespected() {
     if (request === './connections') {
       return {
         redisSubscriber: {
-          on: (event, h) => {
-            if (event === 'message') handler = h;
-          },
-          subscribe: () => {}
+          subscribe: async (channel, h) => {
+            if (channel === 'insert') handler = h;
+          }
         },
-        asyncRedisClient: { get: async () => null }
+        redisClient: { get: async () => null }
       };
     }
     if (request === './aws-notification') {
@@ -84,7 +83,7 @@ async function testFractionalThresholdRespected() {
     location: 'Sydney',
     current_temperature: 25.4
   });
-  await handler('insert', message);
+  await handler(message);
   assert.strictEqual(
     notificationCalled,
     false,
@@ -97,7 +96,7 @@ async function testFractionalThresholdRespected() {
     location: 'Sydney',
     current_temperature: 25.6
   });
-  await handler('insert', message);
+  await handler(message);
   assert(
     notificationCalled,
     'Notification should be sent above fractional threshold'
@@ -113,12 +112,11 @@ async function testZeroTemperatureAccepted() {
     if (request === './connections') {
       return {
         redisSubscriber: {
-          on: (event, h) => {
-            if (event === 'message') handler = h;
-          },
-          subscribe: () => {}
+          subscribe: async (channel, h) => {
+            if (channel === 'insert') handler = h;
+          }
         },
-        asyncRedisClient: { get: async () => null }
+        redisClient: { get: async () => null }
       };
     }
     if (request === './aws-notification') {
@@ -147,7 +145,7 @@ async function testZeroTemperatureAccepted() {
     location: 'Sydney',
     current_temperature: 0
   });
-  await handler('insert', message);
+  await handler(message);
 
   console.warn = originalWarn;
   assert.strictEqual(

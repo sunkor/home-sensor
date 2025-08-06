@@ -1,5 +1,5 @@
 const Influx = require("influx");
-const asyncRedis = require("async-redis");
+const { createClient } = require("redis");
 
 const config = require("../config/config");
 const influx = new Influx.InfluxDB({
@@ -18,14 +18,20 @@ const influx = new Influx.InfluxDB({
 });
 
 //Redis setup.
-const asyncRedisClient = asyncRedis.createClient({
-  host: config.REDIS_HOST,
-  port: config.REDIS_PORT,
-  retry_strategy: () => 1000
+const redisClient = createClient({
+  url: `redis://${config.REDIS_HOST}:${config.REDIS_PORT}`
 });
+const redisPublisher = redisClient.duplicate();
 
-const redisPublisher = asyncRedisClient.duplicate();
+(async () => {
+  try {
+    await redisClient.connect();
+    await redisPublisher.connect();
+  } catch (err) {
+    console.error("Redis connection error", err);
+  }
+})();
 
 exports.influx = influx;
-exports.asyncRedisClient = asyncRedisClient;
+exports.redisClient = redisClient;
 exports.redisPublisher = redisPublisher;
