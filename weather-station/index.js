@@ -3,25 +3,19 @@ const AsyncPolling = require("async-polling");
 const fetch = require("node-fetch");
 const moment = require("moment-timezone");
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
-const config = require("../config/config");
+let config;
+try {
+  config = require("../config/config");
+} catch (error) {
+  console.error("Missing or invalid environment variables:", error.message);
+  process.exit(1);
+}
 const { parseWeatherData } = require("./parseWeather");
 
 const latitude = config.WEATHER_API_LATITUDE;
 const longitude = config.WEATHER_API_LONGITUDE;
 const appid = config.WEATHER_API_KEY;
 const apiEndpoint = config.WEATHER_API_ENDPOINT;
-
-if (latitude == null || longitude == null || !appid || !apiEndpoint) {
-  const missingVars = [
-    latitude == null && "WEATHER_API_LATITUDE",
-    longitude == null && "WEATHER_API_LONGITUDE",
-    !appid && "WEATHER_API_KEY",
-    !apiEndpoint && "WEATHER_API_ENDPOINT"
-  ]
-    .filter(Boolean)
-    .join(", ");
-  throw new Error(`Missing required environment variables: ${missingVars}`);
-}
 
 const baseUrl = apiEndpoint.endsWith("/")
   ? apiEndpoint.slice(0, -1)
