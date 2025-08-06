@@ -1,48 +1,64 @@
 const assert = require('assert');
 const Module = require('module');
 
-async function testAwsNotification() {
+async function testNotification() {
   const originalRequire = Module.prototype.require;
-  let sendMsgCalled = false;
+  let smsCalled = false;
+  let emailCalled = false;
   let redisSetCalled = false;
 
   Module.prototype.require = function(request) {
-    if (request === 'aws-sns-sms') {
-      return function(config, msg) {
-        sendMsgCalled = true;
-        return Promise.resolve();
+    if (request === 'twilio') {
+      return function() {
+        return {
+          messages: {
+            create: async () => {
+              smsCalled = true;
+            }
+          }
+        };
       };
     }
-    if (request === './email-sender') {
-      return { sendEmailAlert: () => Promise.resolve() };
+    if (request === '@sendgrid/mail') {
+      return {
+        setApiKey: () => {},
+        send: async () => {
+          emailCalled = true;
+        }
+      };
     }
     if (request === './connections') {
       return { redisClient: { set: async () => { redisSetCalled = true; } } };
     }
     if (request === '../config/config') {
       return {
-        AWS_ACCESS_KEY: 'key',
-        AWS_SECRET_KEY: 'secret',
-        AWS_REGION: 'us-east-1',
-        SMS_SENDER: 'sender',
-        SMS_PHONE_NUMBER: '1234567890',
-        ENABLE_SMS_ALERTS: true
+        TWILIO_ACCOUNT_SID: 'sid',
+        TWILIO_AUTH_TOKEN: 'token',
+        TWILIO_PHONE_NUMBER: '+1111111111',
+        SMS_PHONE_NUMBER: '+2222222222',
+        ENABLE_SMS_ALERTS: true,
+        SENDGRID_API_KEY: 'SG.test',
+        ENABLE_EMAIL_ALERTS: true,
+        EMAIL_FROM: 'Home Sensor',
+        EMAIL_FROM_ADDRESS: 'homesensor@example.com',
+        EMAIL_LIST: 'user@example.com'
       };
     }
     return originalRequire.apply(this, arguments);
   };
 
-  const awsNotification = require('./aws-notification');
+  const notification = require('./aws-notification');
   Module.prototype.require = originalRequire;
 
-  await awsNotification.sendNotification({
+  await notification.sendNotification({
     userid: 'user1',
     location: 'Sydney',
     currentDt: Date.now(),
     message: 'Temperature alert'
   });
 
-  assert(sendMsgCalled, 'sendMsg should be called');
+  assert(smsCalled, 'SMS should be sent');
+  assert(emailCalled, 'Email should be sent');
   assert(redisSetCalled, 'redis set should be called');
 }
 
@@ -156,7 +172,7 @@ async function testZeroTemperatureAccepted() {
 }
 
 async function run() {
-  await testAwsNotification();
+  await testNotification();
   await testFractionalThresholdRespected();
   await testZeroTemperatureAccepted();
   console.log('All tests passed');
