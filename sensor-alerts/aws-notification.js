@@ -1,31 +1,43 @@
-const sendMsg = require("aws-sns-sms");
-const emailSender = require("./email-sender");
+const twilio = require("twilio");
+const sgMail = require("@sendgrid/mail");
 const connections = require("./connections");
 const config = require("../config/config");
 
-const awsConfig = {
-  accessKeyId: config.AWS_ACCESS_KEY,
-  secretAccessKey: config.AWS_SECRET_KEY,
-  region: config.AWS_REGION
-};
-
-const requiredAwsVars = ["AWS_ACCESS_KEY", "AWS_SECRET_KEY", "AWS_REGION"];
-const missingAwsVars = requiredAwsVars.filter(v => !config[v]);
-const awsConfigValid = missingAwsVars.length === 0;
-if (!awsConfigValid) {
+let twilioClient;
+const requiredTwilioVars = [
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_PHONE_NUMBER"
+];
+const missingTwilioVars = requiredTwilioVars.filter(v => !config[v]);
+const twilioConfigValid = missingTwilioVars.length === 0;
+if (!twilioConfigValid) {
   console.error(
-    `Missing AWS config env vars: ${missingAwsVars.join(", ")}`
+    `Missing Twilio config env vars: ${missingTwilioVars.join(", ")}`
   );
+} else {
+  twilioClient = twilio(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 }
 
-//Send SMS via AWS SNS.
+const requiredSendgridVars = ["SENDGRID_API_KEY"];
+const missingSendgridVars = requiredSendgridVars.filter(v => !config[v]);
+const sendgridConfigValid = missingSendgridVars.length === 0;
+if (!sendgridConfigValid) {
+  console.error(
+    `Missing SendGrid config env vars: ${missingSendgridVars.join(", ")}`
+  );
+} else {
+  sgMail.setApiKey(config.SENDGRID_API_KEY);
+}
+
+//Send SMS via Twilio.
 async function sendSMS(message, currentDt) {
   if (config.ENABLE_SMS_ALERTS) {
-    if (!awsConfigValid) {
-      console.error("AWS config missing. Cannot send SMS alert");
+    if (!twilioConfigValid) {
+      console.error("Twilio config missing. Cannot send SMS alert");
       return false;
     }
-    const requiredSmsVars = ["SMS_SENDER", "SMS_PHONE_NUMBER"];
+    const requiredSmsVars = ["SMS_PHONE_NUMBER"];
     const missingSmsVars = requiredSmsVars.filter(v => !config[v]);
     if (missingSmsVars.length) {
       console.error(
@@ -33,18 +45,15 @@ async function sendSMS(message, currentDt) {
       );
       return false;
     }
-    const smsMessage = {
-      message: message,
-      sender: config.SMS_SENDER,
-      phoneNumber: config.SMS_PHONE_NUMBER // phoneNumber along with country code
-    };
-
     if (process.env.NODE_ENV !== "production") {
-      console.log("message to send - " + smsMessage.message);
+      console.log("message to send - " + message);
     }
-
     try {
-      await sendMsg(awsConfig, smsMessage);
+      await twilioClient.messages.create({
+        body: message,
+        from: config.TWILIO_PHONE_NUMBER,
+        to: config.SMS_PHONE_NUMBER
+      });
       const timestamp = currentDt || Date.now();
       console.log("Message sent at: " + timestamp);
       return true;
@@ -58,18 +67,14 @@ async function sendSMS(message, currentDt) {
   }
 }
 
-//Send e-mail via AWS SES.
+//Send e-mail via SendGrid.
 async function sendEmail(location, message) {
   if (config.ENABLE_EMAIL_ALERTS) {
-    if (!awsConfigValid) {
-      console.error("AWS config missing. Cannot send email alert");
+    if (!sendgridConfigValid) {
+      console.error("SendGrid config missing. Cannot send email alert");
       return false;
     }
-    const requiredEmailVars = [
-      "EMAIL_FROM",
-      "EMAIL_FROM_ADDRESS",
-      "EMAIL_LIST"
-    ];
+    const requiredEmailVars = ["EMAIL_FROM_ADDRESS", "EMAIL_LIST"];
     const missingEmailVars = requiredEmailVars.filter(v => !config[v]);
     if (missingEmailVars.length) {
       console.error(
@@ -78,16 +83,19 @@ async function sendEmail(location, message) {
       return false;
     }
     const emailToSend = {
-      from: `${config.EMAIL_FROM} <${config.EMAIL_FROM_ADDRESS}>`,
-      to: config.EMAIL_LIST,
+      to: config.EMAIL_LIST.split(","),
+      from: {
+        name: config.EMAIL_FROM,
+        email: config.EMAIL_FROM_ADDRESS
+      },
       subject: `Alert! Temperature in ${location} has exceeded threshold`,
-      content: message
+      text: message
     };
     if (process.env.NODE_ENV !== "production") {
       console.log(emailToSend);
     }
     try {
-      await emailSender.sendEmailAlert(emailToSend);
+      await sgMail.send(emailToSend);
       return true;
     } catch (err) {
       console.error("Error occured while sending email - " + err);
