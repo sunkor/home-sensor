@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      # Weather API coordinates
       WEATHER_API_LATITUDE: ${{ secrets.WEATHER_API_LATITUDE }}
       WEATHER_API_LONGITUDE: ${{ secrets.WEATHER_API_LONGITUDE }}
       TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
