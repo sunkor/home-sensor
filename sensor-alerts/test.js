@@ -47,7 +47,7 @@ async function testNotification() {
     return originalRequire.apply(this, arguments);
   };
 
-  const notification = require('./aws-notification');
+  const notification = require('./notification');
   Module.prototype.require = originalRequire;
 
   await notification.sendNotification({
@@ -78,7 +78,7 @@ async function testFractionalThresholdRespected() {
         redisClient: { get: async () => null }
       };
     }
-    if (request === './aws-notification') {
+    if (request === './notification') {
       return { sendNotification: () => { notificationCalled = true; } };
     }
     if (request === '../config/config') {
@@ -135,7 +135,7 @@ async function testZeroTemperatureAccepted() {
         redisClient: { get: async () => null }
       };
     }
-    if (request === './aws-notification') {
+    if (request === './notification') {
       return { sendNotification: () => {} };
     }
     if (request === '../config/config') {

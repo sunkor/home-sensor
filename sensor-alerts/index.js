@@ -1,5 +1,5 @@
 const timediff = require("timediff");
-const awsNotification = require("./aws-notification");
+const notification = require("./notification");
 const minDate = new Date("01 Nov 1970");
 const connections = require("./connections");
 const config = require("../config/config");
@@ -105,7 +105,7 @@ if (
   ) {
     notificationDetails.message = `Alert! Temperature threshold of ${TEMPERATURE_THRESHOLD_IN_CELSIUS} has exceeded! Current temperature in ${location} is ${currentTemp}`;
     try {
-      await awsNotification.sendNotification(notificationDetails);
+      await notification.sendNotification(notificationDetails);
     } catch (err) {
       console.error("Failed to send notification", err);
     }
