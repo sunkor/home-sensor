@@ -8,6 +8,8 @@ const env = cleanEnv(process.env, {
   INFLUX_PORT: num({ default: 8086 }),
   REDIS_HOST: str({ default: 'redis' }),
   REDIS_PORT: num({ default: 6379 }),
+  RATE_LIMIT_WINDOW_MS: num({ default: 60000 }),
+  RATE_LIMIT_MAX_REQUESTS: num({ default: 60 }),
   MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: num(),
   TEMPERATURE_THRESHOLD_IN_CELSIUS: num(),
   WEATHER_API_QUERY_POSTCODE: str({ default: undefined, optional: true }),

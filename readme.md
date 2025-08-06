@@ -12,8 +12,9 @@ The system is composed of multiple services orchestrated with
 [docker‑compose](./docker-compose.yml):
 
 - **sensor-listener** – Node.js HTTP API that receives temperature data and
-  writes the readings to InfluxDB.  If the temperature crosses a defined
-  threshold it publishes a message to Redis for alerting.
+  writes the readings to InfluxDB.  It enforces configurable request rate
+  limits and, if the temperature crosses a defined threshold, publishes a
+  message to Redis for alerting.
 - **weather-station** – Polls a public weather API at regular intervals and
   stores the observations in InfluxDB alongside the local sensor data.
 - **sensor-alerts** – Subscribes to Redis messages and sends notifications
@@ -45,6 +46,8 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION` – number of minutes to wait
   before sending another notification for the same user.
 - `TEMPERATURE_THRESHOLD_IN_CELSIUS` – temperature that triggers an alert.
+ - `RATE_LIMIT_WINDOW_MS` – time window in milliseconds for rate limiting (default: `60000`).
+ - `RATE_LIMIT_MAX_REQUESTS` – max requests allowed per window for a user or IP (default: `60`).
   > **Note**: previously this variable was named `TEMPERATURE_THRESHOLD_IN_CELCIUS`. Update any existing environment configurations to use the corrected spelling.
 
 #### sensor-alerts (additional)

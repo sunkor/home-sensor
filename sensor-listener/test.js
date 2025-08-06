@@ -8,6 +8,8 @@ Module.prototype.require = function(request) {
     return {
       MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
       TEMPERATURE_THRESHOLD_IN_CELSIUS: 25,
+      RATE_LIMIT_WINDOW_MS: 1000,
+      RATE_LIMIT_MAX_REQUESTS: 1,
       INFLUX_HOST: 'influxdb',
       INFLUX_PORT: 8086,
       REDIS_HOST: 'redis',
@@ -18,8 +20,41 @@ Module.prototype.require = function(request) {
     return {
       createClient: () => ({
         connect: async () => {},
-        duplicate: () => ({ connect: async () => {} })
+        duplicate: () => ({
+          connect: async () => {},
+          publish: async () => {}
+        }),
+        get: async () => null
       })
+    };
+  }
+  if (request === 'influx') {
+    return {
+      InfluxDB: class {
+        async writePoints() {}
+      },
+      FieldType: { FLOAT: 'float' }
+    };
+  }
+  if (request === 'express-rate-limit') {
+    return (opts) => {
+      const hits = {};
+      return (req, res, next) => {
+        const key = (opts.keyGenerator && opts.keyGenerator(req)) || req.ip;
+        const now = Date.now();
+        const item = hits[key] || { count: 0, start: now };
+        if (now - item.start >= opts.windowMs) {
+          item.count = 0;
+          item.start = now;
+        }
+        item.count += 1;
+        hits[key] = item;
+        if (item.count > opts.max) {
+          res.status(429).send('Too many requests');
+          return;
+        }
+        next();
+      };
     };
   }
   return originalRequire.apply(this, arguments);
@@ -103,11 +138,61 @@ async function testHealthEndpoint() {
   });
 }
 
+async function testRateLimit() {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(0, () => {
+      const { port } = server.address();
+      const options = {
+        hostname: '127.0.0.1',
+        port,
+        path: '/temperature_data',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          userid: 'user1'
+        }
+      };
+
+      const makeRequest = () =>
+        new Promise((res, rej) => {
+          const req = http.request(options, response => {
+            let body = '';
+            response.on('data', chunk => {
+              body += chunk;
+            });
+            response.on('end', () => {
+              res({ status: response.statusCode, body });
+            });
+          });
+          req.on('error', rej);
+          req.write(
+            JSON.stringify({ temperature: 30, location: 'Sydney', userid: 'user1' })
+          );
+          req.end();
+        });
+
+      (async () => {
+        try {
+          await makeRequest();
+          const second = await makeRequest();
+          server.close();
+          assert.strictEqual(second.status, 429);
+          resolve();
+        } catch (err) {
+          server.close();
+          reject(err);
+        }
+      })();
+    });
+  });
+}
+
 async function run() {
   testInvalidTemperature();
   testInvalidLocation();
   testValidPayload();
   await testHealthEndpoint();
+  await testRateLimit();
   console.log('All tests passed');
   process.exit(0);
 }
