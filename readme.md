@@ -65,8 +65,8 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `INFLUX_PORT` – port for InfluxDB (default: `8086`).
 - `WEATHER_API_KEY`
 - `WEATHER_API_ENDPOINT` – e.g. `https://api.weatherapi.com/v1/current.json`
-- `WEATHER_API_QUERY_POSTCODE`
-- `WEATHER_API_QUERY_COUNTRY_CODE`
+- `WEATHER_API_LATITUDE`
+- `WEATHER_API_LONGITUDE`
 
 ### Running
 #### Using Docker Compose
