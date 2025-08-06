@@ -40,3 +40,5 @@ const env = cleanEnv(process.env, {
   EMAIL_FROM_ADDRESS: str({ default: undefined, optional: true }),// sender e-mail address
   EMAIL_LIST: str({ default: undefined, optional: true })         // comma-separated recipients
 });
+
+module.exports = env;
