@@ -42,8 +42,12 @@ services:
       context: ./grafana
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel
+    ports:
+      - "3000:3000"  
     volumes:
       - ./data/grafana:/var/lib/grafana
+    depends_on:
+      - influxdb
   nginx:
     restart: always
     build:
