@@ -18,10 +18,11 @@ if (
   );
 }
 
-connections.redisSubscriber.on("message", async (channel, message) => {
-  if (process.env.NODE_ENV !== "production") {
-    console.log("message received, " + message);
-  }
+(async () => {
+  await connections.redisSubscriber.subscribe("insert", async message => {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("message received, " + message);
+    }
 
   let parsedMessage;
   try {
@@ -67,7 +68,7 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   //Get last sms sent time.
   let notificationObj;
   try {
-    notificationObj = await connections.asyncRedisClient.get(userid);
+    notificationObj = await connections.redisClient.get(userid);
   } catch (err) {
     console.warn("Failed to get last notification time from Redis", err);
     notificationObj = null;
@@ -111,6 +112,5 @@ connections.redisSubscriber.on("message", async (channel, message) => {
   } else {
     console.log("time threshold has not exceeded. Ignore!");
   }
-});
-
-connections.redisSubscriber.subscribe("insert");
+  });
+})();

@@ -14,6 +14,14 @@ Module.prototype.require = function(request) {
       REDIS_PORT: 6379
     };
   }
+  if (request === 'redis') {
+    return {
+      createClient: () => ({
+        connect: async () => {},
+        duplicate: () => ({ connect: async () => {} })
+      })
+    };
+  }
   return originalRequire.apply(this, arguments);
 };
 

@@ -2,9 +2,7 @@ const express = require("express");
 const minDate = new Date("01 Nov 1970");
 const timediff = require("timediff");
 const { z } = require("zod");
-const influx = require("./common").influx;
-const asyncRedisClient = require("./common").asyncRedisClient;
-const redisPublisher = require("./common").redisPublisher;
+const { influx, redisClient, redisPublisher } = require("./common");
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
 const config = require("../config/config");
 
@@ -97,7 +95,7 @@ async function sendNotification(req, res, next) {
 
   let dt;
   try {
-    const notification = await asyncRedisClient.get(userId);
+    const notification = await redisClient.get(userId);
     const parsedNotification = notification ? JSON.parse(notification) : null;
     dt = parsedNotification
       ? new Date(parsedNotification.last_notification_time)
