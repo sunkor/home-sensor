@@ -15,6 +15,8 @@ from typing import List
 
 import requests
 
+logging.basicConfig(level=logging.INFO)
+
 # Read configuration from environment
 API_ENDPOINT = os.environ.get("API_ENDPOINT")
 API_KEY = os.environ.get("API_KEY")
@@ -82,9 +84,10 @@ def read_temp() -> float:
     # Submit the reading to the remote API
     data = {"location": "study_room", "temperature": temp_c}
     result = requests.post(url=API_ENDPOINT, json=data, headers=HEADERS, timeout=10)
-    print(result.reason)
-    print(result.status_code)
-    print(result.text)
+    logging.info(
+        "API responded with %s %s", result.status_code, result.reason
+    )
+    logging.debug("Response body: %s", result.text)
     if 400 <= result.status_code < 500:
         raise ValueError(f"Client error {result.status_code}: {result.text}")
     result.raise_for_status()
@@ -98,7 +101,8 @@ def main() -> None:
 
     while True:
         try:
-            print(read_temp())
+            temperature = read_temp()
+            logging.info("Current temperature: %.3f°C", temperature)
             backoff = 1
         except requests.exceptions.RequestException as exc:
             logging.exception("Request failed: %s", exc)
