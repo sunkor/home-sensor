@@ -1,0 +1,59 @@
+{
+  "id": null,
+  "title": "Weather Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 16,
+  "version": 0,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Temperature",
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "SELECT mean(\"temperature\") FROM \"weather\" WHERE $timeFilter GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "Wind Speed",
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m/s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "SELECT last(\"wind_speed\") FROM \"weather\" WHERE $timeFilter"
+        }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "Wind Direction",
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "degree",
+          "min": 0,
+          "max": 360
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "query": "SELECT last(\"wind_direction\") FROM \"weather\" WHERE $timeFilter"
+        }
+      ]
+    }
+  ]
+}
