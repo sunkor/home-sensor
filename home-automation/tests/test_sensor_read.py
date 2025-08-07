@@ -60,3 +60,15 @@ def test_missing_env():
         with pytest.raises(EnvironmentError):
             spec.loader.exec_module(module)
 
+
+def test_read_temp_never_stabilises():
+    mod = load_module()
+    lines = ["bad NO\n", "t=100000\n"]
+    with (
+        patch.object(mod, "read_temp_raw", return_value=lines) as mock_raw,
+        patch.object(mod.time, "sleep"),
+    ):
+        with pytest.raises(RuntimeError):
+            mod.read_temp(max_attempts=3)
+    assert mock_raw.call_count == 3
+

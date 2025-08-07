@@ -64,12 +64,28 @@ def read_temp_raw() -> List[str]:
     return lines
 
 
-def read_temp() -> float:
-    """Parse temperature from the sensor output and POST it to the API."""
+def read_temp(max_attempts: int = 5) -> float:
+    """Parse temperature from the sensor output and POST it to the API.
+
+    Parameters
+    ----------
+    max_attempts: int, optional
+        Maximum number of times to check if the sensor output has
+        stabilised.  If the sensor does not report a successful "YES"
+        state within this number of attempts a ``RuntimeError`` is
+        raised.
+    """
+
     lines = read_temp_raw()
+    attempts = 1
     while lines[0].strip()[-3:] != "YES":
+        if attempts >= max_attempts:
+            raise RuntimeError(
+                f"Sensor output never stabilised after {max_attempts} attempts"
+            )
         time.sleep(0.2)
         lines = read_temp_raw()
+        attempts += 1
 
     equals_pos = lines[1].find("t=")
     if equals_pos == -1:
