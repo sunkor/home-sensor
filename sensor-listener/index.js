@@ -54,6 +54,7 @@ function validatePayload(req, res, next) {
     res.status(400).send("Invalid payload");
     return;
   }
+  req.body = result.data;
   next();
 }
 
@@ -80,11 +81,7 @@ async function sendNotification(req, res, next) {
     res.status(400).send("Missing or invalid user id.");
     return;
   }
-  const temp = Number(req.body.temperature);
-  if (!Number.isFinite(temp)) {
-    res.status(400).send("Invalid temperature data.");
-    return;
-  }
+  const temp = req.body.temperature;
 
   if (temp < TEMPERATURE_THRESHOLD_IN_CELSIUS) {
     res.send("posted temperature data.");

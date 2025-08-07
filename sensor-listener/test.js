@@ -147,10 +147,11 @@ function testInvalidLocation() {
 
 function testValidPayload() {
   const { res, next, wasNextCalled } = createMock();
-  const req = { body: { temperature: 25.5, location: 'Sydney' } };
+  const req = { body: { temperature: 25.5, location: 'Sydney', extra: 'ignore' } };
   validatePayload(req, res, next);
   assert.strictEqual(res.statusCode, null);
   assert.strictEqual(wasNextCalled(), true);
+  assert.deepStrictEqual(req.body, { temperature: 25.5, location: 'Sydney' });
 }
 
 async function testHealthEndpoint() {
