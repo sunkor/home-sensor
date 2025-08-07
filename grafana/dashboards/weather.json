@@ -1,0 +1,107 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "id": 1,
+      "targets": [
+        {
+          "groupBy": [
+            { "type": "time", "params": ["$__interval"] },
+            { "type": "fill", "params": ["null"] }
+          ],
+          "measurement": "temperature_data_in_celsius",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              { "type": "field", "params": ["temperature"] },
+              { "type": "mean", "params": [] }
+            ]
+          ]
+        }
+      ],
+      "title": "Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m/s"
+        },
+        "overrides": []
+      },
+      "id": 2,
+      "targets": [
+        {
+          "measurement": "daily_read",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              { "type": "field", "params": ["wind_speed"] },
+              { "type": "last", "params": [] }
+            ]
+          ]
+        }
+      ],
+      "title": "Wind Speed",
+      "type": "gauge"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 360,
+          "unit": "degree"
+        },
+        "overrides": []
+      },
+      "id": 3,
+      "targets": [
+        {
+          "measurement": "daily_read",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              { "type": "field", "params": ["wind_direction"] },
+              { "type": "last", "params": [] }
+            ]
+          ]
+        }
+      ],
+      "title": "Wind Direction",
+      "type": "gauge"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Weather",
+  "uid": "weather-dashboard",
+  "version": 1
+}
