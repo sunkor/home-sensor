@@ -12,6 +12,8 @@ const redisSubscriber = redisClient.duplicate();
     await redisSubscriber.connect();
   } catch (err) {
     console.error("Redis connection error", err);
+    // Exit to avoid running without a required Redis connection.
+    process.exit(1);
   }
 })();
 

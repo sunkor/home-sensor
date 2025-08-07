@@ -85,6 +85,48 @@ function createMock() {
   };
 }
 
+async function testAbortWhenRedisUnreachable() {
+  const originalRequire = Module.prototype.require;
+  Module.prototype.require = function(request) {
+    if (request === '../config/config') {
+      return {
+        INFLUX_HOST: 'influxdb',
+        INFLUX_PORT: 8086,
+        REDIS_HOST: 'redis',
+        REDIS_PORT: 6379
+      };
+    }
+    if (request === 'redis') {
+      return {
+        createClient: () => ({
+          connect: async () => { throw new Error('fail'); },
+          duplicate: () => ({ connect: async () => { throw new Error('fail'); } })
+        })
+      };
+    }
+    if (request === 'influx') {
+      return {
+        InfluxDB: class {},
+        FieldType: { FLOAT: 'float' }
+      };
+    }
+    return originalRequire.apply(this, arguments);
+  };
+
+  const originalExit = process.exit;
+  let exitCode = null;
+  process.exit = (code) => { exitCode = code; };
+
+  delete require.cache[require.resolve('./common.js')];
+  require('./common');
+  await new Promise((resolve) => setImmediate(resolve));
+
+  process.exit = originalExit;
+  Module.prototype.require = originalRequire;
+
+  assert.strictEqual(exitCode, 1, 'process should exit when Redis is unreachable');
+}
+
 function testInvalidTemperature() {
   const { res, next, wasNextCalled } = createMock();
   const req = { body: { temperature: 'hot', location: 'Sydney' } };
@@ -188,6 +230,7 @@ async function testRateLimit() {
 }
 
 async function run() {
+  await testAbortWhenRedisUnreachable();
   testInvalidTemperature();
   testInvalidLocation();
   testValidPayload();

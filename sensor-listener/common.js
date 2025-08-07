@@ -29,6 +29,8 @@ const redisPublisher = redisClient.duplicate();
     await redisPublisher.connect();
   } catch (err) {
     console.error("Redis connection error", err);
+    // Exit to avoid running without required Redis connections.
+    process.exit(1);
   }
 })();
 

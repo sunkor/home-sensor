@@ -24,6 +24,9 @@ Provides a Node.js HTTP API that accepts temperature readings from sensors, stor
 - **MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION** – minutes to wait before sending another alert for the same user.
 - **TEMPERATURE_THRESHOLD_IN_CELSIUS** – temperature that triggers an alert.
 
+## Error Handling
+If the service cannot reach Redis during startup, it logs the connection error and exits. No automatic retries are performed; a process manager or container orchestration platform should restart the service.
+
 ## Tests
 Run the unit tests with:
 ```bash
