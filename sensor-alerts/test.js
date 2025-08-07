@@ -1,6 +1,37 @@
 const assert = require('assert');
 const Module = require('module');
 
+async function testAbortWhenRedisUnreachable() {
+  const originalRequire = Module.prototype.require;
+  Module.prototype.require = function(request) {
+    if (request === '../config/config') {
+      return { REDIS_HOST: 'redis', REDIS_PORT: 6379 };
+    }
+    if (request === 'redis') {
+      return {
+        createClient: () => ({
+          connect: async () => { throw new Error('fail'); },
+          duplicate: () => ({ connect: async () => { throw new Error('fail'); } })
+        })
+      };
+    }
+    return originalRequire.apply(this, arguments);
+  };
+
+  const originalExit = process.exit;
+  let exitCode = null;
+  process.exit = (code) => { exitCode = code; };
+
+  delete require.cache[require.resolve('./connections.js')];
+  require('./connections.js');
+  await new Promise((resolve) => setImmediate(resolve));
+
+  process.exit = originalExit;
+  Module.prototype.require = originalRequire;
+
+  assert.strictEqual(exitCode, 1, 'process should exit when Redis is unreachable');
+}
+
 async function testNotification() {
   const originalRequire = Module.prototype.require;
   let smsCalled = false;
@@ -172,6 +203,7 @@ async function testZeroTemperatureAccepted() {
 }
 
 async function run() {
+  await testAbortWhenRedisUnreachable();
   await testNotification();
   await testFractionalThresholdRespected();
   await testZeroTemperatureAccepted();

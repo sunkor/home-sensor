@@ -24,6 +24,9 @@ Listens for alert messages on Redis and sends notifications via SMS or e-mail wh
 - **ENABLE_EMAIL_ALERTS** (default `false`) – enable e-mail notifications.
   - **SENDGRID_API_KEY**, **EMAIL_FROM**, **EMAIL_FROM_ADDRESS**, **EMAIL_LIST** – required when e-mail alerts are enabled.
 
+## Error Handling
+The service requires Redis at startup. If a connection cannot be established, it logs the error and exits without retrying so that an external supervisor can restart it.
+
 ## Tests
 Run the unit tests with:
 ```bash
