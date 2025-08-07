@@ -32,6 +32,7 @@ def load_module():
         patch("glob.glob", return_value=["/sys/bus/w1/devices/28-000"]),
     ):
         spec.loader.exec_module(module)
+        module.load_config()
     return module
 
 
@@ -57,6 +58,7 @@ def test_missing_env():
         patch("subprocess.run", return_value=SimpleNamespace(returncode=0)),
         patch("glob.glob", return_value=["/sys/bus/w1/devices/28-000"]),
     ):
+        spec.loader.exec_module(module)
         with pytest.raises(EnvironmentError):
-            spec.loader.exec_module(module)
+            module.load_config()
 

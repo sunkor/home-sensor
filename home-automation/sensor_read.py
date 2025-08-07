@@ -15,13 +15,23 @@ from typing import List
 
 import requests
 
-# Read configuration from environment
-API_ENDPOINT = os.environ.get("API_ENDPOINT")
-API_KEY = os.environ.get("API_KEY")
-if not API_ENDPOINT:
-    raise EnvironmentError("API_ENDPOINT environment variable is not set")
-if not API_KEY:
-    raise EnvironmentError("API_KEY environment variable is not set")
+
+# Configuration values populated by ``load_config``
+API_ENDPOINT = None
+API_KEY = None
+HEADERS = None
+
+
+def load_config() -> None:
+    """Populate configuration from environment variables."""
+    global API_ENDPOINT, API_KEY, HEADERS
+    API_ENDPOINT = os.environ.get("API_ENDPOINT")
+    API_KEY = os.environ.get("API_KEY")
+    if not API_ENDPOINT:
+        raise EnvironmentError("API_ENDPOINT environment variable is not set")
+    if not API_KEY:
+        raise EnvironmentError("API_KEY environment variable is not set")
+    HEADERS = {"Content-type": "application/json", "x-api-key": API_KEY}
 
 
 def _load_module(module: str) -> None:
@@ -53,9 +63,6 @@ if not device_folders:
     raise FileNotFoundError(f"No temperature sensor device found in {BASE_DIR}")
 DEVICE_FILE = device_folders[0] + "/w1_slave"
 
-# Prepare headers for authenticated API requests
-HEADERS = {"Content-type": "application/json", "x-api-key": API_KEY}
-
 
 def read_temp_raw() -> List[str]:
     """Return the raw lines read from the sensor's device file."""
@@ -66,6 +73,8 @@ def read_temp_raw() -> List[str]:
 
 def read_temp() -> float:
     """Parse temperature from the sensor output and POST it to the API."""
+    if API_ENDPOINT is None or HEADERS is None:
+        raise EnvironmentError("Configuration not loaded. Call load_config() before read_temp().")
     lines = read_temp_raw()
     while lines[0].strip()[-3:] != "YES":
         time.sleep(0.2)
@@ -93,6 +102,7 @@ def read_temp() -> float:
 
 def main() -> None:
     """Continuously read and report temperatures with exponential backoff."""
+    load_config()
     backoff = 1
     max_backoff = 60
 
