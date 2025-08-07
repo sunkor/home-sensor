@@ -1,9 +1,7 @@
 FROM grafana/grafana
 USER root
 
-RUN apk update
-RUN apk add
-RUN apk add --update curl
+# Install curl
+RUN apk update && apk add --no-cache curl
 
-#expose port
 EXPOSE 3000
