@@ -145,8 +145,7 @@ app.post(
   sendNotification
 );
 
-//GOOGLE ACTION.
-app.post("/fulfillment", require("./google-actions").fulfillment);
+
 
 app.use((err, req, res, next) => {
   console.error(err);
