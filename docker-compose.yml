@@ -3,8 +3,8 @@ services:
   sensor-listener:
     restart: always
     build:
-      dockerfile: sensor-listener.dockerfile
-      context: ./sensor-listener
+      context: .
+      dockerfile: sensor-listener/sensor-listener.dockerfile
     volumes:
       - ./sensor-listener/node_modules:/usr/src/app/node_modules
       - ./sensor-listener:/usr/src/app
@@ -27,8 +27,8 @@ services:
   sensor-alerts:
     restart: always
     build:
-      dockerfile: sensor-alerts.dockerfile
-      context: ./sensor-alerts
+      context: .
+      dockerfile: sensor-alerts/sensor-alerts.dockerfile
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./sensor-alerts:/usr/src/app
