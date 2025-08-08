@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:18-bullseye
 
 # Create app directory
 WORKDIR /usr/src/app
