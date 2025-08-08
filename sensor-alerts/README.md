@@ -8,14 +8,14 @@ Listens for alert messages on Redis and sends notifications via SMS or e-mail wh
    ```bash
    npm install
    ```
-2. Configure the environment variables (see below).
+2. Configure the environment variables (see below). When running outside Docker, set `REDIS_HOST` to `localhost`; use `redis` only when running inside a Docker network.
 3. Start the service:
    ```bash
    npm start
    ```
 
 ## Environment Variables
-- **REDIS_HOST** (default `redis`) – Redis hostname.
+- **REDIS_HOST** (default `localhost`) – Redis hostname. Use `redis` when running inside a Docker network.
 - **REDIS_PORT** (default `6379`) – Redis port.
 - **MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION** – minutes to wait before sending another alert for the same user.
 - **TEMPERATURE_THRESHOLD_IN_CELSIUS** – temperature that triggers an alert.
