@@ -110,20 +110,26 @@ async function sendEmail(location, message) {
 }
 
 async function sendNotification(notificationDetails) {
-  const smsSent = await sendSMS(
-    notificationDetails.message,
-    notificationDetails.currentDt
-  );
-  if (!smsSent) {
-    console.error("Failed to send SMS alert");
+  let smsSent;
+  if (config.ENABLE_SMS_ALERTS) {
+    smsSent = await sendSMS(
+      notificationDetails.message,
+      notificationDetails.currentDt
+    );
+    if (!smsSent) {
+      console.error("Failed to send SMS alert");
+    }
   }
 
-  const emailSent = await sendEmail(
-    notificationDetails.location,
-    notificationDetails.message
-  );
-  if (!emailSent) {
-    console.error("Failed to send email alert");
+  let emailSent;
+  if (config.ENABLE_EMAIL_ALERTS) {
+    emailSent = await sendEmail(
+      notificationDetails.location,
+      notificationDetails.message
+    );
+    if (!emailSent) {
+      console.error("Failed to send email alert");
+    }
   }
   await connections.redisClient.set(
     notificationDetails.userid,

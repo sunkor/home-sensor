@@ -98,6 +98,78 @@ async function testNotification() {
   assert(redisSetCalled, 'redis set should be called');
 }
 
+async function testNotificationSmsDisabled() {
+  const originalRequire = Module.prototype.require;
+  let smsCalled = false;
+  let emailCalled = false;
+  let errorLogged = false;
+
+  Module.prototype.require = function(request) {
+    if (request === 'twilio') {
+      return function() {
+        return {
+          messages: {
+            create: async () => {
+              smsCalled = true;
+            }
+          }
+        };
+      };
+    }
+    if (request === '@sendgrid/mail') {
+      return {
+        setApiKey: () => {},
+        send: async () => {
+          emailCalled = true;
+        }
+      };
+    }
+    if (request === './connections') {
+      return { redisClient: { set: async () => {} } };
+    }
+    if (request === '../config/config') {
+      return {
+        TWILIO_ACCOUNT_SID: 'sid',
+        TWILIO_AUTH_TOKEN: 'token',
+        TWILIO_PHONE_NUMBER: '+1111111111',
+        SMS_PHONE_NUMBER: '+2222222222',
+        ENABLE_SMS_ALERTS: false,
+        SENDGRID_API_KEY: 'SG.test',
+        ENABLE_EMAIL_ALERTS: true,
+        EMAIL_FROM: 'Home Sensor',
+        EMAIL_FROM_ADDRESS: 'homesensor@example.com',
+        EMAIL_LIST: 'user@example.com'
+      };
+    }
+    return originalRequire.apply(this, arguments);
+  };
+
+  delete require.cache[require.resolve('@sendgrid/mail')];
+  delete require.cache[require.resolve('twilio')];
+  delete require.cache[require.resolve('../config/config')];
+  delete require.cache[require.resolve('./notification')];
+  const notification = require('./notification');
+  Module.prototype.require = originalRequire;
+
+  const originalError = console.error;
+  console.error = () => {
+    errorLogged = true;
+  };
+
+  await notification.sendNotification({
+    userid: 'user1',
+    location: 'Sydney',
+    currentDt: Date.now(),
+    message: 'Temperature alert'
+  });
+
+  console.error = originalError;
+
+  assert.strictEqual(smsCalled, false, 'SMS should not be sent');
+  assert(emailCalled, 'Email should be sent');
+  assert.strictEqual(errorLogged, false, 'No error should be logged when SMS is disabled');
+}
+
 async function testFractionalThresholdRespected() {
   const originalRequire = Module.prototype.require;
   let handler;
@@ -210,6 +282,7 @@ async function testZeroTemperatureAccepted() {
 async function run() {
   await testAbortWhenRedisUnreachable();
   await testNotification();
+  await testNotificationSmsDisabled();
   await testFractionalThresholdRespected();
   await testZeroTemperatureAccepted();
   console.log('All tests passed');

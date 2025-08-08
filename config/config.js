@@ -30,7 +30,7 @@ const env = cleanEnv(process.env, {
   SMS_PHONE_NUMBER: str({ default: undefined, optional: true }),
 
   SENDGRID_API_KEY: str({ default: undefined, optional: true }),
-  ENABLE_EMAIL_ALERTS: bool({ default: false, optional: true }),
+  ENABLE_EMAIL_ALERTS: bool({ default: true, optional: true }),
   EMAIL_FROM: str({ default: undefined, optional: true }),
   EMAIL_FROM_ADDRESS: str({ default: undefined, optional: true }),
   EMAIL_LIST: str({ default: undefined, optional: true }),

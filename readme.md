@@ -58,7 +58,7 @@ to `.env` and adjust the values as needed, or provide the variables at runtime.
 - `EMAIL_FROM`, `EMAIL_FROM_ADDRESS` – sender details.
 - `EMAIL_LIST` – comma separated list of recipients.
 - `ENABLE_SMS_ALERTS` – set to `true` to enable SMS via Twilio.
-- `ENABLE_EMAIL_ALERTS` – set to `true` to enable email via SendGrid.
+- `ENABLE_EMAIL_ALERTS` – toggle email via SendGrid (default `true`).
 
 #### weather-station
 - `INFLUX_HOST` – hostname for InfluxDB (default: `influxdb`).
