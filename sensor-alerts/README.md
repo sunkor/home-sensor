@@ -8,7 +8,7 @@ Listens for alert messages on Redis and sends notifications via SMS or e-mail wh
    ```bash
    npm install
    ```
-2. Configure the environment variables (see below). When running outside Docker, set `REDIS_HOST` to `localhost`; use `redis` only when running inside a Docker network.
+2. Configure the environment variables (see below). By default, email alerts are enabled and SMS alerts are disabled. When running outside Docker, set `REDIS_HOST` to `localhost`; use `redis` only when running inside a Docker network.
 3. Start the service:
    ```bash
    npm start
@@ -21,7 +21,7 @@ Listens for alert messages on Redis and sends notifications via SMS or e-mail wh
 - **TEMPERATURE_THRESHOLD_IN_CELSIUS** – temperature that triggers an alert.
 - **ENABLE_SMS_ALERTS** (default `false`) – enable SMS notifications.
   - **TWILIO_ACCOUNT_SID**, **TWILIO_AUTH_TOKEN**, **TWILIO_PHONE_NUMBER**, **SMS_PHONE_NUMBER** – required when SMS alerts are enabled.
-- **ENABLE_EMAIL_ALERTS** (default `false`) – enable e-mail notifications.
+- **ENABLE_EMAIL_ALERTS** (default `true`) – enable e-mail notifications.
   - **SENDGRID_API_KEY**, **EMAIL_FROM**, **EMAIL_FROM_ADDRESS**, **EMAIL_LIST** – required when e-mail alerts are enabled.
 
 ## Error Handling
