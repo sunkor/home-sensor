@@ -19,10 +19,11 @@ if (
 }
 
 (async () => {
-  await connections.redisSubscriber.subscribe("insert", async message => {
-    if (process.env.NODE_ENV !== "production") {
-      console.log("message received, " + message);
-    }
+  try {
+    await connections.redisSubscriber.subscribe("insert", async message => {
+      if (process.env.NODE_ENV !== "production") {
+        console.log("message received, " + message);
+      }
 
   let parsedMessage;
   try {
@@ -109,8 +110,12 @@ if (
     } catch (err) {
       console.error("Failed to send notification", err);
     }
-  } else {
-    console.log("time threshold has not exceeded. Ignore!");
-  }
+    } else {
+      console.log("time threshold has not exceeded. Ignore!");
+    }
   });
+  } catch (err) {
+    console.error("Failed to subscribe to Redis channel 'insert'", err);
+    process.exit(1);
+  }
 })();
