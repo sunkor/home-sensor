@@ -5,7 +5,12 @@ async function testAbortWhenRedisUnreachable() {
   const originalRequire = Module.prototype.require;
   Module.prototype.require = function(request) {
     if (request === '../config/config') {
-      return { REDIS_HOST: 'redis', REDIS_PORT: 6379 };
+      return {
+        REDIS_HOST: 'redis',
+        REDIS_PORT: 6379,
+        REDIS_CONNECT_RETRIES: 1,
+        REDIS_CONNECT_RETRY_DELAY: 1
+      };
     }
     if (request === 'redis') {
       return {
