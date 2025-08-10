@@ -13,7 +13,7 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Include shared configuration
-COPY config ./config
+COPY config/ /usr/src/config/
 
 # Bundle app source
 COPY sensor-listener ./
