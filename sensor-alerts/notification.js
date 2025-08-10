@@ -1,7 +1,7 @@
 const twilio = require("twilio");
 const sgMail = require("@sendgrid/mail");
 const connections = require("./connections");
-const config = require("../config/config");
+const config = require("./config/config");
 
 let twilioClient;
 const requiredTwilioVars = [
