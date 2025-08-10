@@ -4,7 +4,7 @@ const Module = require('module');
 async function testAbortWhenRedisUnreachable() {
   const originalRequire = Module.prototype.require;
   Module.prototype.require = function(request) {
-    if (request === './config/config') {
+    if (request === '../config/config') {
       return {
         REDIS_HOST: 'redis',
         REDIS_PORT: 6379,
@@ -66,7 +66,7 @@ async function testNotification() {
     if (request === './connections') {
       return { redisClient: { set: async () => { redisSetCalled = true; } } };
     }
-    if (request === './config/config') {
+    if (request === '../config/config') {
       return {
         TWILIO_ACCOUNT_SID: 'sid',
         TWILIO_AUTH_TOKEN: 'token',
@@ -127,7 +127,7 @@ async function testNotificationSmsDisabled() {
     if (request === './connections') {
       return { redisClient: { set: async () => {} } };
     }
-    if (request === './config/config') {
+    if (request === '../config/config') {
       return {
         TWILIO_ACCOUNT_SID: 'sid',
         TWILIO_AUTH_TOKEN: 'token',
@@ -147,7 +147,7 @@ async function testNotificationSmsDisabled() {
   delete require.cache[require.resolve('@sendgrid/mail')];
   delete require.cache[require.resolve('twilio')];
   try {
-    delete require.cache[require.resolve('./config/config')];
+    delete require.cache[require.resolve('../config/config')];
   } catch (e) {
     // ignore if config module not found
   }
@@ -193,7 +193,7 @@ async function testFractionalThresholdRespected() {
     if (request === './notification') {
       return { sendNotification: () => { notificationCalled = true; } };
     }
-    if (request === './config/config') {
+    if (request === '../config/config') {
       return {
         MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
         TEMPERATURE_THRESHOLD_IN_CELSIUS: 25.5
@@ -250,7 +250,7 @@ async function testZeroTemperatureAccepted() {
     if (request === './notification') {
       return { sendNotification: () => {} };
     }
-    if (request === './config/config') {
+    if (request === '../config/config') {
       return {
         MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
         TEMPERATURE_THRESHOLD_IN_CELSIUS: 0
