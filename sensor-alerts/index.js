@@ -2,7 +2,7 @@ const timediff = require("timediff");
 const notification = require("./notification");
 const minDate = new Date("01 Nov 1970");
 const connections = require("./connections");
-const config = require("../config/config");
+const config = require("./config/config");
 
 const {
   MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,

@@ -1,5 +1,5 @@
 const { createClient } = require("redis");
-const config = require("../config/config");
+const config = require("./config/config");
 
 async function connectWithRetry(
   client,
