@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@redis/bloom": "^1.2.0",
     "@redis/client": "^1.6.1",
     "redis": "^4.6.7",
     "dotenv": "^8.2.0",
