@@ -18,5 +18,6 @@ services:
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - .:/usr/src/app
+      - ../config:/usr/src/config
     ports:
       - "8080:8080"
