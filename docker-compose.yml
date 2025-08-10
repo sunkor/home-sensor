@@ -8,7 +8,7 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - ./sensor-listener:/usr/src/app
-      - ./config:/usr/src/config
+      - ./config:/usr/src/app/config
     depends_on:
       - influxdb
   weather-station:
@@ -33,6 +33,7 @@ services:
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./sensor-alerts:/usr/src/app
+      - ./config:/usr/src/app/config
     environment:
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
