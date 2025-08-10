@@ -4,7 +4,7 @@ const Module = require('module');
 
 const originalRequire = Module.prototype.require;
 Module.prototype.require = function(request) {
-  if (request === '../config/config') {
+  if (request === './config/config') {
     return {
       MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION: 0,
       TEMPERATURE_THRESHOLD_IN_CELSIUS: 25,
@@ -88,7 +88,7 @@ function createMock() {
 async function testAbortWhenRedisUnreachable() {
   const originalRequire = Module.prototype.require;
   Module.prototype.require = function(request) {
-    if (request === '../config/config') {
+    if (request === './config/config') {
       return {
         INFLUX_HOST: 'influxdb',
         INFLUX_PORT: 8086,
