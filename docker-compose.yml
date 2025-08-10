@@ -19,6 +19,7 @@ services:
     volumes:
       - /usr/src/app/node_modules #bookmark volume (i.e. do NOT map to volume)
       - ./weather-station:/usr/src/app
+      - ./config:/usr/src/app/config
     environment:
       WEATHER_API_KEY: ${WEATHER_API_KEY}
       WEATHER_API_LATITUDE: ${WEATHER_API_LATITUDE}
