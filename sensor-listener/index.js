@@ -5,7 +5,7 @@ const timediff = require("timediff");
 const { z } = require("zod");
 const { influx, redisClient, redisPublisher } = require("./common");
 const waitForInfluxDb = require("../influxdb-ready").waitForInfluxDb;
-const config = require("../config/config");
+const config = require("./config/config");
 
 const {
   MINUTES_TO_WAIT_BEFORE_SENDING_NOTIFICATION,

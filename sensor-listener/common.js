@@ -1,7 +1,7 @@
 const Influx = require("influx");
 const { createClient } = require("redis");
 
-const config = require("../config/config");
+const config = require("./config/config");
 const influx = new Influx.InfluxDB({
   host: config.INFLUX_HOST,
   port: config.INFLUX_PORT,
